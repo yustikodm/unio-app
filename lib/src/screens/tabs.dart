@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../config/ui_icons.dart';
 import '../screens/account.dart';
 import '../screens/chat.dart';
@@ -146,12 +148,17 @@ class _TabsWidgetState extends State<TabsWidget> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                        color: Theme.of(context).accentColor.withOpacity(0.4), blurRadius: 40, offset: Offset(0, 15)),
+                        color: Theme.of(context).accentColor.withOpacity(0.4),
+                        blurRadius: 40,
+                        offset: Offset(0, 15)),
                     BoxShadow(
-                        color: Theme.of(context).accentColor.withOpacity(0.4), blurRadius: 13, offset: Offset(0, 3))
+                        color: Theme.of(context).accentColor.withOpacity(0.4),
+                        blurRadius: 13,
+                        offset: Offset(0, 3))
                   ],
                 ),
-                child: new Icon(UiIcons.home, color: Theme.of(context).primaryColor),
+                child: new Icon(UiIcons.home,
+                    color: Theme.of(context).primaryColor),
               )),
           BottomNavigationBarItem(
             icon: new Icon(UiIcons.chat),

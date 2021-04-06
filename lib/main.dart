@@ -1,3 +1,6 @@
+import 'package:Unio/src/screens/signin.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'config/app_config.dart' as config;
 import 'package:flutter/material.dart';
 import 'route_generator.dart';
@@ -9,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Business Listing,Directory Flutter UI KIT',
+      title: 'UNIO',
       initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
       debugShowCheckedModeBanner: false,

@@ -7,7 +7,6 @@ import '../widgets/HomeSliderWidget.dart';
 import 'package:flutter/material.dart';
 import '../widgets/PopularLocationCarouselWidget.dart';
 import '../widgets/SearchBarHomeWidget.dart';
-import 'package:dio/dio.dart';
 
 class HomeWidget extends StatefulWidget {
   @override
