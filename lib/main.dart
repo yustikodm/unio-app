@@ -1,9 +1,12 @@
-import 'package:Unio/src/screens/signin.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'config/app_config.dart' as config;
 import 'package:flutter/material.dart';
 import 'route_generator.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+const SERVER_DOMAIN = "https://primavisiglobalindo.net/unio/public/api/";
+final storage = FlutterSecureStorage();
 
 void main() => runApp(MyApp());
 
@@ -105,6 +108,7 @@ class MyApp extends StatelessWidget {
               fontSize: 12.0, color: config.Colors().textAccentColor(0.6)),
         ),
       ),
+      builder: EasyLoading.init(),
     );
   }
 }

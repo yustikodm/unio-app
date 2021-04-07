@@ -1,10 +1,12 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import '../../config/ui_icons.dart';
 import '../widgets/SocialMediaWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Unio/main.dart';
 
 class SignInWidget extends StatefulWidget {
   @override
@@ -16,6 +18,15 @@ class _SignInWidgetState extends State<SignInWidget> {
   final myEmailController = TextEditingController();
   final myPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  Future<String> attemptLogin(String email, String password) async {
+    print(Uri.parse(SERVER_DOMAIN + 'login'));
+    var res = await http.post(Uri.parse(SERVER_DOMAIN + 'login'),
+        body: {'email': email, 'password': password});
+    print(res.statusCode);
+    if (res.statusCode == 200) return res.body;
+    return null;
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,27 +150,23 @@ class _SignInWidgetState extends State<SignInWidget> {
                           padding: EdgeInsets.symmetric(
                               vertical: 12, horizontal: 70),
                           onPressed: () async {
+                            EasyLoading.show(status: 'loading...');
                             var email = myEmailController.text;
                             var password = myPasswordController.text;
-                            var url = Uri.parse(
-                                'https://primavisiglobalindo.net/unio/public/api/login');
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            var response = await http.post(url,
-                                body: {'email': email, 'password': password});
+                            var jwt = await attemptLogin(email, password);
+                            print(jwt);
 
-                            //print('Response status: ${response.statusCode}');
-                            //print('Response body: ${response.body}');
-
-                            if (response.statusCode == 200) {
-                              var data = convert.jsonDecode(response.body);
-                              prefs.setString(
-                                  'apiToken', data['data']['api_token']);
-                              prefs.setString('email', data['data']['email']);
-                              prefs.setString(
-                                  'image_path', data['data']['image_path']);
+                            if (jwt != null) {
+                              storage.write(key: 'jwt', value: jwt);
+                              EasyLoading.dismiss();
                               Navigator.of(context)
                                   .pushNamed('/Tabs', arguments: 2);
+                            } else {
+                              EasyLoading.dismiss();
+                              showOkAlertDialog(
+                                context: context,
+                                title: 'Invalid username or password!',
+                              );
                             }
                           },
                           child: Text(

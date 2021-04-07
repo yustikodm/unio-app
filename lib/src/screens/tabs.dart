@@ -1,5 +1,3 @@
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../config/ui_icons.dart';
 import '../screens/account.dart';
 import '../screens/chat.dart';
