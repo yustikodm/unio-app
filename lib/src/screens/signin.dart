@@ -157,7 +157,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                             if (jwt != null) {
                               var data = convert.jsonDecode(jwt);
                               apiToken = data['data']['api_token'];
-                              authName = data['data']['username'] ?? 'Admin';
+                              authName = data['data']['fullname'] ?? 'admin';
                               authEmail = data['data']['email'];
                               storage.write(
                                   key: 'apiToken',
@@ -165,6 +165,9 @@ class _SignInWidgetState extends State<SignInWidget> {
                               storage.write(
                                   key: 'authEmail',
                                   value: data['data']['email']);
+                              storage.write(
+                                  key: 'authName',
+                                  value: data['data']['fullname']);
                               storage.write(
                                   key: 'authPicture',
                                   value: data['data']['image_path']);

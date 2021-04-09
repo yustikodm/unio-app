@@ -18,8 +18,8 @@ class _SplashState extends State<Splash> {
 
   getAuthData() async {
     apiToken = await storage.read(key: 'apiToken');
-    authName = await storage.read(key: 'name') ?? 'Guest';
-    authEmail = await storage.read(key: 'apiToken');
+    authName = await storage.read(key: 'authName');
+    authEmail = await storage.read(key: 'authEmail');
   }
 
   @override

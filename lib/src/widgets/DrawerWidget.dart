@@ -9,6 +9,45 @@ import 'package:flutter/material.dart';
 // ignore: must_be_immutable
 class DrawerWidget extends StatelessWidget {
   User _user = new User.init().getCurrentUser();
+
+  Future<void> _showLogoutDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Log out'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                    'Are you sure? logging out will remove all Unio data from this device.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                storage.deleteAll();
+                apiToken = null;
+                authName = 'Guest';
+                authEmail = 'guest@mail.com';
+                Navigator.of(context).pushNamed('/Tabs', arguments: 2);
+              },
+            ),
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -127,23 +166,9 @@ class DrawerWidget extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              if (apiToken != null) {
-                storage.deleteAll();
-                apiToken = null;
-                authName = 'Guest';
-                authEmail = 'guest@mail.com';
-                showOkCancelAlertDialog(
-                  context: context,
-                  title: 'Log out',
-                  message:
-                      'Are you sure? logging out will remove all Unio data from this device.',
-                  okLabel: 'Yes',
-                  cancelLabel: 'Cancel',
-                );
-                //Navigator.of(context).pushNamed('/Tabs', arguments: 2);
-              } else {
-                Navigator.of(context).pushNamed('/SignIn');
-              }
+              apiToken != null
+                  ? _showLogoutDialog(context)
+                  : Navigator.of(context).pushNamed('/SignIn');
             },
             leading: Icon(
               apiToken != null ? UiIcons.return_icon : UiIcons.user_1,
