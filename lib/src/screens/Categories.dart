@@ -2,7 +2,6 @@ import '../models/category.dart';
 import '../widgets/BrandGridWidget.dart';
 import '../widgets/DrawerWidget.dart';
 import '../widgets/SearchBarWidget.dart';
-import '../widgets/ShoppingCartButtonWidget.dart';
 import 'package:flutter/material.dart';
 
 class CategoriesWidget extends StatefulWidget {
@@ -34,7 +33,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
         ),
         actions: <Widget>[
           //new ShoppingCartButtonWidget(
-             // iconColor: Theme.of(context).hintColor, labelColor: Theme.of(context).accentColor),
+          // iconColor: Theme.of(context).hintColor, labelColor: Theme.of(context).accentColor),
           Container(
               width: 30,
               height: 30,

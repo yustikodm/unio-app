@@ -1,6 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
+import 'dart:convert' as convert;
 import '../../config/ui_icons.dart';
 import '../widgets/SocialMediaWidget.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,10 +20,8 @@ class _SignInWidgetState extends State<SignInWidget> {
   final _formKey = GlobalKey<FormState>();
 
   Future<String> attemptLogin(String email, String password) async {
-    print(Uri.parse(SERVER_DOMAIN + 'login'));
     var res = await http.post(Uri.parse(SERVER_DOMAIN + 'login'),
         body: {'email': email, 'password': password});
-    print(res.statusCode);
     if (res.statusCode == 200) return res.body;
     return null;
   }
@@ -151,13 +149,25 @@ class _SignInWidgetState extends State<SignInWidget> {
                               vertical: 12, horizontal: 70),
                           onPressed: () async {
                             EasyLoading.show(status: 'loading...');
+                            storage.deleteAll();
                             var email = myEmailController.text;
                             var password = myPasswordController.text;
                             var jwt = await attemptLogin(email, password);
-                            print(jwt);
 
                             if (jwt != null) {
-                              storage.write(key: 'jwt', value: jwt);
+                              var data = convert.jsonDecode(jwt);
+                              apiToken = data['data']['api_token'];
+                              authName = data['data']['username'] ?? 'Admin';
+                              authEmail = data['data']['email'];
+                              storage.write(
+                                  key: 'apiToken',
+                                  value: data['data']['api_token']);
+                              storage.write(
+                                  key: 'authEmail',
+                                  value: data['data']['email']);
+                              storage.write(
+                                  key: 'authPicture',
+                                  value: data['data']['image_path']);
                               EasyLoading.dismiss();
                               Navigator.of(context)
                                   .pushNamed('/Tabs', arguments: 2);

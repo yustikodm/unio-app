@@ -1,6 +1,11 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import '../../config/ui_icons.dart';
+import '../../main.dart';
 import '../models/user.dart';
 import 'package:flutter/material.dart';
+
 // ignore: must_be_immutable
 class DrawerWidget extends StatelessWidget {
   User _user = new User.init().getCurrentUser();
@@ -122,14 +127,30 @@ class DrawerWidget extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pushNamed('/SignIn');
+              if (apiToken != null) {
+                storage.deleteAll();
+                apiToken = null;
+                authName = 'Guest';
+                authEmail = 'guest@mail.com';
+                showOkCancelAlertDialog(
+                  context: context,
+                  title: 'Log out',
+                  message:
+                      'Are you sure? logging out will remove all Unio data from this device.',
+                  okLabel: 'Yes',
+                  cancelLabel: 'Cancel',
+                );
+                //Navigator.of(context).pushNamed('/Tabs', arguments: 2);
+              } else {
+                Navigator.of(context).pushNamed('/SignIn');
+              }
             },
             leading: Icon(
-              UiIcons.upload,
+              apiToken != null ? UiIcons.return_icon : UiIcons.user_1,
               color: Theme.of(context).focusColor.withOpacity(1),
             ),
             title: Text(
-              "Log out",
+              apiToken != null ? "Log Out" : "Log In",
               style: Theme.of(context).textTheme.subhead,
             ),
           ),

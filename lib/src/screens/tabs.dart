@@ -1,3 +1,5 @@
+import 'package:Unio/main.dart';
+
 import '../../config/ui_icons.dart';
 import '../screens/account.dart';
 import '../screens/chat.dart';
@@ -104,7 +106,9 @@ class _TabsWidgetState extends State<TabsWidget> {
                   Navigator.of(context).pushNamed('/Tabs', arguments: 1);
                 },
                 child: CircleAvatar(
-                  backgroundImage: AssetImage('img/user2.jpg'),
+                  backgroundImage: apiToken != null
+                      ? AssetImage('img/user1.jpg')
+                      : AssetImage('img/user2.jpg'),
                 ),
               )),
         ],

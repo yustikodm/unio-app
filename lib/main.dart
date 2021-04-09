@@ -7,7 +7,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 const SERVER_DOMAIN = "https://primavisiglobalindo.net/unio/public/api/";
 final storage = FlutterSecureStorage();
-
+var apiToken;
+var authName = "guest";
+var authEmail = "guest@mail.com";
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {

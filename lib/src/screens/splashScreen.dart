@@ -1,3 +1,4 @@
+import 'package:Unio/main.dart';
 import 'package:flutter/material.dart';
 import '../screens/on_boarding.dart';
 import 'package:splashscreen/splashscreen.dart';
@@ -8,6 +9,19 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
+  @override
+  void initState() {
+    getAuthData();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  getAuthData() async {
+    apiToken = await storage.read(key: 'apiToken');
+    authName = await storage.read(key: 'name') ?? 'Guest';
+    authEmail = await storage.read(key: 'apiToken');
+  }
+
   @override
   Widget build(BuildContext context) {
     return new SplashScreen(
