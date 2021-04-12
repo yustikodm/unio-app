@@ -37,7 +37,7 @@ class UtilitietGridItemWidget extends StatelessWidget {
           children: <Widget>[
             Hero(
               tag: this.heroTag + utilitie.id,
-              child: Image.asset(utilitie.image),
+              child: Image.asset('img/icon_campus.jpg'),
             ),
             SizedBox(height: 12),
             Padding(
