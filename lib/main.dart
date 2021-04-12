@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'route_generator.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-const SERVER_DOMAIN = "https://primavisiglobalindo.net/unio/public/api/";
+const SERVER_DOMAIN = "http://18.136.203.155/api/";
 final storage = FlutterSecureStorage();
 var apiToken;
 var authName = "guest";

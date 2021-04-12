@@ -39,7 +39,7 @@ class CategoriesList {
         new Utilitie('Winter Coffee Bar', 'img/coffeebar4.jpg',
             'Health & Fitness', 25, 130, 4.3, 12.1),
       ]),
-      new Category('Majors', UiIcons.laptop, false, Colors.orange, [
+      new Category('Field of Study', UiIcons.laptop, false, Colors.orange, [
         new Utilitie('WebSite Design ', 'img/jobs2.jpg', 'Business & Finance',
             80, 2554, 3.1, 10.5),
         new Utilitie('House Keeper', 'img/jobs3.jpg', 'Health & Fitness', 10,
