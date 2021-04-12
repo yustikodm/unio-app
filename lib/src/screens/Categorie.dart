@@ -7,6 +7,10 @@ import '../widgets/ProductsByBrandWidget.dart';
 import '../widgets/ShoppingCartButtonWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 class CategorieWidget extends StatefulWidget {
   RouteArgument routeArgument;
@@ -21,16 +25,27 @@ class CategorieWidget extends StatefulWidget {
 }
 
 class _CategorieWidgetState extends State<CategorieWidget> with SingleTickerProviderStateMixin {
+
+
   TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _tabIndex = 0;
 
+
   @override
   void initState() {
+
+    print(widget.routeArgument.id);
+    if (widget.routeArgument.id==101)
+    {
+      _tabIndex=1;
+    }
     _tabController = TabController(length: 2, initialIndex: _tabIndex, vsync: this);
     _tabController.addListener(_handleTabSelection);
+    // ambildata(widget._category.name);
     super.initState();
   }
+
 
   void dispose() {
     _tabController.dispose();

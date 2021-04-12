@@ -11,6 +11,8 @@ class SearchBarHomeWidget extends StatelessWidget {
     "Stanford University",
     "Columbia University",
   ];
+  final myController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -50,7 +52,19 @@ class SearchBarHomeWidget extends StatelessWidget {
                     focusedBorder:
                         UnderlineInputBorder(borderSide: BorderSide.none),
                   ),
+                  controller: myController,
                 ),
+                // Padding(
+                //   padding: const EdgeInsets.only(right:30.0),
+                //   child: IconButton(
+                //     onPressed: () {
+                //       // Scaffold.of(context).openEndDrawer();
+                //     },
+                //     icon: Icon(UiIcons.checked,
+                //         size: 20,
+                //         color: Theme.of(context).hintColor.withOpacity(0.5)),
+                //   ),
+                // ),
                 IconButton(
                   onPressed: () {
                     Scaffold.of(context).openEndDrawer();
@@ -62,6 +76,29 @@ class SearchBarHomeWidget extends StatelessWidget {
               ],
             ),
           ),
+          SizedBox(height: 6),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FlatButton(
+                onPressed: () {
+                  // Navigator.of(context).pushNamed('/Categories',
+                  //     arguments: RouteArgument(id: 2, argumentsList: [
+                  //       new CategoriesList().list.elementAt(0)
+                  //     ]));
+                },
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                color: Theme.of(context).backgroundColor,
+                shape: StadiumBorder(),
+                child: Text(
+                  'Match with me',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(color: Theme.of(context).primaryColor),
+                ),
+              ),
+            ],
+          ),
+
           SizedBox(height: 6),
           Wrap(
             alignment: WrapAlignment.spaceBetween,
