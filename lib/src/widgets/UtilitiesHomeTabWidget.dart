@@ -92,8 +92,151 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Text(
-                   'We’re all going somewhere. And whether it’s the podcast blaring from your headphones as you walk down the street or the essay that encourages you to take on that big project, there’s a real joy in getting lost in the kind of story that feels like a destination unto itself.'),
+              child: Text(widget.utilitie.description.split("#")[0]),
+            ),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: ListTile(
+                dense: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 0),
+                leading: Icon(
+                  UiIcons.file_2,
+                  color: Theme.of(context).hintColor,
+                ),
+                title: Text(
+                  'Accredition',
+                  style: Theme.of(context).textTheme.display1,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Text(widget.utilitie.description.split("#")[1]),
+            ),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: ListTile(
+                dense: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 0),
+                leading: Icon(
+                  UiIcons.file_2,
+                  color: Theme.of(context).hintColor,
+                ),
+                title: Text(
+                  'Address',
+                  style: Theme.of(context).textTheme.display1,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Text(widget.utilitie.description.split("#")[2]),
+            ),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: ListTile(
+                dense: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 0),
+                leading: Icon(
+                  UiIcons.file_2,
+                  color: Theme.of(context).hintColor,
+                ),
+                title: Text(
+                  'Facility',
+                  style: Theme.of(context).textTheme.display1,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Text("-"),
+            ),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: ListTile(
+                dense: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 0),
+                leading: Icon(
+                  UiIcons.file_2,
+                  color: Theme.of(context).hintColor,
+                ),
+                title: Text(
+                  'Country',
+                  style: Theme.of(context).textTheme.display1,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Text("-"),
+            ),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: ListTile(
+                dense: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 0),
+                leading: Icon(
+                  UiIcons.file_2,
+                  color: Theme.of(context).hintColor,
+                ),
+                title: Text(
+                  'State',
+                  style: Theme.of(context).textTheme.display1,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Text("-"),
+            ),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: ListTile(
+                dense: true,
+                contentPadding: EdgeInsets.symmetric(vertical: 0),
+                leading: Icon(
+                  UiIcons.file_2,
+                  color: Theme.of(context).hintColor,
+                ),
+                title: Text(
+                  'District',
+                  style: Theme.of(context).textTheme.display1,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Text("-"),
             ),
           ],
         ),

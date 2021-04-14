@@ -95,8 +95,8 @@ class _UtilitieWidgetState extends State<UtilitieWidget> with SingleTickerProvid
                     width: double.infinity,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage(widget._utilitie.image),
+                        image: NetworkImage("https://i.ibb.co/RgwbsQy/icon-campus.jpg"),
+                        fit: BoxFit.fill,
                       ),
                     ),
                   ),

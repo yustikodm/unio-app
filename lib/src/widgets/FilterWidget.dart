@@ -345,7 +345,7 @@ class _FilterWidgetState extends State<FilterWidget> {
 
                   if (_categoryGroup=="University") {
                     final response = await http.get(
-                      Uri.parse('https://primavisiglobalindo.net/unio/public/api/universities?country_id=1'),
+                      Uri.parse('http://18.136.203.155/api/universities?country_id=1'),
                       // Send authorization headers to the backend.
                       headers: {HttpHeaders.authorizationHeader: "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"},
                     );
@@ -357,8 +357,11 @@ class _FilterWidgetState extends State<FilterWidget> {
                     for (var i=0;i<hasilsearch.length;i++)
                     {
                       print(hasilsearch[i]['name']);
-                      _categoriesList.list.elementAt(0).utilities.add(new Utilitie(hasilsearch[i]['name'], hasilsearch[i]['logo_src'],
-                          '-', 25, 130, 4.3, 12.1),);
+                      String desc = (hasilsearch[i]['description']==null) ? "":hasilsearch[i]['description'];
+                      String type = (hasilsearch[i]['type']==null) ? "":hasilsearch[i]['type'];
+                      String accreditation = (hasilsearch[i]['accreditation']==null) ? "":hasilsearch[i]['accreditation'];
+                      String address = (hasilsearch[i]['address']==null) ? "":hasilsearch[i]['address'];
+                      _categoriesList.list.elementAt(0).utilities.add(new Utilitie(hasilsearch[i]['name'], hasilsearch[i]['logo_src'],type, desc+"#"+accreditation+"#"+address,25, 130, 4.3, 12.1),);
 
                     }
                     // print(CategoriesList().list.elementAt(0).name);
@@ -385,7 +388,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                     {
                       print(hasilsearch[i]['name']);
                       _categoriesList.list.elementAt(1).utilities.add(new Utilitie(hasilsearch[i]['name'], hasilsearch[i]['logo_src'],
-                          '-', 25, 130, 4.3, 12.1),);
+                          '-', '-',25, 130, 4.3, 12.1),);
 
                     }
                     // print(CategoriesList().list.elementAt(1).name);
@@ -412,7 +415,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                     {
                       print(hasilsearch[i]['name']);
                       _categoriesList.list.elementAt(2).utilities.add(new Utilitie(hasilsearch[i]['name'], hasilsearch[i]['picture'],
-                          '-', 25, 130, 4.3, 12.1),);
+                          '-', '-',25, 130, 4.3, 12.1),);
 
                     }
                     // print(CategoriesList().list.elementAt(2).name);
@@ -439,7 +442,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                     {
                       print(hasilsearch[i]['name']);
                       _categoriesList.list.elementAt(2).utilities.add(new Utilitie(hasilsearch[i]['name'], hasilsearch[i]['picture'],
-                          '-', 25, 130, 4.3, 12.1),);
+                          '-', '-',25, 130, 4.3, 12.1),);
 
                     }
                     // print(CategoriesList().list.elementAt(2).name);
@@ -471,7 +474,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                     {
                       // print(hasilsearch[i]['name']);
                       _categoriesList.list.elementAt(5).utilities.add(new Utilitie(hasilsearch[i]['title'], hasilsearch[i]['picture'],
-                          '-', 25, 130, 4.3, 12.1),);
+                          '-', '-',25, 130, 4.3, 12.1),);
 
                     }
                     // print(CategoriesList().list.elementAt(2).name);
