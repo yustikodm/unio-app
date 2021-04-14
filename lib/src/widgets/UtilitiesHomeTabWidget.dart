@@ -57,18 +57,37 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-          child: Row(
+          padding: const EdgeInsets.only(top: 0, left: 20, right: 20),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Expanded(
-                child: Text(
-                  widget.utilitie.type,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: Theme.of(context).textTheme.body2
+Row(
+  children: [
+        Text(
+
+                        "Accredition : "+widget.utilitie.description.split("#")[1],
+
+                        overflow: TextOverflow.ellipsis,
+
+                        maxLines: 1,
+
+                        style: Theme.of(context).textTheme.body2
+
+                  ),
+    Text(
+        ", Type : Negri",
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+        style: Theme.of(context).textTheme.body2
+    ),
+  ],
+),
+              Text(
+                    "Indonesia, DIY Djokjakarta",
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: Theme.of(context).textTheme.body2
                 ),
-              ),
             ],
           ),
         ),
@@ -96,30 +115,30 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
             ),
           ],
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 0),
-                leading: Icon(
-                  UiIcons.file_2,
-                  color: Theme.of(context).hintColor,
-                ),
-                title: Text(
-                  'Accredition',
-                  style: Theme.of(context).textTheme.display1,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Text(widget.utilitie.description.split("#")[1]),
-            ),
-          ],
-        ),
+        // Column(
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: <Widget>[
+        //     Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        //       child: ListTile(
+        //         dense: true,
+        //         contentPadding: EdgeInsets.symmetric(vertical: 0),
+        //         leading: Icon(
+        //           UiIcons.file_2,
+        //           color: Theme.of(context).hintColor,
+        //         ),
+        //         title: Text(
+        //           'Accredition',
+        //           style: Theme.of(context).textTheme.display1,
+        //         ),
+        //       ),
+        //     ),
+        //     Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        //       child: Text(widget.utilitie.description.split("#")[1]),
+        //     ),
+        //   ],
+        // ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -162,84 +181,156 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Text("-"),
-            ),
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 0),
-                leading: Icon(
-                  UiIcons.file_2,
-                  color: Theme.of(context).hintColor,
-                ),
-                title: Text(
-                  'Country',
-                  style: Theme.of(context).textTheme.display1,
-                ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            //   child: Text("-"),
+            // ),
+            new Container(
+              width: MediaQuery.of(context).size.width * 1,
+              height: MediaQuery.of(context).size.height* 0.15,
+              margin: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(15.0),
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blueAccent)
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Text("-"),
-            ),
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 0),
-                leading: Icon(
-                  UiIcons.file_2,
-                  color: Theme.of(context).hintColor,
-                ),
-                title: Text(
-                  'State',
-                  style: Theme.of(context).textTheme.display1,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.credit_card,
+                          ),
+                          Text("Accept Credit Card"),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.local_parking,
+                          ),
+                          Text("Parking"),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.pets,
+                          ),
+                          Text("Pet Friendly"),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.wifi,
+                          ),
+                          Text("Wireless Internet"),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.laptop_chromebook_sharp,
+                          ),
+                          Text("Offering a deal"),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.payment,
+                          ),
+                          Text("Apple Pay"),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Text("-"),
-            ),
+            )
           ],
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 0),
-                leading: Icon(
-                  UiIcons.file_2,
-                  color: Theme.of(context).hintColor,
-                ),
-                title: Text(
-                  'District',
-                  style: Theme.of(context).textTheme.display1,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Text("-"),
-            ),
-          ],
-        ),
+        // Column(
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: <Widget>[
+        //     Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        //       child: ListTile(
+        //         dense: true,
+        //         contentPadding: EdgeInsets.symmetric(vertical: 0),
+        //         leading: Icon(
+        //           UiIcons.file_2,
+        //           color: Theme.of(context).hintColor,
+        //         ),
+        //         title: Text(
+        //           'Country',
+        //           style: Theme.of(context).textTheme.display1,
+        //         ),
+        //       ),
+        //     ),
+        //     Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        //       child: Text("-"),
+        //     ),
+        //   ],
+        // ),
+        // Column(
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: <Widget>[
+        //     Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        //       child: ListTile(
+        //         dense: true,
+        //         contentPadding: EdgeInsets.symmetric(vertical: 0),
+        //         leading: Icon(
+        //           UiIcons.file_2,
+        //           color: Theme.of(context).hintColor,
+        //         ),
+        //         title: Text(
+        //           'State',
+        //           style: Theme.of(context).textTheme.display1,
+        //         ),
+        //       ),
+        //     ),
+        //     Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        //       child: Text("-"),
+        //     ),
+        //   ],
+        // ),
+        // Column(
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: <Widget>[
+        //     Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        //       child: ListTile(
+        //         dense: true,
+        //         contentPadding: EdgeInsets.symmetric(vertical: 0),
+        //         leading: Icon(
+        //           UiIcons.file_2,
+        //           color: Theme.of(context).hintColor,
+        //         ),
+        //         title: Text(
+        //           'District',
+        //           style: Theme.of(context).textTheme.display1,
+        //         ),
+        //       ),
+        //     ),
+        //     Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        //       child: Text("-"),
+        //     ),
+        //   ],
+        // ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           child: SizedBox(
