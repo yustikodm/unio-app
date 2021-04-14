@@ -4,12 +4,14 @@ import '../models/route_argument.dart';
 import '../widgets/BrandHomeTabWidget.dart';
 import '../widgets/DrawerWidget.dart';
 import '../widgets/ProductsByBrandWidget.dart';
+import '../widgets/ShoppingCartButtonWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import '../models/utilities.dart';
 
 class CategorieWidget extends StatefulWidget {
   RouteArgument routeArgument;
@@ -28,18 +30,63 @@ class _CategorieWidgetState extends State<CategorieWidget>
   TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _tabIndex = 0;
+  int halaman;
+  var hasilquery = List();
+  String description;
+  String accreditation;
+  String address;
 
   @override
   void initState() {
     print(widget.routeArgument.id);
     if (widget.routeArgument.id == 101) {
       _tabIndex = 1;
+      halaman = 2;
     }
     _tabController =
         TabController(length: 2, initialIndex: _tabIndex, vsync: this);
     _tabController.addListener(_handleTabSelection);
     // ambildata(widget._category.name);
     super.initState();
+  }
+
+  void getuniversity() async {
+    final response = await http.get(
+      Uri.parse(
+          'https://primavisiglobalindo.net/unio/public/api/universities?country_id=1&page=' +
+              halaman.toString()),
+      // Send authorization headers to the backend.
+      headers: {
+        HttpHeaders.authorizationHeader:
+            "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+      },
+    );
+    halaman = halaman + 1;
+    print(response.body);
+    hasilquery = jsonDecode(response.body)['data']['data'];
+
+    for (var i = 0; i < hasilquery.length; i++) {
+      setState(() {
+        String desc = (hasilquery[i]['description'] == null)
+            ? ""
+            : hasilquery[i]['description'];
+        String type =
+            (hasilquery[i]['type'] == null) ? "" : hasilquery[i]['type'];
+        String accreditation = (hasilquery[i]['accreditation'] == null)
+            ? ""
+            : hasilquery[i]['accreditation'];
+        String address =
+            (hasilquery[i]['address'] == null) ? "" : hasilquery[i]['address'];
+
+        widget._category.utilities.add(
+          new Utilitie(hasilquery[i]['name'], hasilquery[i]['logo_src'], type,
+              desc + "#" + accreditation + "#" + address, 25, 130, 4.3, 12.1),
+        );
+      });
+    }
+
+    // print(universities.toString());
+    // district = [{"id":1,"name":"Surabaya"},{"id":2,"name":"Jakarta"},{"id":3,"name":"Malang"},{"id":4,"name":"Medan"},];
   }
 
   void dispose() {
@@ -184,7 +231,21 @@ class _CategorieWidgetState extends State<CategorieWidget>
               offstage: 1 != _tabIndex,
               child: Column(
                 children: <Widget>[
-                  UtilitiesByBrandWidget(category: widget._category)
+                  UtilitiesByBrandWidget(category: widget._category),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        // widget._category.utilities.add(new Utilitie("its", "-",
+                        //     '-', 25, 130, 4.3, 12.1),);
+
+                        getuniversity();
+                        // halaman=halaman+1;
+                      });
+                    },
+                    child: Container(
+                      child: Image.asset("img/more.png"),
+                    ),
+                  ),
                 ],
               ),
             ),

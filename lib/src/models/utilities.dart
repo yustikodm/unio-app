@@ -5,12 +5,13 @@ class Utilitie {
   String name;
   String image;
   String type;
+  String description;
   double price;
   int available;
   double rate;
   double discount;
 
-  Utilitie(this.name, this.image, this.type, this.available, this.price,
+  Utilitie(this.name, this.image, this.type, this.description,this.available, this.price,
       this.rate, this.discount);
 
   String getPrice({double myPrice}) {
@@ -40,103 +41,103 @@ class UtilitiesList {
 
   UtilitiesList() {
     _recentList = [
-      new Utilitie('Oxford University', 'img/oxford.jpg', 'Arts & Sports', 25,
+      new Utilitie('Oxford University', 'img/oxford.jpg', 'Arts & Sports','-', 25,
           130, 4.3, 12.1),
       new Utilitie('Cambridge University', 'img/cambridge.jpg',
-          'Computers & Technology', 60, 63, 5.0, 20.2),
+          'Computers & Technology', '-',60, 63, 5.0, 20.2),
       new Utilitie('Stanford University', 'img/stanford.jpg',
-          'Health & Science', 10, 415, 4.9, 15.3),
+          'Health & Science', '-',10, 415, 4.9, 15.3),
       new Utilitie('Harvard University', 'img/harvard.jpg',
-          'Computers & Technology', 25, 130, 4.3, 12.1),
+          'Computers & Technology','-', 25, 130, 4.3, 12.1),
     ];
 
     _popularList = [
       new Utilitie(
-          'MIT', 'img/mit.jpg', 'Arts & Humanities', 25, 130, 4.3, 12.1),
+          'MIT', 'img/mit.jpg', 'Arts & Humanities', '-',25, 130, 4.3, 12.1),
       new Utilitie('Harvard University', 'img/harvard.jpg',
-          'Business & Finance', 80, 2554, 3.1, 10.5),
+          'Business & Finance', '-',80, 2554, 3.1, 10.5),
       new Utilitie('Stanford University', 'img/stanford.jpg',
-          'Business & Finance', 60, 63, 5.0, 20.2),
+          'Business & Finance', '-',60, 63, 5.0, 20.2),
       new Utilitie('Cambridge University', 'img/cambridge.jpg',
-          'Arts & Humanities', 80, 2554, 3.1, 10.5),
+          'Arts & Humanities', '-',80, 2554, 3.1, 10.5),
       new Utilitie('Oxford University', 'img/oxford.jpg', 'Arts & Humanities',
-          10, 415, 4.9, 15.3),
+          '-',10, 415, 4.9, 15.3),
     ];
 
     _list = [
-      new Utilitie('Zogaa FlameSweater', 'img/man1.webp', 'Health & Fitness',
+      new Utilitie('Zogaa FlameSweater', 'img/man1.webp', 'Health & Fitness','-',
           80, 2554, 3.1, 10.5),
-      new Utilitie('Elu Shopping', 'img/elu.png', 'Business & Finance', 60, 63,
+      new Utilitie('Elu Shopping', 'img/elu.png', 'Business & Finance', '-',60, 63,
           5.0, 20.2),
-      new Utilitie('Ritaj Mall', 'img/mall.jpg', 'Business & Finance', 80, 2554,
+      new Utilitie('Ritaj Mall', 'img/mall.jpg', 'Business & Finance', '-',80, 2554,
           3.1, 10.5),
       new Utilitie('Lounge Coffee Bar', 'img/coffeebar.jpg',
-          'Arts & Humanities', 25, 130, 4.3, 12.1),
-      new Utilitie('Night Bar', 'img/coffebar1.jpg', 'Health & Fitness', 25,
+          'Arts & Humanities', '-',25, 130, 4.3, 12.1),
+      new Utilitie('Night Bar', 'img/coffebar1.jpg', 'Health & Fitness', '-',25,
           130, 4.3, 12.1),
-      new Utilitie('Summer Coffee', 'img/coffebar4.jpeg', 'Health & Fitness',
+      new Utilitie('Summer Coffee', 'img/coffebar4.jpeg', 'Health & Fitness','-',
           25, 130, 4.3, 12.1),
-      new Utilitie('Winter Coffee Bar', 'img/coffebar3.jpg', 'Health & Fitness',
+      new Utilitie('Winter Coffee Bar', 'img/coffebar3.jpg', 'Health & Fitness','-',
           25, 130, 4.3, 12.1),
-      new Utilitie('Sequins Party Dance Ballet Event', 'img/event2.jpeg',
+      new Utilitie('Sequins Party Dance Ballet Event', 'img/event2.jpeg','-',
           'Business & Finance', 80, 2554, 3.1, 10.5),
-      new Utilitie('Cenima film Event', 'img/event3.jpeg', 'Business & Finance',
+      new Utilitie('Cenima film Event', 'img/event3.jpeg', 'Business & Finance','-',
           80, 2554, 3.1, 10.5),
-      new Utilitie('Managment Event', 'img/event1.jpg', 'Arts & Humanities', 80,
+      new Utilitie('Managment Event', 'img/event1.jpg', 'Arts & Humanities', '-',80,
           2554, 3.1, 10.5),
       new Utilitie('Creative Design Event', 'img/event1.jpeg',
-          'Business & Finance', 80, 2554, 3.1, 10.5),
-      new Utilitie('BMW', 'img/car1.jpg', 'Coumputers & Technology', 80, 2554,
+          'Business & Finance', '-',80, 2554, 3.1, 10.5),
+      new Utilitie('BMW', 'img/car1.jpg', 'Coumputers & Technology', '-',80, 2554,
           3.1, 10.5),
       new Utilitie(
-          'Rali USA', 'img/car3.jpg', 'Arts & Humanities', 80, 2554, 3.1, 10.5),
-      new Utilitie('Car Repair', 'img/car2.jpg', 'Arts & Humanities', 80, 2554,
+          'Rali USA', 'img/car3.jpg', 'Arts & Humanities', '-',80, 2554, 3.1, 10.5),
+      new Utilitie('Car Repair', 'img/car2.jpg', 'Arts & Humanities', '-',80, 2554,
           3.1, 10.5),
       new Utilitie('Mechanical Cars', 'img/car4.jpg', 'Coumputers & Technology',
-          80, 2554, 3.1, 10.5),
-      new Utilitie('La Mega Pizza', 'img/pizza.jpg', 'Arts & Humanities', 25,
+          '-',80, 2554, 3.1, 10.5),
+      new Utilitie('La Mega Pizza', 'img/pizza.jpg', 'Arts & Humanities', '-',25,
           130, 4.3, 12.1),
-      new Utilitie('Roland Gaross', 'img/sport1.jpg', 'Health & Fitness', 80,
+      new Utilitie('Roland Gaross', 'img/sport1.jpg', 'Health & Fitness', '-',80,
           2554, 3.1, 10.5),
-      new Utilitie('NBA Competions', 'img/sport2.jpeg', 'Health & Fitness', 80,
+      new Utilitie('NBA Competions', 'img/sport2.jpeg', 'Health & Fitness', '-',80,
           2554, 3.1, 10.5),
       new Utilitie(
-          'Smart Gym', 'img/gym.jpg', 'Health & Fitness', 10, 415, 4.9, 15.3),
+          'Smart Gym', 'img/gym.jpg', 'Health & Fitness', '-',10, 415, 4.9, 15.3),
       new Utilitie('California', 'img/chicagoTavel.jpg', 'Arts & Humanities',
-          60, 63, 5.0, 20.2),
-      new Utilitie('Colorado', 'img/colorado.jpg', 'Arts & Humanities', 25, 130,
+          '-',60, 63, 5.0, 20.2),
+      new Utilitie('Colorado', 'img/colorado.jpg', 'Arts & Humanities', '-',25, 130,
           4.3, 12.1),
       new Utilitie(
-          'Paris', 'img/paris.jpg', 'Arts & Humanities', 35, 130, 6.3, 11.1),
-      new Utilitie('Marriott', 'img/marriott.jpg', 'Arts & Humanities', 10, 415,
+          'Paris', 'img/paris.jpg', 'Arts & Humanities', '-',35, 130, 6.3, 11.1),
+      new Utilitie('Marriott', 'img/marriott.jpg', 'Arts & Humanities', '-',10, 415,
           4.9, 15.3),
       new Utilitie('Hilton Hotel', 'img/hilton.webp', 'Coumputers & Technology',
-          60, 63, 5.0, 20.2),
+          '-',60, 63, 5.0, 20.2),
     ];
 
     _favoritesList = [
-      new Utilitie('Elu Shopping', 'img/elu.png', 'Business & Finance', 60, 63,
+      new Utilitie('Elu Shopping', 'img/elu.png', 'Business & Finance', '-',60, 63,
           5.0, 20.2),
-      new Utilitie('Ritaj Mall', 'img/mall.jpg', 'Business & Finance', 80, 2554,
+      new Utilitie('Ritaj Mall', 'img/mall.jpg', 'Business & Finance', '-',80, 2554,
           3.1, 10.5),
-      new Utilitie('Roland Gaross', 'img/sport1.jpg', 'Health & Fitness', 80,
+      new Utilitie('Roland Gaross', 'img/sport1.jpg', 'Health & Fitness', '-',80,
           2554, 3.1, 10.5),
       new Utilitie('Hilton Hotel', 'img/hilton.webp', 'Coumputers & Technology',
-          200, 63, 5.0, 20.2),
+          '-',200, 63, 5.0, 20.2),
       new Utilitie('California', 'img/chicagoTavel.jpg', 'Arts & Humanities',
-          60, 63, 5.0, 20.2),
+          '-',60, 63, 5.0, 20.2),
       new Utilitie(
-          'Rali USA', 'img/car3.jpg', 'Arts & Humanities', 80, 2554, 3.1, 10.5),
+          'Rali USA', 'img/car3.jpg', 'Arts & Humanities', '-',80, 2554, 3.1, 10.5),
     ];
 
     _cartList = [
       new Utilitie('Hilton Hotel', 'img/hilton.webp', 'Coumputers & Technology',
-          60, 63, 5.0, 20.2),
+          '-',60, 63, 5.0, 20.2),
       new Utilitie(
-          'Smart Gym', 'img/gym.jpg', 'Health & Fitness', 10, 415, 4.9, 15.3),
-      new Utilitie('Elu Shopping', 'img/elu.png', 'Business & Finance', 200, 63,
+          'Smart Gym', 'img/gym.jpg', 'Health & Fitness', '-',10, 415, 4.9, 15.3),
+      new Utilitie('Elu Shopping', 'img/elu.png', 'Business & Finance', '-',200, 63,
           5.0, 20.2),
-      new Utilitie('Managment Event', 'img/event1.jpg', 'Arts & Humanities', 80,
+      new Utilitie('Managment Event', 'img/event1.jpg', 'Arts & Humanities', '-',80,
           2554, 3.1, 10.5),
     ];
   }

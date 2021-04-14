@@ -148,11 +148,15 @@ class _SignInWidgetState extends State<SignInWidget> {
                           padding: EdgeInsets.symmetric(
                               vertical: 12, horizontal: 70),
                           onPressed: () async {
-                            EasyLoading.show(status: 'loading...');
+                            print('before loading');
+                            //EasyLoading.show(status: 'loading...');
                             storage.deleteAll();
                             var email = myEmailController.text;
                             var password = myPasswordController.text;
                             var jwt = await attemptLogin(email, password);
+                            print(email);
+                            print(password);
+                            print(jwt);
 
                             if (jwt != null) {
                               var data = convert.jsonDecode(jwt);
