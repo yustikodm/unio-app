@@ -36,7 +36,8 @@ class PopularLocationCarouselItemWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage(utilitie.image),
+                    // image: AssetImage(utilitie.image),
+                    image: (this.heroTag=="home_flash_sales") ? AssetImage(utilitie.image):NetworkImage("https://i.ibb.co/RgwbsQy/icon-campus.jpg"),
                   ),
                 ),
               ),

@@ -40,7 +40,32 @@ class _HomeWidgetState extends State<HomeWidget>
       return category.selected;
     }).utilities;
 
-    //_utilitiesfBrandList = _brandsList.list.firstWhere((brand) {
+    // _utilitiesList.popularList.add(
+    //   new Utilitie(
+    //       'MIT', 'img/mit.jpg', 'Arts & Humanities', '-',25, 130, 4.3, 12.1));
+    //
+    // _utilitiesList.popularList.add(
+    //   new Utilitie('Harvard University', 'img/harvard.jpg',
+    //       'Business & Finance', '-',80, 2554, 3.1, 10.5),
+    // );
+    //
+    // _utilitiesList.popularList.add(
+    //     new Utilitie('Stanford University', 'img/stanford.jpg',
+    //         'Business & Finance', '-',60, 63, 5.0, 20.2),
+    // );
+    //
+    // _utilitiesList.popularList.add(
+    //   new Utilitie('Cambridge University', 'img/cambridge.jpg',
+    //       'Arts & Humanities', '-',80, 2554, 3.1, 10.5),
+    // );
+    //
+    // _utilitiesList.popularList.add(
+    //   new Utilitie('Oxford University', 'img/oxford.jpg', 'Arts & Humanities',
+    //       '-',10, 415, 4.9, 15.3),
+    // );
+
+
+        //_utilitiesfBrandList = _brandsList.list.firstWhere((brand) {
     //return brand.selected;
     //}).utilities;
     super.initState();
@@ -86,7 +111,7 @@ class _HomeWidgetState extends State<HomeWidget>
             )),
         PopularLocationCarouselWidget(
             heroTag: 'home_flash_sales',
-            utilitiesList: _utilitiesList.popularList),
+            utilitiesList: _utilitiesList.popularListHome),
         Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Column(

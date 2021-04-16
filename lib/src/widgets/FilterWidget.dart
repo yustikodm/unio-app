@@ -43,7 +43,7 @@ class _FilterWidgetState extends State<FilterWidget> {
     );
     print(response.body);
     setState(() {
-      propinsi= jsonDecode(response.body)['data'];
+      propinsi= jsonDecode(response.body)['data']['data'];
 
     });
     // propinsi = [{"id":1,"name":"Indonesia"},{"id":2,"name":"United States"},{"id":3,"name":"Belanda"},{"id":4,"name":"Malaysia"}];
@@ -63,7 +63,7 @@ class _FilterWidgetState extends State<FilterWidget> {
     );
     print(response.body);
     setState(() {
-      state= jsonDecode(response.body)['data'];
+      state= jsonDecode(response.body)['data']['data'];
 
     });
     print(state.toString());
@@ -72,13 +72,13 @@ class _FilterWidgetState extends State<FilterWidget> {
 
   void getdistrict(String stateid) async {
     final response = await http.get(
-      Uri.parse('https://primavisiglobalindo.net/unio/public/api/district'),
+      Uri.parse('https://primavisiglobalindo.net/unio/public/api/districts'),
       // Send authorization headers to the backend.
       headers: {HttpHeaders.authorizationHeader: "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"},
     );
     print(response.body);
     setState(() {
-      district= jsonDecode(response.body)['data'];
+      district= jsonDecode(response.body)['data']['data'];
 
     });
     print(district.toString());
@@ -111,7 +111,7 @@ class _FilterWidgetState extends State<FilterWidget> {
     );
     print(response.body);
     setState(() {
-      category= jsonDecode(response.body)['data'];
+      category= jsonDecode(response.body)['data']['data'];
 
     });
     print(category.toString());
@@ -270,6 +270,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                         onChanged: (newVal) {
                           setState(() {
                             _valCountry = newVal;
+                            getstate(_valCountry);
                           });
                         },
                         value: _valCountry,
@@ -312,6 +313,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                           onChanged: (newVal) {
                             setState(() {
                               _valState = newVal;
+                              getdistrict(_valState);
                             });
                           },
                           value: _valState,
@@ -345,12 +347,15 @@ class _FilterWidgetState extends State<FilterWidget> {
 
                   if (_categoryGroup=="University") {
                     final response = await http.get(
-                      Uri.parse('http://18.136.203.155/api/universities?country_id=1'),
+                      // Uri.parse('http://18.136.203.155/api/universities?country_id=1'),
+                      Uri.parse('https://primavisiglobalindo.net/unio/public/api/universities?country_id=1'),
                       // Send authorization headers to the backend.
                       headers: {HttpHeaders.authorizationHeader: "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"},
                     );
-
+                    print(response.body);
+                    print("------------");
                     var hasilsearch = jsonDecode(response.body)['data']['data'];
+                    print("------------");
                     print(hasilsearch.toString());
                     // print(hasilsearch.length);
 
@@ -372,8 +377,9 @@ class _FilterWidgetState extends State<FilterWidget> {
 
                   }
 
-                  if (_categoryGroup=="Major")
+                  if (_categoryGroup=="Majors")
                   {
+
                     final response = await http.get(
                       Uri.parse('https://primavisiglobalindo.net/unio/public/api/university-majors'),
                       // Send authorization headers to the backend.
@@ -402,7 +408,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                   if (_categoryGroup=="Vendor")
                   {
                     final response = await http.get(
-                      Uri.parse('https://primavisiglobalindo.net/unio/public/api/vendors'),
+                      Uri.parse('http://18.136.203.155/api/vendors'),
                       // Send authorization headers to the backend.
                       headers: {HttpHeaders.authorizationHeader: "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"},
                     );
@@ -429,7 +435,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                   if (_categoryGroup=="Places to Live")
                   {
                     final response = await http.get(
-                      Uri.parse('https://primavisiglobalindo.net/unio/public/api/vendors'),
+                      Uri.parse('http://18.136.203.155/api/vendors'),
                       // Send authorization headers to the backend.
                       headers: {HttpHeaders.authorizationHeader: "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"},
                     );
@@ -461,7 +467,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                   if (_categoryGroup=="Article")
                   {
                     final response = await http.get(
-                      Uri.parse('https://primavisiglobalindo.net/unio/public/api/articles'),
+                      Uri.parse('http://18.136.203.155/api/articles'),
                       // Send authorization headers to the backend.
                       headers: {HttpHeaders.authorizationHeader: "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"},
                     );

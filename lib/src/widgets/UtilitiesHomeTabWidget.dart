@@ -64,7 +64,6 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
 Row(
   children: [
         Text(
-
                         "Accredition : "+widget.utilitie.description.split("#")[1],
 
                         overflow: TextOverflow.ellipsis,
