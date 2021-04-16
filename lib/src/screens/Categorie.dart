@@ -60,6 +60,10 @@ class _CategorieWidgetState extends State<CategorieWidget> with SingleTickerProv
     {
       getScholarship2();
     }
+    if ((widget._category.name=="Article") && (widget.routeArgument.id!=101))
+    {
+      getArticle2();
+    }
     if (widget.routeArgument.id==101)
     {
       _tabIndex=1;
@@ -215,6 +219,36 @@ class _CategorieWidgetState extends State<CategorieWidget> with SingleTickerProv
     }
 
   }
+  // getArticle2();
+  void getArticle2() async {
+    final response = await http.get(
+      Uri.parse('https://primavisiglobalindo.net/unio/public/api/articles'),
+      // Send authorization headers to the backend.
+      headers: {HttpHeaders.authorizationHeader: "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"},
+    );
+    print(response.body);
+    setState(() {
+      hasilquery= jsonDecode(response.body)['data']['data'];
+
+    });
+    print(hasilquery.toString());
+    // district = [{"id":1,"name":"Surabaya"},{"id":2,"name":"Jakarta"},{"id":3,"name":"Malang"},{"id":4,"name":"Medan"},];
+    for (var i=0;i<hasilquery.length;i++)
+    {
+      setState(() {
+        utilitiesList.popularList.add(
+            new Utilitie(
+                hasilquery[i]['title'], hasilquery[i]['picture'], hasilquery[i]['slug'].toString(), '-###',25, 130, 4.3, 12.1));
+        widget._category.utilities.add(
+            new Utilitie(
+                hasilquery[i]['title'], hasilquery[i]['picture'], hasilquery[i]['slug'].toString(), '-###',25, 130, 4.3, 12.1));
+
+      });
+
+    }
+
+  }
+
 
   void getuniversity() async {
     final response = await http.get(
