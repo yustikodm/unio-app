@@ -3,6 +3,7 @@ import '../models/product_color.dart';
 import '../widgets/PopularLocationCarouselWidget.dart';
 import 'package:flutter/material.dart';
 import '../models/utilities.dart';
+
 // ignore: must_be_immutable
 class UtilitieHomeTabWidget extends StatefulWidget {
   Utilitie utilitie;
@@ -39,9 +40,25 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
                 label: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
+                    Icon(
+                      Icons.bookmark,
+                      color: Theme.of(context).primaryColor,
+                      size: 16,
+                    ),
+                  ],
+                ),
+                backgroundColor: Theme.of(context).accentColor.withOpacity(0.9),
+                shape: StadiumBorder(),
+              ),
+              SizedBox(width: 4),
+              Chip(
+                padding: EdgeInsets.all(0),
+                label: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
                     Text(widget.utilitie.rate.toString(),
-                        style:
-                            Theme.of(context).textTheme.body2.merge(TextStyle(color: Theme.of(context).primaryColor))),
+                        style: Theme.of(context).textTheme.body2.merge(
+                            TextStyle(color: Theme.of(context).primaryColor))),
                     SizedBox(width: 4),
                     Icon(
                       Icons.star_border,
@@ -61,33 +78,24 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-Row(
-  children: [
-        Text(
-
-                        "Accredition : "+widget.utilitie.description.split("#")[1],
-
-                        overflow: TextOverflow.ellipsis,
-
-                        maxLines: 1,
-
-                        style: Theme.of(context).textTheme.body2
-
-                  ),
-    Text(
-        ", Type : Negri",
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
-        style: Theme.of(context).textTheme.body2
-    ),
-  ],
-),
-              Text(
-                    "Indonesia, DIY Djokjakarta",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: Theme.of(context).textTheme.body2
-                ),
+              Row(
+                children: [
+                  Text(
+                      "Accredition : " +
+                          widget.utilitie.description.split("#")[1],
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: Theme.of(context).textTheme.body2),
+                  Text(", Type : Negri",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: Theme.of(context).textTheme.body2),
+                ],
+              ),
+              Text("Indonesia, DIY Djokjakarta",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: Theme.of(context).textTheme.body2),
             ],
           ),
         ),
@@ -187,12 +195,11 @@ Row(
             // ),
             new Container(
               width: MediaQuery.of(context).size.width * 1,
-              height: MediaQuery.of(context).size.height* 0.15,
+              height: MediaQuery.of(context).size.height * 0.15,
               margin: const EdgeInsets.all(15.0),
               padding: const EdgeInsets.all(15.0),
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blueAccent)
-              ),
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.blueAccent)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -338,16 +345,15 @@ Row(
             width: double.maxFinite,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6.0),
-                image:DecorationImage(
-                  image:AssetImage('img/gps.png'),
-                  fit: BoxFit.cover,
-                )
-              ),
-             ),
+                  borderRadius: BorderRadius.circular(6.0),
+                  image: DecorationImage(
+                    image: AssetImage('img/gps.png'),
+                    fit: BoxFit.cover,
+                  )),
+            ),
           ),
         ),
-        
+
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           child: ListTile(
@@ -364,7 +370,8 @@ Row(
           ),
         ),
         PopularLocationCarouselWidget(
-            heroTag: 'product_related_products', utilitiesList: widget._productsList.popularList),
+            heroTag: 'product_related_products',
+            utilitiesList: widget._productsList.popularList),
       ],
     );
   }
@@ -415,6 +422,3 @@ class _SelectColorWidgetState extends State<SelectColorWidget> {
     );
   }
 }
-
-
-

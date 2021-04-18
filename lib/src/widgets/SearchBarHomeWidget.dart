@@ -6,10 +6,10 @@ class SearchBarHomeWidget extends StatelessWidget {
     Key key,
   }) : super(key: key);
   List<String> suggestions = [
-    "MIT",
+    /*"MIT",
     "Harvard University",
     "Stanford University",
-    "Columbia University",
+    "Columbia University",*/
   ];
   final myController = TextEditingController();
 
@@ -98,7 +98,6 @@ class SearchBarHomeWidget extends StatelessWidget {
               ),
             ],
           ),
-
           SizedBox(height: 6),
           Wrap(
             alignment: WrapAlignment.spaceBetween,
