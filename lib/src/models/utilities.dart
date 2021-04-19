@@ -24,6 +24,7 @@ class Utilitie {
 
 class UtilitiesList {
   List<Utilitie> _popularList;
+  List<Utilitie> _popularListHome;
   List<Utilitie> _list;
   List<Utilitie> _recentList;
   List<Utilitie> _favoritesList;
@@ -36,6 +37,7 @@ class UtilitiesList {
   List<Utilitie> get recentList => _recentList;
   List<Utilitie> get list => _list;
   List<Utilitie> get popularList => _popularList;
+  List<Utilitie> get popularListHome => _popularListHome;
   List<Utilitie> get favoritesList => _favoritesList;
   List<Utilitie> get cartList => _cartList;
 
@@ -52,6 +54,19 @@ class UtilitiesList {
     ];
 
     _popularList = [
+      // new Utilitie(
+      //     'MIT', 'img/mit.jpg', 'Arts & Humanities', '-',25, 130, 4.3, 12.1),
+      // new Utilitie('Harvard University', 'img/harvard.jpg',
+      //     'Business & Finance', '-',80, 2554, 3.1, 10.5),
+      // new Utilitie('Stanford University', 'img/stanford.jpg',
+      //     'Business & Finance', '-',60, 63, 5.0, 20.2),
+      // new Utilitie('Cambridge University', 'img/cambridge.jpg',
+      //     'Arts & Humanities', '-',80, 2554, 3.1, 10.5),
+      // new Utilitie('Oxford University', 'img/oxford.jpg', 'Arts & Humanities',
+      //     '-',10, 415, 4.9, 15.3),
+    ];
+
+    _popularListHome = [
       new Utilitie(
           'MIT', 'img/mit.jpg', 'Arts & Humanities', '-',25, 130, 4.3, 12.1),
       new Utilitie('Harvard University', 'img/harvard.jpg',

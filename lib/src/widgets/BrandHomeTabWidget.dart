@@ -3,19 +3,60 @@ import '../models/category.dart';
 import '../models/utilities.dart';
 import '../widgets/PopularLocationCarouselWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import '../models/utilities.dart';
+
 // ignore: must_be_immutable
 class BrandHomeTabWidget extends StatefulWidget {
   Category category;
-  UtilitiesList _utilitiesList = new UtilitiesList();
+  UtilitiesList utilitiesList = new UtilitiesList();
 
-  BrandHomeTabWidget({this.category});
+  BrandHomeTabWidget({this.category,this.utilitiesList});
 
   @override
   _BrandHomeTabWidgetState createState() => _BrandHomeTabWidgetState();
 }
 
 class _BrandHomeTabWidgetState extends State<BrandHomeTabWidget> {
+  var universities=List();
+
+
   @override
+  void initState() {
+    // getuniversity();
+  }
+
+  // void getuniversity() async {
+  //   final response = await http.get(
+  //     Uri.parse('https://primavisiglobalindo.net/unio/public/api/universities'),
+  //     // Send authorization headers to the backend.
+  //     headers: {HttpHeaders.authorizationHeader: "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"},
+  //   );
+  //   print(response.body);
+  //   setState(() {
+  //     universities= jsonDecode(response.body)['data']['data'];
+  //
+  //   });
+  //   // district = [{"id":1,"name":"Surabaya"},{"id":2,"name":"Jakarta"},{"id":3,"name":"Malang"},{"id":4,"name":"Medan"},];
+  //   print("panjang "+ universities.length.toString());
+  //   for (var i=0;i<universities.length;i++)
+  //   {
+  //
+  //     print(universities[i]['name']);
+  //     setState(() {
+  //       widget.utilitiesList.popularList.add(
+  //           new Utilitie(
+  //               universities[i]['name'], universities[i]['logo_src'], universities[i]['type'], '-###',25, 130, 4.3, 12.1));
+  //       // utilitiesList: widget._utilitiesList.popularList
+  //     });
+  //
+  //   }
+  //
+  // }
+
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
@@ -64,7 +105,7 @@ class _BrandHomeTabWidgetState extends State<BrandHomeTabWidget> {
             ),
           ),
         ),
-        PopularLocationCarouselWidget(heroTag: 'brand_featured_products', utilitiesList: widget._utilitiesList.popularList),
+        PopularLocationCarouselWidget(heroTag: 'brand_featured_products', utilitiesList: widget.utilitiesList.popularList),
       ],
     );
   }
