@@ -12,6 +12,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import '../models/utilities.dart';
+import 'package:Unio/main.dart';
 
 class CategorieWidget extends StatefulWidget {
   RouteArgument routeArgument;
@@ -317,7 +318,8 @@ class _CategorieWidgetState extends State<CategorieWidget>
   void getuniversity() async {
     final response = await http.get(
       Uri.parse(
-          'https://primavisiglobalindo.net/unio/public/api/universities?country_id=1&page=' +
+          // 'https://primavisiglobalindo.net/unio/public/api/universities?country_id=1&page=' +
+          'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities'+cari_query+'&page='+
               halaman.toString()),
       // Send authorization headers to the backend.
       headers: {
@@ -327,7 +329,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
     );
     halaman = halaman + 1;
     print(response.body);
-    hasilquery = jsonDecode(response.body)['data']['data'];
+    hasilquery = jsonDecode(response.body)['data'];
 
     for (var i = 0; i < hasilquery.length; i++) {
       setState(() {
@@ -341,7 +343,19 @@ class _CategorieWidgetState extends State<CategorieWidget>
             : hasilquery[i]['accreditation'];
         String address =
             (hasilquery[i]['address'] == null) ? "" : hasilquery[i]['address'];
-        utilitiesList.popularList.add(new Utilitie(
+        setState(() {
+
+        });
+        // utilitiesList.popularList.add(new Utilitie(
+        //     hasilquery[i]['name'],
+        //     hasilquery[i]['logo_src'],
+        //     hasilquery[i]['type'],
+        //     '-###',
+        //     25,
+        //     130,
+        //     4.3,
+        //     12.1));
+        widget._category.utilities.add(new Utilitie(
             hasilquery[i]['name'],
             hasilquery[i]['logo_src'],
             hasilquery[i]['type'],
@@ -350,6 +364,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
             130,
             4.3,
             12.1));
+
       });
     }
 
@@ -358,9 +373,11 @@ class _CategorieWidgetState extends State<CategorieWidget>
   }
 
   void getmajors() async {
+    print(cari_query);
     final response = await http.get(
       Uri.parse(
-          'https://primavisiglobalindo.net/unio/public/api/university-majors?page=' +
+          // 'https://primavisiglobalindo.net/unio/public/api/university-majors?page=' +
+              'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities'+cari_query+'page='+
               halaman.toString()),
       // Send authorization headers to the backend.
       headers: {
@@ -369,16 +386,157 @@ class _CategorieWidgetState extends State<CategorieWidget>
       },
     );
 
+    var hasilquery = jsonDecode(response.body)['data'];
+    print(hasilquery.toString());
+    // print(hasilsearch.length);
+
+    for (var i = 0; i < hasilquery.length; i++) {
+      print(hasilquery[i]['name']);
+      setState(() {
+        widget._category.utilities.add(
+          new Utilitie(hasilquery[i]['major']['name']+'-'+hasilquery[i]['name'], hasilquery[i]['logo_src'], '-', '-',
+              25, 130, 4.3, 12.1),
+        );
+
+      });
+//      widget._category.
+
+    }
+    // print(CategoriesList().list.elementAt(1).name);
+  }
+
+  void getvendor() async {
+    print('https://primavisiglobalindo.net/unio/public/api/search/?keyword=vendors'+cari_query+'&page='+
+        halaman.toString());
+    final response = await http.get(
+      Uri.parse(
+        // 'https://primavisiglobalindo.net/unio/public/api/university-majors?page=' +
+          'https://primavisiglobalindo.net/unio/public/api/search/?keyword=vendors'+cari_query+'&page='+
+              halaman.toString()),
+      // Send authorization headers to the backend.
+      headers: {
+        HttpHeaders.authorizationHeader:
+        "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+      },
+    );
+
+    var hasilquery = jsonDecode(response.body)['data'];
+    print(hasilquery.toString());
+    // print(hasilsearch.length);
+
+    for (var i = 0; i < hasilquery.length; i++) {
+      print(hasilquery[i]['name']);
+      setState(() {
+        widget._category.utilities.add(
+          new Utilitie(hasilquery[i]['name'], '-', '-', '-',
+              25, 130, 4.3, 12.1),
+        );
+
+      });
+//      widget._category.
+
+    }
+    // print(CategoriesList().list.elementAt(1).name);
+  }
+
+  void getplacetolive() async {
+    print('https://primavisiglobalindo.net/unio/public/api/place-to-lives/'+cari_query+'?page='+
+        halaman.toString());
+    final response = await http.get(
+      Uri.parse(
+        // 'https://primavisiglobalindo.net/unio/public/api/university-majors?page=' +
+        //   'https://primavisiglobalindo.net/unio/public/api/search/?keyword=vendors'+cari_query+'&page='+
+              'https://primavisiglobalindo.net/unio/public/api/place-to-lives/'+cari_query+'?page='+
+              halaman.toString()),
+      // Send authorization headers to the backend.
+      headers: {
+        HttpHeaders.authorizationHeader:
+        "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+      },
+    );
+print(response.body.toString());
     var hasilquery = jsonDecode(response.body)['data']['data'];
     print(hasilquery.toString());
     // print(hasilsearch.length);
 
     for (var i = 0; i < hasilquery.length; i++) {
-      // print(hasilsearch[i]['name']);
-      widget._category.utilities.add(
-        new Utilitie(hasilquery[i]['name'], hasilquery[i]['logo_src'], '-', '-',
-            25, 130, 4.3, 12.1),
-      );
+      print(hasilquery[i]['name']);
+      setState(() {
+        widget._category.utilities.add(
+          new Utilitie(hasilquery[i]['name'], '-', '-', '-',
+              25, 130, 4.3, 12.1),
+        );
+
+      });
+//      widget._category.
+
+    }
+    // print(CategoriesList().list.elementAt(1).name);
+  }
+
+  void getscholarship() async {
+    print('https://primavisiglobalindo.net/unio/public/api/search/?keyword=scholarship'+cari_query+'&page='+
+        halaman.toString());
+    final response = await http.get(
+      Uri.parse(
+        // 'https://primavisiglobalindo.net/unio/public/api/university-majors?page=' +
+          'https://primavisiglobalindo.net/unio/public/api/search/?keyword=scholarship'+cari_query+'&page='+
+              halaman.toString()),
+      // Send authorization headers to the backend.
+      headers: {
+        HttpHeaders.authorizationHeader:
+        "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+      },
+    );
+
+    var hasilquery = jsonDecode(response.body)['data'];
+    print(hasilquery.toString());
+    // print(hasilsearch.length);
+
+    for (var i = 0; i < hasilquery.length; i++) {
+      // print(hasilquery[i]['name']);
+      setState(() {
+        widget._category.utilities.add(
+          new Utilitie("Scholarship "+hasilquery[i]['university']['name'], '-', '-', '-',
+              25, 130, 4.3, 12.1),
+        );
+
+      });
+//      widget._category.
+
+    }
+    // print(CategoriesList().list.elementAt(1).name);
+  }
+
+  void getarticle() async {
+    print('https://primavisiglobalindo.net/unio/public/api/articles/'+cari_query+'?page='+
+        halaman.toString());
+    final response = await http.get(
+      Uri.parse(
+        // 'https://primavisiglobalindo.net/unio/public/api/university-majors?page=' +
+        //   'https://primavisiglobalindo.net/unio/public/api/search/?keyword=vendors'+cari_query+'&page='+
+          'https://primavisiglobalindo.net/unio/public/api/articles/'+cari_query+'?page='+
+              halaman.toString()),
+      // Send authorization headers to the backend.
+      headers: {
+        HttpHeaders.authorizationHeader:
+        "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+      },
+    );
+    print(response.body.toString());
+    var hasilquery = jsonDecode(response.body)['data']['data'];
+    print(hasilquery.toString());
+    // print(hasilsearch.length);
+
+    for (var i = 0; i < hasilquery.length; i++) {
+      print(hasilquery[i]['name']);
+      setState(() {
+        widget._category.utilities.add(
+          new Utilitie(hasilquery[i]['title'], hasilquery[i]['picture'], '-', '-',
+              25, 130, 4.3, 12.1),
+        );
+
+      });
 //      widget._category.
 
     }
@@ -540,9 +698,26 @@ class _CategorieWidgetState extends State<CategorieWidget>
                           getuniversity();
                         }
                         if (widget._category.name == "Majors") {
-                          getuniversity();
+                          getmajors();
                         }
 
+                        if (widget._category.name == "Vendor") {
+                          getvendor();
+
+                        }
+                        if (widget._category.name == "Places to Live") {
+                          getplacetolive();
+
+                        }
+                        if (widget._category.name == "Scholarship") {
+                          getscholarship();
+
+                        }
+
+                        if (widget._category.name == "Article") {
+                          getarticle();
+
+                        }
                         // halaman=halaman+1;
                       });
                     },

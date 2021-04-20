@@ -11,6 +11,8 @@ var apiToken;
 var authName = "guest";
 var authEmail = "guest@mail.com";
 void main() => runApp(MyApp());
+String cari_keyword="";
+String cari_query="";
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.

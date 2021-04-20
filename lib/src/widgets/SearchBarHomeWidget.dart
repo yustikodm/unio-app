@@ -1,7 +1,9 @@
 import '../../config/ui_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:Unio/main.dart';
 
 class SearchBarHomeWidget extends StatelessWidget {
+  // final TextEditingController _controller = TextEditingController();
   SearchBarHomeWidget({
     Key key,
   }) : super(key: key);
@@ -39,6 +41,7 @@ class SearchBarHomeWidget extends StatelessWidget {
               alignment: Alignment.centerRight,
               children: <Widget>[
                 TextField(
+                  // controller:_controller,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(12),
                     hintText: 'Search',
@@ -67,6 +70,7 @@ class SearchBarHomeWidget extends StatelessWidget {
                 // ),
                 IconButton(
                   onPressed: () {
+                    cari_keyword = myController.text;
                     Scaffold.of(context).openEndDrawer();
                   },
                   icon: Icon(UiIcons.settings_2,

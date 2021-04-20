@@ -7,6 +7,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import '../models/utilities.dart';
+import 'package:Unio/main.dart';
 
 class FilterWidget extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class FilterWidget extends StatefulWidget {
 }
 
 class _FilterWidgetState extends State<FilterWidget> {
+  final myController = TextEditingController();
   CategoriesList _categoriesList = new CategoriesList();
   ProductColorsList _productColorsList = new ProductColorsList();
   //List<int> selections = [];
@@ -34,6 +36,7 @@ class _FilterWidgetState extends State<FilterWidget> {
   }
 
   void ambildata() async {
+
     final response = await http.get(
       Uri.parse('https://primavisiglobalindo.net/unio/public/api/countries'),
       // Send authorization headers to the backend.
@@ -109,6 +112,7 @@ class _FilterWidgetState extends State<FilterWidget> {
   }
 
   void getCategory() async {
+    myController.text = cari_keyword;
     final response = await http.get(
       Uri.parse(
           'https://primavisiglobalindo.net/unio/public/api/vendor-categories'),
@@ -173,6 +177,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                           alignment: Alignment.centerRight,
                           children: <Widget>[
                             TextField(
+                              controller: myController,
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(12),
                                 hintText: 'Search',
@@ -304,6 +309,8 @@ class _FilterWidgetState extends State<FilterWidget> {
                               onChanged: (newVal) {
                                 setState(() {
                                   _valCountry = newVal;
+                                  _valState = null;
+                                  state  = jsonDecode('[{"id":"0","country_id":"0","name":""}]');
                                   getstate(_valCountry);
                                 });
                               },
@@ -367,6 +374,8 @@ class _FilterWidgetState extends State<FilterWidget> {
                               onChanged: (newVal) {
                                 setState(() {
                                   _valState = newVal;
+                                  _valDistrict = null;
+                                  district  = jsonDecode('[{"id":"0","state_id":"0","name":""}]');
                                   getdistrict(_valState);
                                 });
                               },
@@ -413,10 +422,24 @@ class _FilterWidgetState extends State<FilterWidget> {
               FlatButton(
                 onPressed: () async {
                   if (_categoryGroup == "University") {
+                    cari_query = "&name="+myController.text.replaceAll(" ", "%20");
+                    if (_valCountry!=null)
+                    {
+                      cari_query=cari_query+"&country="+_valCountry;
+                      if (_valState!=null)
+                      {
+                        cari_query=cari_query+"&state="+_valState;
+                        if (_valDistrict!=null)
+                        {
+                            cari_query = cari_query+"&district="+_valDistrict;
+                        }
+                      }
+                    }
+
                     final response = await http.get(
                       // Uri.parse('http://18.136.203.155/api/universities?country_id=1'),
                       Uri.parse(
-                          'https://primavisiglobalindo.net/unio/public/api/universities?country_id=1'),
+                          'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities'+cari_query),
                       // Send authorization headers to the backend.
                       headers: {
                         HttpHeaders.authorizationHeader:
@@ -425,7 +448,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                     );
                     print(response.body);
                     print("------------");
-                    var hasilsearch = jsonDecode(response.body)['data']['data'];
+                    var hasilsearch = jsonDecode(response.body)['data'];
                     print("------------");
                     print(hasilsearch.toString());
                     // print(hasilsearch.length);
@@ -464,9 +487,23 @@ class _FilterWidgetState extends State<FilterWidget> {
                         ]));
                   }
                   if (_categoryGroup == "Majors") {
+                    cari_query = "&major="+myController.text.replaceAll(" ", "%20");
+                    if (_valCountry!=null)
+                    {
+                      cari_query=cari_query+"&country="+_valCountry;
+                      if (_valState!=null)
+                      {
+                        cari_query=cari_query+"&state="+_valState;
+                        if (_valDistrict!=null)
+                        {
+                          cari_query = cari_query+"&district="+_valDistrict;
+                        }
+                      }
+                    }
                     final response = await http.get(
                       Uri.parse(
-                          'https://primavisiglobalindo.net/unio/public/api/university-majors'),
+                          // 'https://primavisiglobalindo.net/unio/public/api/university-majors'),
+                        'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities'+cari_query),
                       // Send authorization headers to the backend.
                       headers: {
                         HttpHeaders.authorizationHeader:
@@ -474,15 +511,16 @@ class _FilterWidgetState extends State<FilterWidget> {
                       },
                     );
 
-                    var hasilsearch = jsonDecode(response.body)['data']['data'];
+                    var hasilsearch = jsonDecode(response.body)['data'];
                     print(hasilsearch.toString());
                     // print(hasilsearch.length);
-
+                    _categoriesList.list.elementAt(1).utilities.clear();
                     for (var i = 0; i < hasilsearch.length; i++) {
                       print(hasilsearch[i]['name']);
+
                       _categoriesList.list.elementAt(1).utilities.add(
                             new Utilitie(
-                                hasilsearch[i]['name'],
+                                hasilsearch[i]['major']['name']+"-"+hasilsearch[i]['name'],
                                 hasilsearch[i]['logo_src'],
                                 '-',
                                 '-',
@@ -500,8 +538,27 @@ class _FilterWidgetState extends State<FilterWidget> {
                   }
 
                   if (_categoryGroup == "Vendor") {
+                    cari_query = "&name="+myController.text.replaceAll(" ", "%20");
+                    if (_valCategory!=null)
+                    {
+                      cari_query = cari_query+"&vendor_category="+_valCategory;
+                    }
+                    if (_valCountry!=null)
+                    {
+                      cari_query=cari_query+"&country="+_valCountry;
+                      if (_valState!=null)
+                      {
+                        cari_query=cari_query+"&state="+_valState;
+                        if (_valDistrict!=null)
+                        {
+                          cari_query = cari_query+"&district="+_valDistrict;
+                        }
+                      }
+                    }
+                    print('https://primavisiglobalindo.net/unio/public/api/search/?keyword=vendors'+cari_query);
                     final response = await http.get(
-                      Uri.parse('http://18.136.203.155/api/vendors'),
+                      Uri.parse(
+                        'https://primavisiglobalindo.net/unio/public/api/search/?keyword=vendors'+cari_query),
                       // Send authorization headers to the backend.
                       headers: {
                         HttpHeaders.authorizationHeader:
@@ -513,6 +570,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                     print(hasilsearch.toString());
                     // print(hasilsearch.length);
 
+                    _categoriesList.list.elementAt(2).utilities.clear();
                     for (var i = 0; i < hasilsearch.length; i++) {
                       print(hasilsearch[i]['name']);
                       _categoriesList.list.elementAt(2).utilities.add(
@@ -535,22 +593,27 @@ class _FilterWidgetState extends State<FilterWidget> {
                   }
 
                   if (_categoryGroup == "Places to Live") {
+                    cari_query="";
+                    if (_valCountry!=null) {
+                      cari_query = "?country_id=" + _valCountry;
+                    }
+                    print('https://primavisiglobalindo.net/unio/public/api/place-to-lives/'+cari_query);
                     final response = await http.get(
-                      Uri.parse('http://18.136.203.155/api/vendors'),
+                      Uri.parse('https://primavisiglobalindo.net/unio/public/api/place-to-lives/'+cari_query),
                       // Send authorization headers to the backend.
                       headers: {
                         HttpHeaders.authorizationHeader:
                             "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
                       },
                     );
-
-                    var hasilsearch = jsonDecode(response.body)['data'];
+                    print(response.body.toString());
+                    var hasilsearch = jsonDecode(response.body)['data']['data'];
                     print(hasilsearch.toString());
                     // print(hasilsearch.length);
-
+                    _categoriesList.list.elementAt(3).utilities.clear();
                     for (var i = 0; i < hasilsearch.length; i++) {
                       print(hasilsearch[i]['name']);
-                      _categoriesList.list.elementAt(2).utilities.add(
+                      _categoriesList.list.elementAt(3).utilities.add(
                             new Utilitie(
                                 hasilsearch[i]['name'],
                                 hasilsearch[i]['picture'],
@@ -565,15 +628,56 @@ class _FilterWidgetState extends State<FilterWidget> {
                     // print(CategoriesList().list.elementAt(2).name);
                     Navigator.of(context).pushNamed('/Categorie',
                         arguments: RouteArgument(id: 101, argumentsList: [
-                          _categoriesList.list.elementAt(2)
+                          _categoriesList.list.elementAt(3)
                         ]));
                   }
 
-                  if (_categoryGroup == "Scholarship") {}
+                  if (_categoryGroup == "Scholarship") {
+                    cari_query="";
+                    if (_valCountry!=null) {
+                      cari_query = "&country_id=" + _valCountry;
+                    }
+                    // print('https://primavisiglobalindo.net/unio/public/api/place-to-lives/'+cari_query);
+                    final response = await http.get(
+                      Uri.parse(
+                        'https://primavisiglobalindo.net/unio/public/api/search/?keyword=scholarship'+cari_query),
+                      // Send authorization headers to the backend.
+                      headers: {
+                        HttpHeaders.authorizationHeader:
+                        "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+                      },
+                    );
+                    print(response.body.toString());
+                    var hasilsearch = jsonDecode(response.body)['data'];
+                    print(hasilsearch.toString());
+                    // print(hasilsearch.length);
+                    _categoriesList.list.elementAt(4).utilities.clear();
+                    for (var i = 0; i < hasilsearch.length; i++) {
+                      print(hasilsearch[i]['university']['name']);
+                      _categoriesList.list.elementAt(4).utilities.add(
+                        new Utilitie(
+                            "Scholarship "+hasilsearch[i]['university']['name'],
+                            hasilsearch[i]['picture'],
+                            '-',
+                            '-',
+                            25,
+                            130,
+                            4.3,
+                            12.1),
+                      );
+                    }
+                    // print(CategoriesList().list.elementAt(2).name);
+                    Navigator.of(context).pushNamed('/Categorie',
+                        arguments: RouteArgument(id: 101, argumentsList: [
+                          _categoriesList.list.elementAt(4)
+                        ]));
+
+
+                  }
 
                   if (_categoryGroup == "Article") {
                     final response = await http.get(
-                      Uri.parse('http://18.136.203.155/api/articles'),
+                      Uri.parse('https://primavisiglobalindo.net/unio/public/api/articles'),
                       // Send authorization headers to the backend.
                       headers: {
                         HttpHeaders.authorizationHeader:
@@ -581,10 +685,11 @@ class _FilterWidgetState extends State<FilterWidget> {
                       },
                     );
 
-                    var hasilsearch = jsonDecode(response.body)['data'];
+                    var hasilsearch = jsonDecode(response.body)['data']['data'];
                     print(hasilsearch.toString());
                     // print(hasilsearch.length);
 
+                    _categoriesList.list.elementAt(5).utilities.clear();
                     for (var i = 0; i < hasilsearch.length; i++) {
                       // print(hasilsearch[i]['name']);
                       _categoriesList.list.elementAt(5).utilities.add(
