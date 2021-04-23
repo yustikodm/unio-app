@@ -73,7 +73,7 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
             ],
           ),
         ),
-        Padding(
+        (widget.utilitie.description.split("#")[3]=="University") ? Padding(
           padding: const EdgeInsets.only(top: 0, left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +98,7 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
                   style: Theme.of(context).textTheme.body2),
             ],
           ),
-        ),
+        ):Container(),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -117,10 +117,26 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Text(widget.utilitie.description.split("#")[0]),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            //   child: Text(widget.utilitie.description.split("#")[0]),
+            // ),
+            new Container(
+              width: MediaQuery.of(context).size.width * 1,
+              // height: MediaQuery.of(context).size.height * 0.15,
+              margin: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(15.0),
+              decoration:
+              BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // Text(widget.utilitie.description.split("#")[0],maxLines: 5,),
+                  Text(widget.utilitie.description.split("#")[0],maxLines: 5,),
+                ],
+              ),
+            )
+
           ],
         ),
         // Column(
@@ -150,28 +166,28 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            //   child: ListTile(
+            //     dense: true,
+            //     contentPadding: EdgeInsets.symmetric(vertical: 0),
+            //     leading: Icon(
+            //       UiIcons.file_2,
+            //       color: Theme.of(context).hintColor,
+            //     ),
+            //     title: Text(
+            //       'Address',
+            //       style: Theme.of(context).textTheme.display1,
+            //     ),
+            //   ),
+            // ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 0),
-                leading: Icon(
-                  UiIcons.file_2,
-                  color: Theme.of(context).hintColor,
-                ),
-                title: Text(
-                  'Address',
-                  style: Theme.of(context).textTheme.display1,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
               child: Text(widget.utilitie.description.split("#")[2]),
             ),
           ],
         ),
-        Column(
+        (widget.utilitie.description.split("#")[3]=="University") ? Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Padding(
@@ -265,7 +281,7 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
               ),
             )
           ],
-        ),
+        ):Container(),
         // Column(
         //   crossAxisAlignment: CrossAxisAlignment.start,
         //   children: <Widget>[

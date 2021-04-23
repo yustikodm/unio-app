@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'dart:io';
 import '../models/utilities.dart';
 import 'package:Unio/main.dart';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class FilterWidget extends StatefulWidget {
   @override
@@ -17,6 +18,12 @@ class FilterWidget extends StatefulWidget {
 class _FilterWidgetState extends State<FilterWidget> {
   final myController = TextEditingController();
   CategoriesList _categoriesList = new CategoriesList();
+  final List<DropdownMenuItem> countryitem = [];
+  final List<DropdownMenuItem> categoriitem = [];
+  final List<DropdownMenuItem> universityitem = [];
+  final List<DropdownMenuItem> stateitem = [];
+  final List<DropdownMenuItem> districtitem = [];
+
   ProductColorsList _productColorsList = new ProductColorsList();
   //List<int> selections = [];
   String _categoryGroup = "";
@@ -25,6 +32,7 @@ class _FilterWidgetState extends State<FilterWidget> {
   String _valDistrict;
   String _valCategory;
   String _valUniversity;
+  String selectedValue;
   var propinsi = List();
   var state = List();
   var district = List();
@@ -37,6 +45,7 @@ class _FilterWidgetState extends State<FilterWidget> {
 
   void ambildata() async {
 
+    myController.text = cari_keyword;
     final response = await http.get(
       Uri.parse('https://primavisiglobalindo.net/unio/public/api/countries'),
       // Send authorization headers to the backend.
@@ -50,6 +59,19 @@ class _FilterWidgetState extends State<FilterWidget> {
       propinsi = jsonDecode(response.body)['data']['data'];
     });
     // propinsi = [{"id":1,"name":"Indonesia"},{"id":2,"name":"United States"},{"id":3,"name":"Belanda"},{"id":4,"name":"Malaysia"}];
+    for (var i = 0; i < propinsi.length; i++) {
+      setState(() {
+        countryitem.add(DropdownMenuItem(
+          child: Text(propinsi[i]['name']),
+          value: propinsi[i]['name'],
+        ));
+
+      });
+
+    }
+
+
+
 
     print(propinsi.toString());
     getCategory();
@@ -75,6 +97,43 @@ class _FilterWidgetState extends State<FilterWidget> {
     });
     print(state.toString());
     // state = [{"id":1,"name":"Jawa Barat"},{"id":2,"name":"Jawa Tengah"},{"id":3,"name":"Jawa Timur"},{"id":4,"name":"DKI Jakarta"}];
+    for (var i = 0; i < state.length; i++) {
+      setState(() {
+        stateitem.add(DropdownMenuItem(
+          child: Text(state[i]['name']),
+          value: state[i]['name'],
+        ));
+
+      });
+
+    }
+  }
+
+  Future<void> _showMyDialog(String message) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Info'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void getdistrict(String stateid) async {
@@ -92,6 +151,18 @@ class _FilterWidgetState extends State<FilterWidget> {
     });
     print(district.toString());
     // district = [{"id":1,"name":"Surabaya"},{"id":2,"name":"Jakarta"},{"id":3,"name":"Malang"},{"id":4,"name":"Medan"},];
+    for (var i = 0; i < district.length; i++) {
+      setState(() {
+        districtitem.add(DropdownMenuItem(
+          child: Text(district[i]['name']),
+          value: district[i]['name'],
+        ));
+
+      });
+
+    }
+
+
   }
 
   void getuniversity() async {
@@ -109,10 +180,19 @@ class _FilterWidgetState extends State<FilterWidget> {
     });
     print(universities.toString());
     // district = [{"id":1,"name":"Surabaya"},{"id":2,"name":"Jakarta"},{"id":3,"name":"Malang"},{"id":4,"name":"Medan"},];
+    for (var i = 0; i < universities.length; i++) {
+      setState(() {
+        universityitem.add(DropdownMenuItem(
+          child: Text(universities[i]['name']),
+          value: universities[i]['name'],
+        ));
+
+      });
+
+    }
   }
 
   void getCategory() async {
-    myController.text = cari_keyword;
     final response = await http.get(
       Uri.parse(
           'https://primavisiglobalindo.net/unio/public/api/vendor-categories'),
@@ -128,6 +208,18 @@ class _FilterWidgetState extends State<FilterWidget> {
     });
     print(category.toString());
     // district = [{"id":1,"name":"Surabaya"},{"id":2,"name":"Jakarta"},{"id":3,"name":"Malang"},{"id":4,"name":"Medan"},];
+
+    for (var i = 0; i < category.length; i++) {
+      setState(() {
+        categoriitem.add(DropdownMenuItem(
+          child: Text(category[i]['name']),
+          value: category[i]['name'],
+        ));
+
+      });
+
+    }
+
   }
 
   @override
@@ -248,6 +340,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                         );
                       }),
                     ),
+
                     (_categoryGroup == "Vendor")
                         ? Padding(
                             padding: const EdgeInsets.only(left: 20.0),
@@ -255,27 +348,23 @@ class _FilterWidgetState extends State<FilterWidget> {
                           )
                         : Container(),
                     (_categoryGroup == "Vendor")
-                        ? Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: new DropdownButton(
-                              items: category.map((item) {
-                                return new DropdownMenuItem(
-                                  child: new Text(
-                                      (item['name'].toString().length > 30)
-                                          ? item['name']
-                                              .toString()
-                                              .substring(0, 30)
-                                          : item['name'].toString()),
-                                  value: item['id'].toString(),
-                                );
-                              }).toList(),
-                              onChanged: (newVal) {
-                                setState(() {
-                                  _valCategory = newVal;
-                                });
-                              },
-                              value: _valCategory,
-                            ))
+                        ?
+                    Padding(
+                      padding: const EdgeInsets.only(left:20.0),
+                      child: SearchableDropdown.single(
+                        items: categoriitem,
+                        value: selectedValue,
+                        hint: "Category",
+                        searchHint: "Category",
+                        onChanged: (value) {
+                          setState(() {
+                            selectedValue = value;
+                            print(value);
+                          });
+                        },
+                        isExpanded: true,
+                      ),
+                    )
                         : Container(),
                     (_categoryGroup == "University" ||
                             _categoryGroup == "Majors" ||
@@ -292,30 +381,48 @@ class _FilterWidgetState extends State<FilterWidget> {
                             _categoryGroup == "Places to Live" ||
                             _categoryGroup == "Vendor" ||
                             _categoryGroup == "Scholarship")
-                        ? Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: new DropdownButton(
-                              items: propinsi.map((item) {
-                                return new DropdownMenuItem(
-                                  child: new Text(
-                                      (item['name'].toString().length > 30)
-                                          ? item['name']
-                                              .toString()
-                                              .substring(0, 30)
-                                          : item['name'].toString()),
-                                  value: item['id'].toString(),
-                                );
-                              }).toList(),
-                              onChanged: (newVal) {
-                                setState(() {
-                                  _valCountry = newVal;
-                                  _valState = null;
-                                  state  = jsonDecode('[{"id":"0","country_id":"0","name":""}]');
-                                  getstate(_valCountry);
-                                });
-                              },
-                              value: _valCountry,
-                            ))
+                        ?
+                    Padding(
+                      padding: const EdgeInsets.only(left:20.0),
+                      child: SearchableDropdown.single(
+                        items: countryitem,
+                        value: _valCountry,
+                        hint: "Country",
+                        searchHint: "Country",
+                        onChanged: (value) {
+                          setState(() {
+                            _valCountry = value;
+                            getstate(_valCountry);
+                            print(value);
+                          });
+                        },
+                        isExpanded: true,
+                      ),
+                    )
+                    // Padding(
+                    //         padding: const EdgeInsets.only(left: 20.0),
+                    //         child: new DropdownButton(
+                    //           items: propinsi.map((item) {
+                    //             return new DropdownMenuItem(
+                    //               child: new Text(
+                    //                   (item['name'].toString().length > 30)
+                    //                       ? item['name']
+                    //                           .toString()
+                    //                           .substring(0, 30)
+                    //                       : item['name'].toString()),
+                    //               value: item['id'].toString(),
+                    //             );
+                    //           }).toList(),
+                    //           onChanged: (newVal) {
+                    //             setState(() {
+                    //               _valCountry = newVal;
+                    //               _valState = null;
+                    //               state  = jsonDecode('[{"id":"0","country_id":"0","name":""}]');
+                    //               getstate(_valCountry);
+                    //             });
+                    //           },
+                    //           value: _valCountry,
+                    //         ))
                         : Container(),
                     (_categoryGroup == "Scholarship")
                         ? Padding(
@@ -324,27 +431,44 @@ class _FilterWidgetState extends State<FilterWidget> {
                           )
                         : Container(),
                     (_categoryGroup == "Scholarship")
-                        ? Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: new DropdownButton(
-                              items: universities.map((item) {
-                                return new DropdownMenuItem(
-                                  child: new Text(
-                                      (item['name'].toString().length > 30)
-                                          ? item['name']
-                                              .toString()
-                                              .substring(0, 30)
-                                          : item['name'].toString()),
-                                  value: item['id'].toString(),
-                                );
-                              }).toList(),
-                              onChanged: (newVal) {
-                                setState(() {
-                                  _valUniversity = newVal;
-                                });
-                              },
-                              value: _valUniversity,
-                            ))
+                        ?
+                    // Padding(
+                    //         padding: const EdgeInsets.only(left: 20.0),
+                    //         child: new DropdownButton(
+                    //           items: universities.map((item) {
+                    //             return new DropdownMenuItem(
+                    //               child: new Text(
+                    //                   (item['name'].toString().length > 30)
+                    //                       ? item['name']
+                    //                           .toString()
+                    //                           .substring(0, 30)
+                    //                       : item['name'].toString()),
+                    //               value: item['id'].toString(),
+                    //             );
+                    //           }).toList(),
+                    //           onChanged: (newVal) {
+                    //             setState(() {
+                    //               _valUniversity = newVal;
+                    //             });
+                    //           },
+                    //           value: _valUniversity,
+                    //         ))
+                    Padding(
+                      padding: const EdgeInsets.only(left:20.0),
+                      child: SearchableDropdown.single(
+                        items: universityitem,
+                        value: _valUniversity,
+                        hint: "University",
+                        searchHint: "University",
+                        onChanged: (value) {
+                          setState(() {
+                            _valUniversity = value;
+                            print(value);
+                          });
+                        },
+                        isExpanded: true,
+                      ),
+                    )
                         : Container(),
                     (_categoryGroup == "University" ||
                             _categoryGroup == "Majors" ||
@@ -357,30 +481,48 @@ class _FilterWidgetState extends State<FilterWidget> {
                     (_categoryGroup == "University" ||
                             _categoryGroup == "Majors" ||
                             _categoryGroup == "Vendor")
-                        ? Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: new DropdownButton(
-                              items: state.map((item) {
-                                return new DropdownMenuItem(
-                                  child: new Text(
-                                      (item['name'].toString().length > 30)
-                                          ? item['name']
-                                              .toString()
-                                              .substring(0, 30)
-                                          : item['name'].toString()),
-                                  value: item['id'].toString(),
-                                );
-                              }).toList(),
-                              onChanged: (newVal) {
-                                setState(() {
-                                  _valState = newVal;
-                                  _valDistrict = null;
-                                  district  = jsonDecode('[{"id":"0","state_id":"0","name":""}]');
-                                  getdistrict(_valState);
-                                });
-                              },
-                              value: _valState,
-                            ))
+                        ?
+                    // Padding(
+                    //         padding: const EdgeInsets.only(left: 20.0),
+                    //         child: new DropdownButton(
+                    //           items: state.map((item) {
+                    //             return new DropdownMenuItem(
+                    //               child: new Text(
+                    //                   (item['name'].toString().length > 30)
+                    //                       ? item['name']
+                    //                           .toString()
+                    //                           .substring(0, 30)
+                    //                       : item['name'].toString()),
+                    //               value: item['id'].toString(),
+                    //             );
+                    //           }).toList(),
+                    //           onChanged: (newVal) {
+                    //             setState(() {
+                    //               _valState = newVal;
+                    //               _valDistrict = null;
+                    //               district  = jsonDecode('[{"id":"0","state_id":"0","name":""}]');
+                    //               getdistrict(_valState);
+                    //             });
+                    //           },
+                    //           value: _valState,
+                    //         ))
+                    Padding(
+                      padding: const EdgeInsets.only(left:20.0),
+                      child: SearchableDropdown.single(
+                        items: stateitem,
+                        value: _valState,
+                        hint: "State",
+                        searchHint: "State",
+                        onChanged: (value) {
+                          setState(() {
+                            _valState = value;
+                            getdistrict(_valState);
+                            print(value);
+                          });
+                        },
+                        isExpanded: true,
+                      ),
+                    )
                         : Container(),
                     (_categoryGroup == "University" ||
                             _categoryGroup == "Majors" ||
@@ -393,27 +535,44 @@ class _FilterWidgetState extends State<FilterWidget> {
                     (_categoryGroup == "University" ||
                             _categoryGroup == "Majors" ||
                             _categoryGroup == "Vendor")
-                        ? Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: new DropdownButton(
-                              items: district.map((item) {
-                                return new DropdownMenuItem(
-                                  child: new Text(
-                                      (item['name'].toString().length > 30)
-                                          ? item['name']
-                                              .toString()
-                                              .substring(0, 30)
-                                          : item['name'].toString()),
-                                  value: item['id'].toString(),
-                                );
-                              }).toList(),
-                              onChanged: (newVal) {
-                                setState(() {
-                                  _valDistrict = newVal;
-                                });
-                              },
-                              value: _valDistrict,
-                            ))
+                        ?
+                    // Padding(
+                    //         padding: const EdgeInsets.only(left: 20.0),
+                    //         child: new DropdownButton(
+                    //           items: district.map((item) {
+                    //             return new DropdownMenuItem(
+                    //               child: new Text(
+                    //                   (item['name'].toString().length > 30)
+                    //                       ? item['name']
+                    //                           .toString()
+                    //                           .substring(0, 30)
+                    //                       : item['name'].toString()),
+                    //               value: item['id'].toString(),
+                    //             );
+                    //           }).toList(),
+                    //           onChanged: (newVal) {
+                    //             setState(() {
+                    //               _valDistrict = newVal;
+                    //             });
+                    //           },
+                    //           value: _valDistrict,
+                    //         ))
+                    Padding(
+                      padding: const EdgeInsets.only(left:20.0),
+                      child: SearchableDropdown.single(
+                        items: districtitem,
+                        value: selectedValue,
+                        hint: "District",
+                        searchHint: "District",
+                        onChanged: (value) {
+                          setState(() {
+                            selectedValue = value;
+                            print(value);
+                          });
+                        },
+                        isExpanded: true,
+                      ),
+                    )
                         : Container(),
                   ],
                 ),
@@ -473,7 +632,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                                 hasilsearch[i]['name'],
                                 hasilsearch[i]['logo_src'],
                                 type,
-                                desc + "#" + accreditation + "#" + address,
+                                desc + "#" + accreditation + "#" + address +"#University",
                                 25,
                                 130,
                                 4.3,
@@ -487,6 +646,11 @@ class _FilterWidgetState extends State<FilterWidget> {
                         ]));
                   }
                   if (_categoryGroup == "Majors") {
+                    if (cari_keyword=="")
+                      {
+                        _showMyDialog("Must fill search first");
+                        return;
+                      }
                     cari_query = "&major="+myController.text.replaceAll(" ", "%20");
                     if (_valCountry!=null)
                     {

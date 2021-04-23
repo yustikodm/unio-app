@@ -46,7 +46,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
         (widget.routeArgument.id != 101)) {
       getuniversity2();
     }
-    if ((widget._category.name == "Majors") &&
+    if ((widget._category.name == "Field of study") &&
         (widget.routeArgument.id != 101)) {
       getMajors2();
     }
@@ -92,13 +92,14 @@ class _CategorieWidgetState extends State<CategorieWidget>
     });
     print(hasilquery.toString());
     // district = [{"id":1,"name":"Surabaya"},{"id":2,"name":"Jakarta"},{"id":3,"name":"Malang"},{"id":4,"name":"Medan"},];
+
     for (var i = 0; i < hasilquery.length; i++) {
       setState(() {
         utilitiesList.popularList.add(new Utilitie(
             hasilquery[i]['name'],
             hasilquery[i]['logo_src'],
             hasilquery[i]['type'],
-            '-###',
+            '-###University',
             25,
             130,
             4.3,
@@ -138,7 +139,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
             hasilquery[i]['name'],
             hasilquery[i]['logo_src'],
             hasilquery[i]['type'],
-            '-###',
+            '-###Field of study',
             25,
             130,
             4.3,
@@ -147,7 +148,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
             hasilquery[i]['name'],
             hasilquery[i]['logo_src'],
             hasilquery[i]['type'],
-            '-###',
+            '-###Field of study',
             25,
             130,
             4.3,
@@ -177,7 +178,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
             hasilquery[i]['name'],
             hasilquery[i]['logo_src'],
             hasilquery[i]['type'],
-            '-###',
+            '-###Vendor',
             25,
             130,
             4.3,
@@ -186,7 +187,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
             hasilquery[i]['name'],
             hasilquery[i]['logo_src'],
             hasilquery[i]['type'],
-            '-###',
+            '-###Vendor',
             25,
             130,
             4.3,
@@ -217,7 +218,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
             hasilquery[i]['name'],
             hasilquery[i]['logo_src'],
             hasilquery[i]['type'],
-            '-###',
+            '-###Places to Live',
             25,
             130,
             4.3,
@@ -226,7 +227,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
             hasilquery[i]['name'],
             hasilquery[i]['logo_src'],
             hasilquery[i]['type'],
-            '-###',
+            '-###Places to Live',
             25,
             130,
             4.3,
@@ -257,7 +258,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
             "Scholarship " + hasilquery[i]['university']['name'],
             hasilquery[i]['picture'],
             hasilquery[i]['year'].toString(),
-            '-###',
+            '-###Scholarship',
             25,
             130,
             4.3,
@@ -266,7 +267,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
             "Scholarship " + hasilquery[i]['university']['name'],
             hasilquery[i]['picture'],
             hasilquery[i]['year'].toString(),
-            '-###',
+            '-###Scholarship',
             25,
             130,
             4.3,
@@ -297,7 +298,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
             hasilquery[i]['title'],
             hasilquery[i]['picture'],
             hasilquery[i]['slug'].toString(),
-            '-###',
+            '-###Article',
             25,
             130,
             4.3,
@@ -306,7 +307,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
             hasilquery[i]['title'],
             hasilquery[i]['picture'],
             hasilquery[i]['slug'].toString(),
-            '-###',
+            '-###Article',
             25,
             130,
             4.3,
@@ -359,7 +360,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
             hasilquery[i]['name'],
             hasilquery[i]['logo_src'],
             hasilquery[i]['type'],
-            '-###',
+            '-###University',
             25,
             130,
             4.3,
@@ -394,7 +395,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
       print(hasilquery[i]['name']);
       setState(() {
         widget._category.utilities.add(
-          new Utilitie(hasilquery[i]['major']['name']+'-'+hasilquery[i]['name'], hasilquery[i]['logo_src'], '-', '-',
+          new Utilitie(hasilquery[i]['major']['name']+'-'+hasilquery[i]['name'], hasilquery[i]['logo_src'], '-', '-###Field of study',
               25, 130, 4.3, 12.1),
         );
 
@@ -428,7 +429,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
       print(hasilquery[i]['name']);
       setState(() {
         widget._category.utilities.add(
-          new Utilitie(hasilquery[i]['name'], '-', '-', '-',
+          new Utilitie(hasilquery[i]['name'], '-', '-', '-###Vendor',
               25, 130, 4.3, 12.1),
         );
 
@@ -463,7 +464,7 @@ print(response.body.toString());
       print(hasilquery[i]['name']);
       setState(() {
         widget._category.utilities.add(
-          new Utilitie(hasilquery[i]['name'], '-', '-', '-',
+          new Utilitie(hasilquery[i]['name'], '-', '-', '-###Place to Live',
               25, 130, 4.3, 12.1),
         );
 
@@ -497,7 +498,7 @@ print(response.body.toString());
       // print(hasilquery[i]['name']);
       setState(() {
         widget._category.utilities.add(
-          new Utilitie("Scholarship "+hasilquery[i]['university']['name'], '-', '-', '-',
+          new Utilitie("Scholarship "+hasilquery[i]['university']['name'], '-', '-', '-###Scholarship',
               25, 130, 4.3, 12.1),
         );
 
@@ -532,7 +533,7 @@ print(response.body.toString());
       print(hasilquery[i]['name']);
       setState(() {
         widget._category.utilities.add(
-          new Utilitie(hasilquery[i]['title'], hasilquery[i]['picture'], '-', '-',
+          new Utilitie(hasilquery[i]['title'], hasilquery[i]['picture'], '-', '-###Article',
               25, 130, 4.3, 12.1),
         );
 
@@ -697,7 +698,7 @@ print(response.body.toString());
                         if (widget._category.name == "University") {
                           getuniversity();
                         }
-                        if (widget._category.name == "Majors") {
+                        if (widget._category.name == "Field of study") {
                           getmajors();
                         }
 
