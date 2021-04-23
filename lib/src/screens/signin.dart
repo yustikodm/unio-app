@@ -148,8 +148,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                           padding: EdgeInsets.symmetric(
                               vertical: 12, horizontal: 70),
                           onPressed: () async {
-                            print('before loading');
-                            //EasyLoading.show(status: 'loading...');
+                            EasyLoading.show(status: 'loading...');
                             storage.deleteAll();
                             var email = myEmailController.text;
                             var password = myPasswordController.text;
