@@ -108,7 +108,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
             hasilquery[i]['name'],
             hasilquery[i]['logo_src'],
             hasilquery[i]['type'],
-            '-###',
+            '-###University',
             25,
             130,
             4.3,

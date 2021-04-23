@@ -367,7 +367,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                     )
                         : Container(),
                     (_categoryGroup == "University" ||
-                            _categoryGroup == "Majors" ||
+                            _categoryGroup == "Field of study" ||
                             _categoryGroup == "Places to Live" ||
                             _categoryGroup == "Vendor" ||
                             _categoryGroup == "Scholarship")
@@ -377,7 +377,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                           )
                         : Container(),
                     (_categoryGroup == "University" ||
-                            _categoryGroup == "Majors" ||
+                            _categoryGroup == "Field of study" ||
                             _categoryGroup == "Places to Live" ||
                             _categoryGroup == "Vendor" ||
                             _categoryGroup == "Scholarship")
@@ -471,7 +471,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                     )
                         : Container(),
                     (_categoryGroup == "University" ||
-                            _categoryGroup == "Majors" ||
+                            _categoryGroup == "Field of study" ||
                             _categoryGroup == "Vendor")
                         ? Padding(
                             padding: const EdgeInsets.only(left: 20.0),
@@ -479,7 +479,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                           )
                         : Container(),
                     (_categoryGroup == "University" ||
-                            _categoryGroup == "Majors" ||
+                            _categoryGroup == "Field of study" ||
                             _categoryGroup == "Vendor")
                         ?
                     // Padding(
@@ -525,7 +525,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                     )
                         : Container(),
                     (_categoryGroup == "University" ||
-                            _categoryGroup == "Majors" ||
+                            _categoryGroup == "Field of study" ||
                             _categoryGroup == "Vendor")
                         ? Padding(
                             padding: const EdgeInsets.only(left: 20.0),
@@ -533,7 +533,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                           )
                         : Container(),
                     (_categoryGroup == "University" ||
-                            _categoryGroup == "Majors" ||
+                            _categoryGroup == "Field of study" ||
                             _categoryGroup == "Vendor")
                         ?
                     // Padding(
@@ -645,7 +645,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                           _categoriesList.list.elementAt(0)
                         ]));
                   }
-                  if (_categoryGroup == "Majors") {
+                  if (_categoryGroup == "Field of study") {
                     if (cari_keyword=="")
                       {
                         _showMyDialog("Must fill search first");
@@ -687,7 +687,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                                 hasilsearch[i]['major']['name']+"-"+hasilsearch[i]['name'],
                                 hasilsearch[i]['logo_src'],
                                 '-',
-                                '-',
+                                '-###Field of study',
                                 25,
                                 130,
                                 4.3,
@@ -742,7 +742,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                                 hasilsearch[i]['name'],
                                 hasilsearch[i]['picture'],
                                 '-',
-                                '-',
+                                '-###Vendor',
                                 25,
                                 130,
                                 4.3,
@@ -782,7 +782,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                                 hasilsearch[i]['name'],
                                 hasilsearch[i]['picture'],
                                 '-',
-                                '-',
+                                '-###Place to Live',
                                 25,
                                 130,
                                 4.3,
@@ -823,7 +823,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                             "Scholarship "+hasilsearch[i]['university']['name'],
                             hasilsearch[i]['picture'],
                             '-',
-                            '-',
+                            '-###Scholarship',
                             25,
                             130,
                             4.3,
@@ -861,7 +861,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                                 hasilsearch[i]['title'],
                                 hasilsearch[i]['picture'],
                                 '-',
-                                '-',
+                                '-###Article',
                                 25,
                                 130,
                                 4.3,
