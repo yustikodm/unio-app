@@ -10,6 +10,7 @@ import '../screens/notifications.dart';
 import '../widgets/DrawerWidget.dart';
 import '../widgets/FilterWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:Unio/src/utilities/global.dart';
 
 // ignore: must_be_immutable
 class TabsWidget extends StatefulWidget {
@@ -106,7 +107,7 @@ class _TabsWidgetState extends State<TabsWidget> {
                   Navigator.of(context).pushNamed('/Tabs', arguments: 1);
                 },
                 child: CircleAvatar(
-                  backgroundImage: apiToken != null
+                  backgroundImage: Global.instance.apiToken != null
                       ? AssetImage('img/user1.jpg')
                       : AssetImage('img/user2.jpg'),
                 ),

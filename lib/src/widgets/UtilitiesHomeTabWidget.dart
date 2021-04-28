@@ -73,32 +73,30 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 0, left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: [
-                  Text(
-                      "Accredition : " +
-                          widget.utilitie.description.split("#")[1],
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: Theme.of(context).textTheme.body2),
-                  Text(", Type : Negri",
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: Theme.of(context).textTheme.body2),
-                ],
-              ),
-              Text("Indonesia, DIY Djokjakarta",
+        (widget.utilitie.description.split("#")[3] == "University")
+            ? Padding(
+                padding: const EdgeInsets.only(top: 0, left: 20, right: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        Text(
+                            "Website : " +
+                                widget.utilitie.description.split("#")[1],
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: Theme.of(context).textTheme.body2),
+                      ],
+                    ),
+                    /*Text("Indonesia, Jakarta",
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
-                  style: Theme.of(context).textTheme.body2),
-            ],
-          ),
-        ),
+                  style: Theme.of(context).textTheme.body2),*/
+                  ],
+                ),
+              )
+            : Container(),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -117,10 +115,28 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Text(widget.utilitie.description.split("#")[0]),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            //   child: Text(widget.utilitie.description.split("#")[0]),
+            // ),
+            new Container(
+              width: MediaQuery.of(context).size.width * 1,
+              // height: MediaQuery.of(context).size.height * 0.15,
+              margin: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(15.0),
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // Text(widget.utilitie.description.split("#")[0],maxLines: 5,),
+                  Text(
+                    widget.utilitie.description.split("#")[0],
+                    maxLines: 5,
+                  ),
+                ],
+              ),
+            )
           ],
         ),
         // Column(
@@ -150,122 +166,125 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            //   child: ListTile(
+            //     dense: true,
+            //     contentPadding: EdgeInsets.symmetric(vertical: 0),
+            //     leading: Icon(
+            //       UiIcons.file_2,
+            //       color: Theme.of(context).hintColor,
+            //     ),
+            //     title: Text(
+            //       'Address',
+            //       style: Theme.of(context).textTheme.display1,
+            //     ),
+            //   ),
+            // ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 0),
-                leading: Icon(
-                  UiIcons.file_2,
-                  color: Theme.of(context).hintColor,
-                ),
-                title: Text(
-                  'Address',
-                  style: Theme.of(context).textTheme.display1,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
               child: Text(widget.utilitie.description.split("#")[2]),
             ),
           ],
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 0),
-                leading: Icon(
-                  UiIcons.file_2,
-                  color: Theme.of(context).hintColor,
-                ),
-                title: Text(
-                  'Facility',
-                  style: Theme.of(context).textTheme.display1,
-                ),
-              ),
-            ),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            //   child: Text("-"),
-            // ),
-            new Container(
-              width: MediaQuery.of(context).size.width * 1,
-              height: MediaQuery.of(context).size.height * 0.15,
-              margin: const EdgeInsets.all(15.0),
-              padding: const EdgeInsets.all(15.0),
-              decoration:
-                  BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.credit_card,
-                          ),
-                          Text("Accept Credit Card"),
-                        ],
+        (widget.utilitie.description.split("#")[3] == "University")
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 0),
+                      leading: Icon(
+                        UiIcons.file_2,
+                        color: Theme.of(context).hintColor,
                       ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.local_parking,
-                          ),
-                          Text("Parking"),
-                        ],
+                      title: Text(
+                        'Facility',
+                        style: Theme.of(context).textTheme.display1,
                       ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.pets,
-                          ),
-                          Text("Pet Friendly"),
-                        ],
-                      ),
-                    ],
+                    ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.wifi,
-                          ),
-                          Text("Wireless Internet"),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.laptop_chromebook_sharp,
-                          ),
-                          Text("Offering a deal"),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.payment,
-                          ),
-                          Text("Apple Pay"),
-                        ],
-                      ),
-                    ],
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  //   child: Text("-"),
+                  // ),
+                  new Container(
+                    width: MediaQuery.of(context).size.width * 1,
+                    height: MediaQuery.of(context).size.height * 0.15,
+                    margin: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(15.0),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blueAccent)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.credit_card,
+                                ),
+                                Text("Accept Credit Card"),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.local_parking,
+                                ),
+                                Text("Parking"),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.pets,
+                                ),
+                                Text("Pet Friendly"),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.wifi,
+                                ),
+                                Text("Wireless Internet"),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.laptop_chromebook_sharp,
+                                ),
+                                Text("Offering a deal"),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.payment,
+                                ),
+                                Text("Apple Pay"),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
                 ],
-              ),
-            )
-          ],
-        ),
+              )
+            : Container(),
         // Column(
         //   crossAxisAlignment: CrossAxisAlignment.start,
         //   children: <Widget>[

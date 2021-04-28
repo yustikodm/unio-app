@@ -19,7 +19,9 @@ class UtilitietGridItemWidget extends StatelessWidget {
       splashColor: Theme.of(context).accentColor.withOpacity(0.08),
       onTap: () {
         Navigator.of(context).pushNamed('/Utilities',
-            arguments: new RouteArgument(argumentsList: [this.utilitie, this.heroTag], id: this.utilitie.id));
+            arguments: new RouteArgument(
+                argumentsList: [this.utilitie, this.heroTag],
+                id: this.utilitie.id));
       },
       child: Container(
         //margin: EdgeInsets.all(20),
@@ -29,7 +31,10 @@ class UtilitietGridItemWidget extends StatelessWidget {
           color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(6),
           boxShadow: [
-            BoxShadow(color: Theme.of(context).hintColor.withOpacity(0.10), offset: Offset(0, 4), blurRadius: 10)
+            BoxShadow(
+                color: Theme.of(context).hintColor.withOpacity(0.10),
+                offset: Offset(0, 4),
+                blurRadius: 10)
           ],
         ),
         child: Column(
@@ -72,13 +77,14 @@ class UtilitietGridItemWidget extends StatelessWidget {
                     color: Colors.amber,
                     size: 18,
                   ),
-                  SizedBox(width: 2,),
+                  SizedBox(
+                    width: 2,
+                  ),
                   Text(
                     utilitie.rate.toString(),
                     style: Theme.of(context).textTheme.body2,
                   )
                 ],
-                
               ),
             ),
             SizedBox(height: 15),

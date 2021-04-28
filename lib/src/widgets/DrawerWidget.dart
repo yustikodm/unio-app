@@ -5,6 +5,7 @@ import '../../config/ui_icons.dart';
 import '../../main.dart';
 import '../models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:Unio/src/utilities/global.dart';
 
 // ignore: must_be_immutable
 class DrawerWidget extends StatelessWidget {
@@ -30,9 +31,9 @@ class DrawerWidget extends StatelessWidget {
               child: Text('Yes'),
               onPressed: () {
                 storage.deleteAll();
-                apiToken = null;
-                authName = 'Guest';
-                authEmail = 'guest@mail.com';
+                Global.instance.apiToken = null;
+                Global.instance.authName = 'Guest';
+                Global.instance.authEmail = 'guest@mail.com';
                 Navigator.of(context).pushNamed('/Tabs', arguments: 2);
               },
             ),
@@ -166,16 +167,18 @@ class DrawerWidget extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              apiToken != null
+              Global.instance.apiToken != null
                   ? _showLogoutDialog(context)
                   : Navigator.of(context).pushNamed('/SignIn');
             },
             leading: Icon(
-              apiToken != null ? UiIcons.return_icon : UiIcons.user_1,
+              Global.instance.apiToken != null
+                  ? UiIcons.return_icon
+                  : UiIcons.user_1,
               color: Theme.of(context).focusColor.withOpacity(1),
             ),
             title: Text(
-              apiToken != null ? "Log Out" : "Log In",
+              Global.instance.apiToken != null ? "Log Out" : "Log In",
               style: Theme.of(context).textTheme.subhead,
             ),
           ),

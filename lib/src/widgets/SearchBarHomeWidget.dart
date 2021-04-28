@@ -1,6 +1,13 @@
 import '../../config/ui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:Unio/main.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import '../models/category.dart';
+import '../models/utilities.dart';
+import '../models/route_argument.dart';
 
 class SearchBarHomeWidget extends StatelessWidget {
   // final TextEditingController _controller = TextEditingController();
@@ -14,6 +21,7 @@ class SearchBarHomeWidget extends StatelessWidget {
     "Columbia University",*/
   ];
   final myController = TextEditingController();
+  CategoriesList _categoriesList = new CategoriesList();
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +55,8 @@ class SearchBarHomeWidget extends StatelessWidget {
                     hintText: 'Search',
                     hintStyle: TextStyle(
                         color: Theme.of(context).focusColor.withOpacity(0.8)),
-                    prefixIcon: Icon(UiIcons.loupe,
-                        size: 20, color: Theme.of(context).hintColor),
+                    // prefixIcon: Icon(UiIcons.loupe,
+                    //     size: 20, color: Theme.of(context).hintColor),
                     border: UnderlineInputBorder(borderSide: BorderSide.none),
                     enabledBorder:
                         UnderlineInputBorder(borderSide: BorderSide.none),
@@ -68,6 +76,57 @@ class SearchBarHomeWidget extends StatelessWidget {
                 //         color: Theme.of(context).hintColor.withOpacity(0.5)),
                 //   ),
                 // ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 40),
+                  child: IconButton(
+                    onPressed: () async {
+                      // cari_keyword = myController.text;
+                      // Scaffold.of(context).openEndDrawer();
+                      cari_query =
+                          "&name=" + myController.text.replaceAll(" ", "%20");
+                      final response = await http.get(
+                        Uri.parse(
+                            // 'https://primavisiglobalindo.net/unio/public/api/university-majors'),
+                            'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities' +
+                                cari_query),
+                        // Send authorization headers to the backend.
+                        headers: {
+                          HttpHeaders.authorizationHeader:
+                              "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+                        },
+                      );
+
+                      var hasilsearch = jsonDecode(response.body)['data'];
+                      print(hasilsearch.toString());
+                      // print(hasilsearch.length);
+                      _categoriesList.list.elementAt(1).utilities.clear();
+                      for (var i = 0; i < hasilsearch.length; i++) {
+                        print(hasilsearch[i]['name']);
+
+                        _categoriesList.list.elementAt(1).utilities.add(
+                              new Utilitie(
+                                  hasilsearch[i]['name'],
+                                  hasilsearch[i]['logo_src'],
+                                  '-',
+                                  '-',
+                                  '-',
+                                  25,
+                                  130,
+                                  4.3,
+                                  12.1),
+                            );
+                      }
+                      // print(CategoriesList().list.elementAt(1).name);
+                      Navigator.of(context).pushNamed('/Categorie',
+                          arguments: RouteArgument(id: 101, argumentsList: [
+                            _categoriesList.list.elementAt(1)
+                          ]));
+                    },
+                    icon: Icon(UiIcons.loupe,
+                        size: 20,
+                        color: Theme.of(context).hintColor.withOpacity(0.5)),
+                  ),
+                ),
                 IconButton(
                   onPressed: () {
                     cari_keyword = myController.text;

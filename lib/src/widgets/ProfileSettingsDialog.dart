@@ -26,7 +26,8 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
             builder: (context) {
               return SimpleDialog(
                 contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                titlePadding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                titlePadding:
+                    EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                 title: Row(
                   children: <Widget>[
                     Icon(UiIcons.user_1),
@@ -45,24 +46,31 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
                         new TextFormField(
                           style: TextStyle(color: Theme.of(context).hintColor),
                           keyboardType: TextInputType.text,
-                          decoration: getInputDecoration(hintText: 'John Doe', labelText: 'Full Name'),
+                          decoration: getInputDecoration(
+                              hintText: 'John Doe', labelText: 'Full Name'),
                           initialValue: widget.user.name,
-                          validator: (input) => input.trim().length < 3 ? 'Not a valid full name' : null,
+                          validator: (input) => input.trim().length < 3
+                              ? 'Not a valid full name'
+                              : null,
                           onSaved: (input) => widget.user.name = input,
                         ),
                         new TextFormField(
                           style: TextStyle(color: Theme.of(context).hintColor),
                           keyboardType: TextInputType.emailAddress,
-                          decoration: getInputDecoration(hintText: 'johndo@gmail.com', labelText: 'Email Address'),
+                          decoration: getInputDecoration(
+                              hintText: 'johndo@gmail.com',
+                              labelText: 'Email Address'),
                           initialValue: widget.user.email,
-                          validator: (input) => !input.contains('@') ? 'Not a valid email' : null,
+                          validator: (input) =>
+                              !input.contains('@') ? 'Not a valid email' : null,
                           onSaved: (input) => widget.user.email = input,
                         ),
                         FormField<String>(
                           builder: (FormFieldState<String> state) {
                             return DropdownButtonFormField<String>(
-                              decoration: getInputDecoration(hintText: 'Female', labelText: 'Gender'),
-                              hint: Text("Select Device"),
+                              decoration: getInputDecoration(
+                                  hintText: 'Female', labelText: 'Gender'),
+                              hint: Text("Select Gender"),
                               value: widget.user.gender,
                               onChanged: (input) {
                                 setState(() {
@@ -72,8 +80,10 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
                               },
                               onSaved: (input) => widget.user.gender = input,
                               items: [
-                                new DropdownMenuItem(value: 'Male', child: Text('Male')),
-                                new DropdownMenuItem(value: 'Female', child: Text('Female')),
+                                /*new DropdownMenuItem(
+                                    value: 'Male', child: Text('Male')),
+                                new DropdownMenuItem(
+                                    value: 'Female', child: Text('Female')),*/
                               ],
                             );
                           },
@@ -81,7 +91,9 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
                         FormField<String>(
                           builder: (FormFieldState<String> state) {
                             return DateTimeField(
-                              decoration: getInputDecoration(hintText: '1996-12-31', labelText: 'Birth Date'),
+                              decoration: getInputDecoration(
+                                  hintText: '1996-12-31',
+                                  labelText: 'Birth Date'),
                               format: new DateFormat('yyyy-MM-dd'),
                               initialValue: widget.user.dateOfBirth,
                               onShowPicker: (context, currentValue) {
@@ -114,7 +126,8 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
                         onPressed: _submit,
                         child: Text(
                           'Save',
-                          style: TextStyle(color: Theme.of(context).accentColor),
+                          style:
+                              TextStyle(color: Theme.of(context).accentColor),
                         ),
                       ),
                     ],
@@ -139,8 +152,11 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
       hintStyle: Theme.of(context).textTheme.body1.merge(
             TextStyle(color: Theme.of(context).focusColor),
           ),
-      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).hintColor.withOpacity(0.2))),
-      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).hintColor)),
+      enabledBorder: UnderlineInputBorder(
+          borderSide:
+              BorderSide(color: Theme.of(context).hintColor.withOpacity(0.2))),
+      focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Theme.of(context).hintColor)),
       hasFloatingPlaceholder: true,
       labelStyle: Theme.of(context).textTheme.body1.merge(
             TextStyle(color: Theme.of(context).hintColor),

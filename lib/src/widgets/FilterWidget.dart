@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'dart:io';
 import '../models/utilities.dart';
 import 'package:Unio/main.dart';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class FilterWidget extends StatefulWidget {
   @override
@@ -17,6 +18,12 @@ class FilterWidget extends StatefulWidget {
 class _FilterWidgetState extends State<FilterWidget> {
   final myController = TextEditingController();
   CategoriesList _categoriesList = new CategoriesList();
+  final List<DropdownMenuItem> countryitem = [];
+  final List<DropdownMenuItem> categoriitem = [];
+  final List<DropdownMenuItem> universityitem = [];
+  final List<DropdownMenuItem> stateitem = [];
+  final List<DropdownMenuItem> districtitem = [];
+
   ProductColorsList _productColorsList = new ProductColorsList();
   //List<int> selections = [];
   String _categoryGroup = "";
@@ -25,6 +32,7 @@ class _FilterWidgetState extends State<FilterWidget> {
   String _valDistrict;
   String _valCategory;
   String _valUniversity;
+  String selectedValue;
   var propinsi = List();
   var state = List();
   var district = List();
@@ -36,7 +44,7 @@ class _FilterWidgetState extends State<FilterWidget> {
   }
 
   void ambildata() async {
-
+    myController.text = cari_keyword;
     final response = await http.get(
       Uri.parse('https://primavisiglobalindo.net/unio/public/api/countries'),
       // Send authorization headers to the backend.
@@ -50,6 +58,14 @@ class _FilterWidgetState extends State<FilterWidget> {
       propinsi = jsonDecode(response.body)['data']['data'];
     });
     // propinsi = [{"id":1,"name":"Indonesia"},{"id":2,"name":"United States"},{"id":3,"name":"Belanda"},{"id":4,"name":"Malaysia"}];
+    for (var i = 0; i < propinsi.length; i++) {
+      setState(() {
+        countryitem.add(DropdownMenuItem(
+          child: Text(propinsi[i]['name']),
+          value: propinsi[i]['name'],
+        ));
+      });
+    }
 
     print(propinsi.toString());
     getCategory();
@@ -75,6 +91,41 @@ class _FilterWidgetState extends State<FilterWidget> {
     });
     print(state.toString());
     // state = [{"id":1,"name":"Jawa Barat"},{"id":2,"name":"Jawa Tengah"},{"id":3,"name":"Jawa Timur"},{"id":4,"name":"DKI Jakarta"}];
+    for (var i = 0; i < state.length; i++) {
+      setState(() {
+        stateitem.add(DropdownMenuItem(
+          child: Text(state[i]['name']),
+          value: state[i]['name'],
+        ));
+      });
+    }
+  }
+
+  Future<void> _showMyDialog(String message) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Info'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void getdistrict(String stateid) async {
@@ -92,6 +143,14 @@ class _FilterWidgetState extends State<FilterWidget> {
     });
     print(district.toString());
     // district = [{"id":1,"name":"Surabaya"},{"id":2,"name":"Jakarta"},{"id":3,"name":"Malang"},{"id":4,"name":"Medan"},];
+    for (var i = 0; i < district.length; i++) {
+      setState(() {
+        districtitem.add(DropdownMenuItem(
+          child: Text(district[i]['name']),
+          value: district[i]['name'],
+        ));
+      });
+    }
   }
 
   void getuniversity() async {
@@ -109,10 +168,17 @@ class _FilterWidgetState extends State<FilterWidget> {
     });
     print(universities.toString());
     // district = [{"id":1,"name":"Surabaya"},{"id":2,"name":"Jakarta"},{"id":3,"name":"Malang"},{"id":4,"name":"Medan"},];
+    for (var i = 0; i < universities.length; i++) {
+      setState(() {
+        universityitem.add(DropdownMenuItem(
+          child: Text(universities[i]['name']),
+          value: universities[i]['name'],
+        ));
+      });
+    }
   }
 
   void getCategory() async {
-    myController.text = cari_keyword;
     final response = await http.get(
       Uri.parse(
           'https://primavisiglobalindo.net/unio/public/api/vendor-categories'),
@@ -128,6 +194,15 @@ class _FilterWidgetState extends State<FilterWidget> {
     });
     print(category.toString());
     // district = [{"id":1,"name":"Surabaya"},{"id":2,"name":"Jakarta"},{"id":3,"name":"Malang"},{"id":4,"name":"Medan"},];
+
+    for (var i = 0; i < category.length; i++) {
+      setState(() {
+        categoriitem.add(DropdownMenuItem(
+          child: Text(category[i]['name']),
+          value: category[i]['name'],
+        ));
+      });
+    }
   }
 
   @override
@@ -257,25 +332,20 @@ class _FilterWidgetState extends State<FilterWidget> {
                     (_categoryGroup == "Vendor")
                         ? Padding(
                             padding: const EdgeInsets.only(left: 20.0),
-                            child: new DropdownButton(
-                              items: category.map((item) {
-                                return new DropdownMenuItem(
-                                  child: new Text(
-                                      (item['name'].toString().length > 30)
-                                          ? item['name']
-                                              .toString()
-                                              .substring(0, 30)
-                                          : item['name'].toString()),
-                                  value: item['id'].toString(),
-                                );
-                              }).toList(),
-                              onChanged: (newVal) {
+                            child: SearchableDropdown.single(
+                              items: categoriitem,
+                              value: selectedValue,
+                              hint: "Category",
+                              searchHint: "Category",
+                              onChanged: (value) {
                                 setState(() {
-                                  _valCategory = newVal;
+                                  selectedValue = value;
+                                  print(value);
                                 });
                               },
-                              value: _valCategory,
-                            ))
+                              isExpanded: true,
+                            ),
+                          )
                         : Container(),
                     (_categoryGroup == "University" ||
                             _categoryGroup == "Majors" ||
@@ -294,28 +364,45 @@ class _FilterWidgetState extends State<FilterWidget> {
                             _categoryGroup == "Scholarship")
                         ? Padding(
                             padding: const EdgeInsets.only(left: 20.0),
-                            child: new DropdownButton(
-                              items: propinsi.map((item) {
-                                return new DropdownMenuItem(
-                                  child: new Text(
-                                      (item['name'].toString().length > 30)
-                                          ? item['name']
-                                              .toString()
-                                              .substring(0, 30)
-                                          : item['name'].toString()),
-                                  value: item['id'].toString(),
-                                );
-                              }).toList(),
-                              onChanged: (newVal) {
+                            child: SearchableDropdown.single(
+                              items: countryitem,
+                              value: _valCountry,
+                              hint: "Country",
+                              searchHint: "Country",
+                              onChanged: (value) {
                                 setState(() {
-                                  _valCountry = newVal;
-                                  _valState = null;
-                                  state  = jsonDecode('[{"id":"0","country_id":"0","name":""}]');
+                                  _valCountry = value;
                                   getstate(_valCountry);
+                                  print(value);
                                 });
                               },
-                              value: _valCountry,
-                            ))
+                              isExpanded: true,
+                            ),
+                          )
+                        // Padding(
+                        //         padding: const EdgeInsets.only(left: 20.0),
+                        //         child: new DropdownButton(
+                        //           items: propinsi.map((item) {
+                        //             return new DropdownMenuItem(
+                        //               child: new Text(
+                        //                   (item['name'].toString().length > 30)
+                        //                       ? item['name']
+                        //                           .toString()
+                        //                           .substring(0, 30)
+                        //                       : item['name'].toString()),
+                        //               value: item['id'].toString(),
+                        //             );
+                        //           }).toList(),
+                        //           onChanged: (newVal) {
+                        //             setState(() {
+                        //               _valCountry = newVal;
+                        //               _valState = null;
+                        //               state  = jsonDecode('[{"id":"0","country_id":"0","name":""}]');
+                        //               getstate(_valCountry);
+                        //             });
+                        //           },
+                        //           value: _valCountry,
+                        //         ))
                         : Container(),
                     (_categoryGroup == "Scholarship")
                         ? Padding(
@@ -324,27 +411,44 @@ class _FilterWidgetState extends State<FilterWidget> {
                           )
                         : Container(),
                     (_categoryGroup == "Scholarship")
-                        ? Padding(
+                        ?
+                        // Padding(
+                        //         padding: const EdgeInsets.only(left: 20.0),
+                        //         child: new DropdownButton(
+                        //           items: universities.map((item) {
+                        //             return new DropdownMenuItem(
+                        //               child: new Text(
+                        //                   (item['name'].toString().length > 30)
+                        //                       ? item['name']
+                        //                           .toString()
+                        //                           .substring(0, 30)
+                        //                       : item['name'].toString()),
+                        //               value: item['id'].toString(),
+                        //             );
+                        //           }).toList(),
+                        //           onChanged: (newVal) {
+                        //             setState(() {
+                        //               _valUniversity = newVal;
+                        //             });
+                        //           },
+                        //           value: _valUniversity,
+                        //         ))
+                        Padding(
                             padding: const EdgeInsets.only(left: 20.0),
-                            child: new DropdownButton(
-                              items: universities.map((item) {
-                                return new DropdownMenuItem(
-                                  child: new Text(
-                                      (item['name'].toString().length > 30)
-                                          ? item['name']
-                                              .toString()
-                                              .substring(0, 30)
-                                          : item['name'].toString()),
-                                  value: item['id'].toString(),
-                                );
-                              }).toList(),
-                              onChanged: (newVal) {
+                            child: SearchableDropdown.single(
+                              items: universityitem,
+                              value: _valUniversity,
+                              hint: "University",
+                              searchHint: "University",
+                              onChanged: (value) {
                                 setState(() {
-                                  _valUniversity = newVal;
+                                  _valUniversity = value;
+                                  print(value);
                                 });
                               },
-                              value: _valUniversity,
-                            ))
+                              isExpanded: true,
+                            ),
+                          )
                         : Container(),
                     (_categoryGroup == "University" ||
                             _categoryGroup == "Majors" ||
@@ -357,30 +461,48 @@ class _FilterWidgetState extends State<FilterWidget> {
                     (_categoryGroup == "University" ||
                             _categoryGroup == "Majors" ||
                             _categoryGroup == "Vendor")
-                        ? Padding(
+                        ?
+                        // Padding(
+                        //         padding: const EdgeInsets.only(left: 20.0),
+                        //         child: new DropdownButton(
+                        //           items: state.map((item) {
+                        //             return new DropdownMenuItem(
+                        //               child: new Text(
+                        //                   (item['name'].toString().length > 30)
+                        //                       ? item['name']
+                        //                           .toString()
+                        //                           .substring(0, 30)
+                        //                       : item['name'].toString()),
+                        //               value: item['id'].toString(),
+                        //             );
+                        //           }).toList(),
+                        //           onChanged: (newVal) {
+                        //             setState(() {
+                        //               _valState = newVal;
+                        //               _valDistrict = null;
+                        //               district  = jsonDecode('[{"id":"0","state_id":"0","name":""}]');
+                        //               getdistrict(_valState);
+                        //             });
+                        //           },
+                        //           value: _valState,
+                        //         ))
+                        Padding(
                             padding: const EdgeInsets.only(left: 20.0),
-                            child: new DropdownButton(
-                              items: state.map((item) {
-                                return new DropdownMenuItem(
-                                  child: new Text(
-                                      (item['name'].toString().length > 30)
-                                          ? item['name']
-                                              .toString()
-                                              .substring(0, 30)
-                                          : item['name'].toString()),
-                                  value: item['id'].toString(),
-                                );
-                              }).toList(),
-                              onChanged: (newVal) {
+                            child: SearchableDropdown.single(
+                              items: stateitem,
+                              value: _valState,
+                              hint: "State",
+                              searchHint: "State",
+                              onChanged: (value) {
                                 setState(() {
-                                  _valState = newVal;
-                                  _valDistrict = null;
-                                  district  = jsonDecode('[{"id":"0","state_id":"0","name":""}]');
+                                  _valState = value;
                                   getdistrict(_valState);
+                                  print(value);
                                 });
                               },
-                              value: _valState,
-                            ))
+                              isExpanded: true,
+                            ),
+                          )
                         : Container(),
                     (_categoryGroup == "University" ||
                             _categoryGroup == "Majors" ||
@@ -393,27 +515,44 @@ class _FilterWidgetState extends State<FilterWidget> {
                     (_categoryGroup == "University" ||
                             _categoryGroup == "Majors" ||
                             _categoryGroup == "Vendor")
-                        ? Padding(
+                        ?
+                        // Padding(
+                        //         padding: const EdgeInsets.only(left: 20.0),
+                        //         child: new DropdownButton(
+                        //           items: district.map((item) {
+                        //             return new DropdownMenuItem(
+                        //               child: new Text(
+                        //                   (item['name'].toString().length > 30)
+                        //                       ? item['name']
+                        //                           .toString()
+                        //                           .substring(0, 30)
+                        //                       : item['name'].toString()),
+                        //               value: item['id'].toString(),
+                        //             );
+                        //           }).toList(),
+                        //           onChanged: (newVal) {
+                        //             setState(() {
+                        //               _valDistrict = newVal;
+                        //             });
+                        //           },
+                        //           value: _valDistrict,
+                        //         ))
+                        Padding(
                             padding: const EdgeInsets.only(left: 20.0),
-                            child: new DropdownButton(
-                              items: district.map((item) {
-                                return new DropdownMenuItem(
-                                  child: new Text(
-                                      (item['name'].toString().length > 30)
-                                          ? item['name']
-                                              .toString()
-                                              .substring(0, 30)
-                                          : item['name'].toString()),
-                                  value: item['id'].toString(),
-                                );
-                              }).toList(),
-                              onChanged: (newVal) {
+                            child: SearchableDropdown.single(
+                              items: districtitem,
+                              value: selectedValue,
+                              hint: "District",
+                              searchHint: "District",
+                              onChanged: (value) {
                                 setState(() {
-                                  _valDistrict = newVal;
+                                  selectedValue = value;
+                                  print(value);
                                 });
                               },
-                              value: _valDistrict,
-                            ))
+                              isExpanded: true,
+                            ),
+                          )
                         : Container(),
                   ],
                 ),
@@ -422,16 +561,14 @@ class _FilterWidgetState extends State<FilterWidget> {
               FlatButton(
                 onPressed: () async {
                   if (_categoryGroup == "University") {
-                    cari_query = "&name="+myController.text.replaceAll(" ", "%20");
-                    if (_valCountry!=null)
-                    {
-                      cari_query=cari_query+"&country="+_valCountry;
-                      if (_valState!=null)
-                      {
-                        cari_query=cari_query+"&state="+_valState;
-                        if (_valDistrict!=null)
-                        {
-                            cari_query = cari_query+"&district="+_valDistrict;
+                    cari_query =
+                        "&name=" + myController.text.replaceAll(" ", "%20");
+                    if (_valCountry != null) {
+                      cari_query = cari_query + "&country=" + _valCountry;
+                      if (_valState != null) {
+                        cari_query = cari_query + "&state=" + _valState;
+                        if (_valDistrict != null) {
+                          cari_query = cari_query + "&district=" + _valDistrict;
                         }
                       }
                     }
@@ -439,7 +576,8 @@ class _FilterWidgetState extends State<FilterWidget> {
                     final response = await http.get(
                       // Uri.parse('http://18.136.203.155/api/universities?country_id=1'),
                       Uri.parse(
-                          'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities'+cari_query),
+                          'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities' +
+                              cari_query),
                       // Send authorization headers to the backend.
                       headers: {
                         HttpHeaders.authorizationHeader:
@@ -473,7 +611,13 @@ class _FilterWidgetState extends State<FilterWidget> {
                                 hasilsearch[i]['name'],
                                 hasilsearch[i]['logo_src'],
                                 type,
-                                desc + "#" + accreditation + "#" + address,
+                                desc +
+                                    "#" +
+                                    accreditation +
+                                    "#" +
+                                    address +
+                                    "#University",
+                                '-',
                                 25,
                                 130,
                                 4.3,
@@ -487,23 +631,26 @@ class _FilterWidgetState extends State<FilterWidget> {
                         ]));
                   }
                   if (_categoryGroup == "Majors") {
-                    cari_query = "&major="+myController.text.replaceAll(" ", "%20");
-                    if (_valCountry!=null)
-                    {
-                      cari_query=cari_query+"&country="+_valCountry;
-                      if (_valState!=null)
-                      {
-                        cari_query=cari_query+"&state="+_valState;
-                        if (_valDistrict!=null)
-                        {
-                          cari_query = cari_query+"&district="+_valDistrict;
+                    if (cari_keyword == "") {
+                      _showMyDialog("Must fill search first");
+                      return;
+                    }
+                    cari_query =
+                        "&major=" + myController.text.replaceAll(" ", "%20");
+                    if (_valCountry != null) {
+                      cari_query = cari_query + "&country=" + _valCountry;
+                      if (_valState != null) {
+                        cari_query = cari_query + "&state=" + _valState;
+                        if (_valDistrict != null) {
+                          cari_query = cari_query + "&district=" + _valDistrict;
                         }
                       }
                     }
                     final response = await http.get(
                       Uri.parse(
                           // 'https://primavisiglobalindo.net/unio/public/api/university-majors'),
-                        'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities'+cari_query),
+                          'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities' +
+                              cari_query),
                       // Send authorization headers to the backend.
                       headers: {
                         HttpHeaders.authorizationHeader:
@@ -520,8 +667,11 @@ class _FilterWidgetState extends State<FilterWidget> {
 
                       _categoriesList.list.elementAt(1).utilities.add(
                             new Utilitie(
-                                hasilsearch[i]['major']['name']+"-"+hasilsearch[i]['name'],
+                                hasilsearch[i]['major']['name'] +
+                                    "-" +
+                                    hasilsearch[i]['name'],
                                 hasilsearch[i]['logo_src'],
+                                '-',
                                 '-',
                                 '-',
                                 25,
@@ -538,27 +688,28 @@ class _FilterWidgetState extends State<FilterWidget> {
                   }
 
                   if (_categoryGroup == "Vendor") {
-                    cari_query = "&name="+myController.text.replaceAll(" ", "%20");
-                    if (_valCategory!=null)
-                    {
-                      cari_query = cari_query+"&vendor_category="+_valCategory;
+                    cari_query =
+                        "&name=" + myController.text.replaceAll(" ", "%20");
+                    if (_valCategory != null) {
+                      cari_query =
+                          cari_query + "&vendor_category=" + _valCategory;
                     }
-                    if (_valCountry!=null)
-                    {
-                      cari_query=cari_query+"&country="+_valCountry;
-                      if (_valState!=null)
-                      {
-                        cari_query=cari_query+"&state="+_valState;
-                        if (_valDistrict!=null)
-                        {
-                          cari_query = cari_query+"&district="+_valDistrict;
+                    if (_valCountry != null) {
+                      cari_query = cari_query + "&country=" + _valCountry;
+                      if (_valState != null) {
+                        cari_query = cari_query + "&state=" + _valState;
+                        if (_valDistrict != null) {
+                          cari_query = cari_query + "&district=" + _valDistrict;
                         }
                       }
                     }
-                    print('https://primavisiglobalindo.net/unio/public/api/search/?keyword=vendors'+cari_query);
+                    print(
+                        'https://primavisiglobalindo.net/unio/public/api/search/?keyword=vendors' +
+                            cari_query);
                     final response = await http.get(
                       Uri.parse(
-                        'https://primavisiglobalindo.net/unio/public/api/search/?keyword=vendors'+cari_query),
+                          'https://primavisiglobalindo.net/unio/public/api/search/?keyword=vendors' +
+                              cari_query),
                       // Send authorization headers to the backend.
                       headers: {
                         HttpHeaders.authorizationHeader:
@@ -579,6 +730,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                                 hasilsearch[i]['picture'],
                                 '-',
                                 '-',
+                                '-',
                                 25,
                                 130,
                                 4.3,
@@ -593,13 +745,17 @@ class _FilterWidgetState extends State<FilterWidget> {
                   }
 
                   if (_categoryGroup == "Places to Live") {
-                    cari_query="";
-                    if (_valCountry!=null) {
+                    cari_query = "";
+                    if (_valCountry != null) {
                       cari_query = "?country_id=" + _valCountry;
                     }
-                    print('https://primavisiglobalindo.net/unio/public/api/place-to-lives/'+cari_query);
+                    print(
+                        'https://primavisiglobalindo.net/unio/public/api/place-to-lives/' +
+                            cari_query);
                     final response = await http.get(
-                      Uri.parse('https://primavisiglobalindo.net/unio/public/api/place-to-lives/'+cari_query),
+                      Uri.parse(
+                          'https://primavisiglobalindo.net/unio/public/api/place-to-lives/' +
+                              cari_query),
                       // Send authorization headers to the backend.
                       headers: {
                         HttpHeaders.authorizationHeader:
@@ -619,6 +775,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                                 hasilsearch[i]['picture'],
                                 '-',
                                 '-',
+                                '-',
                                 25,
                                 130,
                                 4.3,
@@ -633,18 +790,19 @@ class _FilterWidgetState extends State<FilterWidget> {
                   }
 
                   if (_categoryGroup == "Scholarship") {
-                    cari_query="";
-                    if (_valCountry!=null) {
+                    cari_query = "";
+                    if (_valCountry != null) {
                       cari_query = "&country_id=" + _valCountry;
                     }
                     // print('https://primavisiglobalindo.net/unio/public/api/place-to-lives/'+cari_query);
                     final response = await http.get(
                       Uri.parse(
-                        'https://primavisiglobalindo.net/unio/public/api/search/?keyword=scholarship'+cari_query),
+                          'https://primavisiglobalindo.net/unio/public/api/search/?keyword=scholarship' +
+                              cari_query),
                       // Send authorization headers to the backend.
                       headers: {
                         HttpHeaders.authorizationHeader:
-                        "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+                            "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
                       },
                     );
                     print(response.body.toString());
@@ -655,29 +813,30 @@ class _FilterWidgetState extends State<FilterWidget> {
                     for (var i = 0; i < hasilsearch.length; i++) {
                       print(hasilsearch[i]['university']['name']);
                       _categoriesList.list.elementAt(4).utilities.add(
-                        new Utilitie(
-                            "Scholarship "+hasilsearch[i]['university']['name'],
-                            hasilsearch[i]['picture'],
-                            '-',
-                            '-',
-                            25,
-                            130,
-                            4.3,
-                            12.1),
-                      );
+                            new Utilitie(
+                                "Scholarship " +
+                                    hasilsearch[i]['university']['name'],
+                                hasilsearch[i]['picture'],
+                                '-',
+                                '-',
+                                '-',
+                                25,
+                                130,
+                                4.3,
+                                12.1),
+                          );
                     }
                     // print(CategoriesList().list.elementAt(2).name);
                     Navigator.of(context).pushNamed('/Categorie',
                         arguments: RouteArgument(id: 101, argumentsList: [
                           _categoriesList.list.elementAt(4)
                         ]));
-
-
                   }
 
                   if (_categoryGroup == "Article") {
                     final response = await http.get(
-                      Uri.parse('https://primavisiglobalindo.net/unio/public/api/articles'),
+                      Uri.parse(
+                          'https://primavisiglobalindo.net/unio/public/api/articles'),
                       // Send authorization headers to the backend.
                       headers: {
                         HttpHeaders.authorizationHeader:
@@ -696,6 +855,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                             new Utilitie(
                                 hasilsearch[i]['title'],
                                 hasilsearch[i]['picture'],
+                                '-',
                                 '-',
                                 '-',
                                 25,

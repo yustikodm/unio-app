@@ -5,6 +5,7 @@ import '../widgets/DrawerWidget.dart';
 import '../widgets/UtilitiesHomeTabWidget.dart';
 import '../widgets/ReviewsListWidget.dart';
 import 'package:flutter/material.dart';
+
 // ignore: must_be_immutable
 class UtilitieWidget extends StatefulWidget {
   RouteArgument routeArgument;
@@ -20,14 +21,16 @@ class UtilitieWidget extends StatefulWidget {
   _UtilitieWidgetState createState() => _UtilitieWidgetState();
 }
 
-class _UtilitieWidgetState extends State<UtilitieWidget> with SingleTickerProviderStateMixin {
+class _UtilitieWidgetState extends State<UtilitieWidget>
+    with SingleTickerProviderStateMixin {
   TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _tabIndex = 0;
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, initialIndex: _tabIndex, vsync: this);
+    _tabController =
+        TabController(length: 2, initialIndex: _tabIndex, vsync: this);
     _tabController.addListener(_handleTabSelection);
     super.initState();
   }
@@ -50,22 +53,24 @@ class _UtilitieWidgetState extends State<UtilitieWidget> with SingleTickerProvid
     return Scaffold(
       key: _scaffoldKey,
       drawer: DrawerWidget(),
-      bottomNavigationBar:BottomAppBar(
+      bottomNavigationBar: BottomAppBar(
         elevation: 0,
         child: Container(
           height: 20,
-        ),),
+        ),
+      ),
       body: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
           floating: true,
           automaticallyImplyLeading: false,
           leading: new IconButton(
-            icon: new Icon(UiIcons.return_icon, color: Theme.of(context).hintColor),
+            icon: new Icon(UiIcons.return_icon,
+                color: Theme.of(context).hintColor),
             onPressed: () => Navigator.of(context).pop(),
           ),
           actions: <Widget>[
             //new ShoppingCartButtonWidget(
-                //iconColor: Theme.of(context).hintColor, labelColor: Theme.of(context).accentColor),
+            //iconColor: Theme.of(context).hintColor, labelColor: Theme.of(context).accentColor),
             Container(
                 width: 30,
                 height: 30,
@@ -95,7 +100,9 @@ class _UtilitieWidgetState extends State<UtilitieWidget> with SingleTickerProvid
                     width: double.infinity,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: NetworkImage("https://i.ibb.co/RgwbsQy/icon-campus.jpg"),
+                        image: NetworkImage(
+                            /*widget._utilitie.image,*/
+                            "https://i.ibb.co/RgwbsQy/icon-campus.jpg"),
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -103,17 +110,21 @@ class _UtilitieWidgetState extends State<UtilitieWidget> with SingleTickerProvid
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
-                      Theme.of(context).primaryColor,
-                      Colors.white.withOpacity(0),
-                      Colors.white.withOpacity(0),
-                      Theme.of(context).scaffoldBackgroundColor
-                    ], stops: [
-                      0,
-                      0.4,
-                      0.6,
-                      1
-                    ])),
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                          Theme.of(context).primaryColor,
+                          Colors.white.withOpacity(0),
+                          Colors.white.withOpacity(0),
+                          Theme.of(context).scaffoldBackgroundColor
+                        ],
+                            stops: [
+                          0,
+                          0.4,
+                          0.6,
+                          1
+                        ])),
                   ),
                 ],
               ),
@@ -125,15 +136,17 @@ class _UtilitieWidgetState extends State<UtilitieWidget> with SingleTickerProvid
               labelPadding: EdgeInsets.symmetric(horizontal: 10),
               unselectedLabelColor: Theme.of(context).focusColor.withOpacity(1),
               labelColor: Theme.of(context).primaryColor,
-              indicator: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Theme.of(context).focusColor.withOpacity(0.6)),
+              indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: Theme.of(context).focusColor.withOpacity(0.6)),
               tabs: [
                 Tab(
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 5),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        //border: Border.all(color: Theme.of(context).focusColor.withOpacity(0.6), width: 1)
-                        ),
+                      borderRadius: BorderRadius.circular(50),
+                      //border: Border.all(color: Theme.of(context).focusColor.withOpacity(0.6), width: 1)
+                    ),
                     child: Align(
                       alignment: Alignment.center,
                       child: Text("Detail"),
@@ -144,9 +157,9 @@ class _UtilitieWidgetState extends State<UtilitieWidget> with SingleTickerProvid
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 5),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        //border: Border.all(color: Theme.of(context).focusColor.withOpacity(0.2), width: 1)
-                        ),
+                      borderRadius: BorderRadius.circular(50),
+                      //border: Border.all(color: Theme.of(context).focusColor.withOpacity(0.2), width: 1)
+                    ),
                     child: Align(
                       alignment: Alignment.center,
                       child: Text("Review"),
@@ -170,7 +183,8 @@ class _UtilitieWidgetState extends State<UtilitieWidget> with SingleTickerProvid
               child: Column(
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 15),
                     child: ListTile(
                       dense: true,
                       contentPadding: EdgeInsets.symmetric(vertical: 0),

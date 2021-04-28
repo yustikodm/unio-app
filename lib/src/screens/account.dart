@@ -63,7 +63,10 @@ class _AccountWidgetState extends State<AccountWidget> {
               color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.circular(6),
               boxShadow: [
-                BoxShadow(color: Theme.of(context).hintColor.withOpacity(0.15), offset: Offset(0, 3), blurRadius: 10)
+                BoxShadow(
+                    color: Theme.of(context).hintColor.withOpacity(0.15),
+                    offset: Offset(0, 3),
+                    blurRadius: 10)
               ],
             ),
             child: Row(
@@ -72,13 +75,13 @@ class _AccountWidgetState extends State<AccountWidget> {
                   child: FlatButton(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/Tabs', arguments: 4);
+                      Navigator.of(context).pushNamed('/Tabs', arguments: 0);
                     },
                     child: Column(
                       children: <Widget>[
-                        Icon(UiIcons.heart),
+                        Icon(UiIcons.money),
                         Text(
-                          'Wish List',
+                          'Point',
                           style: Theme.of(context).textTheme.body1,
                         )
                       ],
@@ -89,13 +92,13 @@ class _AccountWidgetState extends State<AccountWidget> {
                   child: FlatButton(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/Tabs', arguments: 0);
+                      Navigator.of(context).pushNamed('/Tabs', arguments: 4);
                     },
                     child: Column(
                       children: <Widget>[
-                        Icon(UiIcons.favorites),
+                        Icon(UiIcons.heart),
                         Text(
-                          'Following',
+                          'Bookmark',
                           style: Theme.of(context).textTheme.body1,
                         )
                       ],
@@ -128,7 +131,10 @@ class _AccountWidgetState extends State<AccountWidget> {
               color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.circular(6),
               boxShadow: [
-                BoxShadow(color: Theme.of(context).hintColor.withOpacity(0.15), offset: Offset(0, 3), blurRadius: 10)
+                BoxShadow(
+                    color: Theme.of(context).hintColor.withOpacity(0.15),
+                    offset: Offset(0, 3),
+                    blurRadius: 10)
               ],
             ),
             child: ListView(
@@ -193,11 +199,83 @@ class _AccountWidgetState extends State<AccountWidget> {
                   onTap: () {},
                   dense: true,
                   title: Text(
-                    'Birth Date',
+                    'Birth Date & Place',
                     style: Theme.of(context).textTheme.body1,
                   ),
                   trailing: Text(
-                    _user.getDateOfBirth(),
+                    _user.birthPlace + ', ' + _user.getDateOfBirth(),
+                    style: TextStyle(color: Theme.of(context).focusColor),
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  dense: true,
+                  title: Text(
+                    'Address',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  trailing: Text(
+                    _user.address,
+                    style: TextStyle(color: Theme.of(context).focusColor),
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  dense: true,
+                  title: Text(
+                    'Phone Number',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  trailing: Text(
+                    _user.phone,
+                    style: TextStyle(color: Theme.of(context).focusColor),
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  dense: true,
+                  title: Text(
+                    'School Origin',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  trailing: Text(
+                    _user.school,
+                    style: TextStyle(color: Theme.of(context).focusColor),
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  dense: true,
+                  title: Text(
+                    'Graduation Year',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  trailing: Text(
+                    _user.graduate.toString(),
+                    style: TextStyle(color: Theme.of(context).focusColor),
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  dense: true,
+                  title: Text(
+                    'Identity Number',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  trailing: Text(
+                    _user.identity,
+                    style: TextStyle(color: Theme.of(context).focusColor),
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  dense: true,
+                  title: Text(
+                    'Religion',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  trailing: Text(
+                    _user.religion,
                     style: TextStyle(color: Theme.of(context).focusColor),
                   ),
                 ),
@@ -210,7 +288,10 @@ class _AccountWidgetState extends State<AccountWidget> {
               color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.circular(6),
               boxShadow: [
-                BoxShadow(color: Theme.of(context).hintColor.withOpacity(0.15), offset: Offset(0, 3), blurRadius: 10)
+                BoxShadow(
+                    color: Theme.of(context).hintColor.withOpacity(0.15),
+                    offset: Offset(0, 3),
+                    blurRadius: 10)
               ],
             ),
             child: ListView(
@@ -222,24 +303,6 @@ class _AccountWidgetState extends State<AccountWidget> {
                   title: Text(
                     'Account Settings',
                     style: Theme.of(context).textTheme.body2,
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  dense: true,
-                  title: Row(
-                    children: <Widget>[
-                      Icon(
-                        UiIcons.placeholder,
-                        size: 22,
-                        color: Theme.of(context).focusColor,
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        'Shipping Adresses',
-                        style: Theme.of(context).textTheme.body1,
-                      ),
-                    ],
                   ),
                 ),
                 ListTile(

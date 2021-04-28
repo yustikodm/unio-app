@@ -1,3 +1,4 @@
+import 'package:Unio/src/utilities/global.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'dart:convert' as convert;
@@ -7,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:Unio/main.dart';
+import 'package:intl/intl.dart';
 
 class SignInWidget extends StatefulWidget {
   @override
@@ -153,27 +155,94 @@ class _SignInWidgetState extends State<SignInWidget> {
                             var email = myEmailController.text;
                             var password = myPasswordController.text;
                             var jwt = await attemptLogin(email, password);
-                            print(email);
-                            print(password);
-                            print(jwt);
 
                             if (jwt != null) {
                               var data = convert.jsonDecode(jwt);
-                              apiToken = data['data']['api_token'];
-                              authName = data['data']['fullname'] ?? 'admin';
-                              authEmail = data['data']['email'];
+                              DateTime date = DateTime.parse(
+                                  data['data']['biodata']['birth_date']);
+
+                              DateTime formattedDate = DateTime.parse(
+                                  DateFormat('yyyy-MM-dd').format(date));
+
+                              Global.instance.apiToken =
+                                  data['data']['token']['api_token'];
+                              Global.instance.authName =
+                                  data['data']['fullname'];
+                              Global.instance.authEmail = data['data']['email'];
+                              Global.instance.authPhone = data['data']['phone'];
+                              Global.instance.authGender =
+                                  data['data']['biodata']['gender'];
+                              Global.instance.authPicture =
+                                  data['data']['image_path'];
+                              Global.instance.authAddress =
+                                  data['data']['biodata']['address'];
+                              Global.instance.authSchool =
+                                  data['data']['biodata']['school_origin'];
+                              Global.instance.authGraduate =
+                                  data['data']['biodata']['graduation_year'];
+                              Global.instance.authAddress =
+                                  data['data']['biodata']['address'];
+                              Global.instance.authBirthDate = formattedDate;
+                              Global.instance.authBirthPlace =
+                                  data['data']['biodata']['birth_place'];
+                              Global.instance.authIdentity = data['data']
+                                      ['biodata']['identity_number']
+                                  .toString();
+                              Global.instance.authReligion =
+                                  data['data']['biodata']['religion'];
+
                               storage.write(
                                   key: 'apiToken',
-                                  value: data['data']['api_token']);
+                                  value: data['data']['api_token'] ?? '-');
                               storage.write(
                                   key: 'authEmail',
-                                  value: data['data']['email']);
+                                  value: data['data']['email'] ?? '-');
                               storage.write(
                                   key: 'authName',
-                                  value: data['data']['fullname']);
+                                  value: data['data']['fullname'] ?? '-');
                               storage.write(
                                   key: 'authPicture',
-                                  value: data['data']['image_path']);
+                                  value: data['data']['image_path'] ?? '-');
+                              storage.write(
+                                  key: 'authPhone',
+                                  value: data['data']['phone'] ?? '-');
+                              storage.write(
+                                  key: 'authGender',
+                                  value:
+                                      data['data']['biodata']['gender'] ?? '-');
+                              storage.write(
+                                  key: 'authAddress',
+                                  value: data['data']['biodata']['address'] ??
+                                      '-');
+                              storage.write(
+                                  key: 'authGraduate',
+                                  value: data['data']['biodata']
+                                          ['graduation_year'] ??
+                                      '-');
+                              storage.write(
+                                  key: 'authSchool',
+                                  value: data['data']['biodata']
+                                          ['school_origin'] ??
+                                      '-');
+                              storage.write(
+                                  key: 'authBirthDate',
+                                  value: formattedDate.toString());
+                              storage.write(
+                                  key: 'authBirthPlace',
+                                  value: data['data']['biodata']
+                                          ['birth_place'] ??
+                                      '-');
+                              storage.write(
+                                  key: 'authIdentity',
+                                  value: data['data']['biodata']
+                                              ['identity_number']
+                                          .toString() ??
+                                      '-');
+                              storage.write(
+                                  key: 'authReligion',
+                                  value: data['data']['biodata']['religion'] ??
+                                      '-');
+
                               EasyLoading.dismiss();
                               Navigator.of(context)
                                   .pushNamed('/Tabs', arguments: 2);
