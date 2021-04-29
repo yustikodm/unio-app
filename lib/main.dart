@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'route_generator.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-const SERVER_DOMAIN = "https://primavisiglobalindo.net/unio/public/api/";
-final storage = FlutterSecureStorage();
-
 void main() => runApp(MyApp());
 String cari_keyword = "";
 String cari_query = "";

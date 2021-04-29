@@ -12,7 +12,7 @@ class Splash extends StatefulWidget {
 class _SplashState extends State<Splash> {
   @override
   void initState() {
-    storage.deleteAll();
+    //storage.deleteAll();
     getAuthData();
     // TODO: implement initState
     super.initState();

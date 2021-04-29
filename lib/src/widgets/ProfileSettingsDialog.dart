@@ -3,6 +3,8 @@ import '../../config/ui_icons.dart';
 import '../models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:Unio/src/utilities/global.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileSettingsDialog extends StatefulWidget {
   User user;
@@ -16,6 +18,13 @@ class ProfileSettingsDialog extends StatefulWidget {
 
 class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
   GlobalKey<FormState> _profileSettingsFormKey = new GlobalKey<FormState>();
+
+  /*Future<String> updateProfile(Object data) async {
+    var res = await http.post(Uri.parse(SERVER_DOMAIN + 'users/' + ),
+        body: {'email': email, 'password': password});
+    if (res.statusCode == 200) return res.body;
+    return null;
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -44,16 +53,16 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
                     child: Column(
                       children: <Widget>[
                         new TextFormField(
-                          style: TextStyle(color: Theme.of(context).hintColor),
-                          keyboardType: TextInputType.text,
-                          decoration: getInputDecoration(
-                              hintText: 'John Doe', labelText: 'Full Name'),
-                          initialValue: widget.user.name,
-                          validator: (input) => input.trim().length < 3
-                              ? 'Not a valid full name'
-                              : null,
-                          onSaved: (input) => widget.user.name = input,
-                        ),
+                            style:
+                                TextStyle(color: Theme.of(context).hintColor),
+                            keyboardType: TextInputType.text,
+                            decoration: getInputDecoration(
+                                hintText: 'John Doe', labelText: 'Full Name'),
+                            initialValue: widget.user.name,
+                            validator: (input) => input.trim().length < 3
+                                ? 'Not a valid full name'
+                                : null,
+                            onSaved: (input) => widget.user.name = input),
                         new TextFormField(
                           style: TextStyle(color: Theme.of(context).hintColor),
                           keyboardType: TextInputType.emailAddress,
@@ -94,7 +103,7 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
                               decoration: getInputDecoration(
                                   hintText: '1996-12-31',
                                   labelText: 'Birth Date'),
-                              format: new DateFormat('yyyy-MM-dd'),
+                              format: new DateFormat('dd-MM-yyyy'),
                               initialValue: widget.user.dateOfBirth,
                               onShowPicker: (context, currentValue) {
                                 return showDatePicker(
@@ -109,6 +118,86 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
                               }),
                             );
                           },
+                        ),
+                        new TextFormField(
+                          style: TextStyle(color: Theme.of(context).hintColor),
+                          keyboardType: TextInputType.text,
+                          decoration: getInputDecoration(
+                              hintText: 'Surabaya', labelText: 'Birth Place'),
+                          initialValue: widget.user.birthPlace,
+                          validator: (input) => input.trim().length < 3
+                              ? 'Not a valid Birth Place'
+                              : null,
+                          onSaved: (input) => widget.user.birthPlace = input,
+                        ),
+                        new TextFormField(
+                          style: TextStyle(color: Theme.of(context).hintColor),
+                          keyboardType: TextInputType.text,
+                          decoration: getInputDecoration(
+                              hintText: 'Jakarta Street 19, Indonesia',
+                              labelText: 'Address'),
+                          initialValue: widget.user.address,
+                          validator: (input) => input.trim().length < 3
+                              ? 'Not a valid address'
+                              : null,
+                          onSaved: (input) => widget.user.address = input,
+                        ),
+                        new TextFormField(
+                          style: TextStyle(color: Theme.of(context).hintColor),
+                          keyboardType: TextInputType.text,
+                          decoration: getInputDecoration(
+                              hintText: '08781122333', labelText: 'Phone'),
+                          initialValue: widget.user.phone,
+                          validator: (input) => input.trim().length < 8
+                              ? 'Not a valid Phone Number'
+                              : null,
+                          onSaved: (input) => widget.user.phone = input,
+                        ),
+                        new TextFormField(
+                          style: TextStyle(color: Theme.of(context).hintColor),
+                          keyboardType: TextInputType.text,
+                          decoration: getInputDecoration(
+                              hintText: 'SMA Negeri 1 Surabaya',
+                              labelText: 'School Origin'),
+                          initialValue: widget.user.school,
+                          validator: (input) => input.trim().length < 3
+                              ? 'Not a valid school origin'
+                              : null,
+                          onSaved: (input) => widget.user.school = input,
+                        ),
+                        new TextFormField(
+                          style: TextStyle(color: Theme.of(context).hintColor),
+                          keyboardType: TextInputType.number,
+                          decoration: getInputDecoration(
+                              hintText: '2018', labelText: 'Graduation Year'),
+                          initialValue: widget.user.graduate,
+                          validator: (input) => input.trim().length < 3
+                              ? 'Not a valid graduation year'
+                              : null,
+                          onSaved: (input) => widget.user.graduate = input,
+                        ),
+                        new TextFormField(
+                          style: TextStyle(color: Theme.of(context).hintColor),
+                          keyboardType: TextInputType.text,
+                          decoration: getInputDecoration(
+                              hintText: '999199929993',
+                              labelText: 'Identity Number'),
+                          initialValue: widget.user.identity,
+                          validator: (input) => input.trim().length < 8
+                              ? 'Not a valid identity number'
+                              : null,
+                          onSaved: (input) => widget.user.identity = input,
+                        ),
+                        new TextFormField(
+                          style: TextStyle(color: Theme.of(context).hintColor),
+                          keyboardType: TextInputType.text,
+                          decoration: getInputDecoration(
+                              hintText: 'Islam', labelText: 'Religion'),
+                          initialValue: widget.user.religion,
+                          validator: (input) => input.trim().length < 3
+                              ? 'Not a valid religion'
+                              : null,
+                          onSaved: (input) => widget.user.religion = input,
                         ),
                       ],
                     ),
@@ -167,6 +256,47 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
   void _submit() {
     if (_profileSettingsFormKey.currentState.validate()) {
       _profileSettingsFormKey.currentState.save();
+
+      setState(() {
+        Global.instance.authName = widget.user.name;
+        Global.instance.authEmail = widget.user.email;
+        Global.instance.authGender = widget.user.gender;
+        //Global.instance.authBirthDate = widget.user.getDateOfBirth();
+        /*Global.instance.authBirthDate = DateTime.parse(
+          DateFormat('dd-MM-yyyy').format(widget.user.getDateOfBirth()));*/
+        Global.instance.authBirthPlace = widget.user.birthPlace;
+        Global.instance.authAddress = widget.user.address;
+        Global.instance.authPhone = widget.user.phone;
+        Global.instance.authSchool = widget.user.school;
+        Global.instance.authGraduate = widget.user.graduate;
+        Global.instance.authIdentity = widget.user.identity;
+        Global.instance.authReligion = widget.user.religion;
+
+        storage.delete(key: 'authEmail');
+        storage.write(key: 'authEmail', value: widget.user.email);
+        storage.delete(key: 'authName');
+        storage.write(key: 'authName', value: widget.user.name);
+        storage.delete(key: 'authPhone');
+        storage.write(key: 'authPhone', value: widget.user.phone);
+        storage.delete(key: 'authGender');
+        storage.write(key: 'authGender', value: widget.user.gender);
+        storage.delete(key: 'authAddress');
+        storage.write(key: 'authAddress', value: widget.user.address);
+        storage.delete(key: 'authGraduate');
+        storage.write(key: 'authGraduate', value: widget.user.graduate);
+        storage.delete(key: 'authSchool');
+        storage.write(key: 'authSchool', value: widget.user.school);
+        //storage.delete(key: 'authBirthDate');
+        /*storage.write(
+          key: 'authBirthDate', value: widget.user.getDateOfBirth().toString());*/
+        storage.delete(key: 'authBirthPlace');
+        storage.write(key: 'authBirthPlace', value: widget.user.birthPlace);
+        storage.delete(key: 'authIdentity');
+        storage.write(key: 'authIdentity', value: widget.user.identity);
+        storage.delete(key: 'authReligion');
+        storage.write(key: 'authReligion', value: widget.user.religion);
+      });
+
       Navigator.pop(context);
     }
   }

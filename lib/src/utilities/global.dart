@@ -1,3 +1,8 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+const SERVER_DOMAIN = "https://primavisiglobalindo.net/unio/public/api/";
+final storage = FlutterSecureStorage();
+
 class Global {
   static final Global _singleton = new Global._internal();
   Global._internal();

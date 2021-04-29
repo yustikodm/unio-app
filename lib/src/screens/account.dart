@@ -79,7 +79,7 @@ class _AccountWidgetState extends State<AccountWidget> {
                     },
                     child: Column(
                       children: <Widget>[
-                        Icon(UiIcons.money),
+                        Icon(UiIcons.credit_card),
                         Text(
                           'Point',
                           style: Theme.of(context).textTheme.body1,

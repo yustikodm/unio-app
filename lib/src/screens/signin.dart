@@ -158,11 +158,19 @@ class _SignInWidgetState extends State<SignInWidget> {
 
                             if (jwt != null) {
                               var data = convert.jsonDecode(jwt);
-                              DateTime date = DateTime.parse(
-                                  data['data']['biodata']['birth_date']);
 
-                              DateTime formattedDate = DateTime.parse(
-                                  DateFormat('yyyy-MM-dd').format(date));
+                              DateTime formattedDate;
+
+                              if (data['data']['biodata']['birth_date'] !=
+                                  null) {
+                                DateTime date = DateTime.parse(
+                                    data['data']['biodata']['birth_date']);
+
+                                formattedDate = DateTime.parse(
+                                    DateFormat('dd-MM-yyyy').format(date));
+                              } else {
+                                formattedDate = DateTime(0001, 01, 01);
+                              }
 
                               Global.instance.apiToken =
                                   data['data']['token']['api_token'];

@@ -5,6 +5,7 @@ import '../widgets/SocialMediaWidget.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:Unio/main.dart';
 import 'package:http/http.dart' as http;
+import 'package:Unio/src/utilities/global.dart';
 
 class SignUpWidget extends StatefulWidget {
   @override
