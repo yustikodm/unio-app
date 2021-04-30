@@ -2,6 +2,7 @@ import 'package:Unio/main.dart';
 
 import '../../config/ui_icons.dart';
 import '../screens/account.dart';
+import '../screens/cart.dart';
 import '../screens/chat.dart';
 import '../screens/favorites.dart';
 import '../screens/home.dart';
@@ -53,15 +54,15 @@ class _TabsWidgetState extends State<TabsWidget> {
           widget.currentTitle = 'Notifications';
           widget.currentPage = NotificationsWidget();
           break;
-        case 1:
-          widget.currentTitle = 'Account';
-          widget.currentPage = AccountWidget();
+        case 3:
+          widget.currentTitle = 'Cart';
+          widget.currentPage = CartWidget();
           break;
         case 2:
           widget.currentTitle = 'Home';
           widget.currentPage = HomeWidget();
           break;
-        case 3:
+        case 1:
           widget.currentTitle = 'Messages';
           widget.currentPage = MessagesWidget();
           break;
@@ -73,6 +74,10 @@ class _TabsWidgetState extends State<TabsWidget> {
           widget.selectedTab = 3;
           widget.currentTitle = 'Chat';
           widget.currentPage = ChatWidget();
+          break;
+        case 6:
+          widget.currentTitle = 'Profile';
+          widget.currentPage = AccountWidget();
           break;
       }
     });
@@ -102,16 +107,16 @@ class _TabsWidgetState extends State<TabsWidget> {
               height: 30,
               margin: EdgeInsets.only(top: 12.5, bottom: 12.5, right: 20),
               child: InkWell(
-                borderRadius: BorderRadius.circular(300),
-                onTap: () {
-                  Navigator.of(context).pushNamed('/Tabs', arguments: 1);
-                },
-                child: CircleAvatar(
-                  backgroundImage: Global.instance.apiToken != null
-                      ? AssetImage('img/user1.jpg')
-                      : AssetImage('img/user2.jpg'),
-                ),
-              )),
+                  borderRadius: BorderRadius.circular(300),
+                  onTap: () {
+                    Navigator.of(context).pushNamed('/Tabs', arguments: 1);
+                  },
+                  child: IconButton(
+                    icon: Icon(UiIcons.shopping_cart),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/Tabs', arguments: 3);
+                    },
+                  ))),
         ],
       ),
       body: widget.currentPage,
@@ -136,7 +141,7 @@ class _TabsWidgetState extends State<TabsWidget> {
             title: new Container(height: 0.0),
           ),
           BottomNavigationBarItem(
-            icon: Icon(UiIcons.user_1),
+            icon: new Icon(UiIcons.chat),
             title: new Container(height: 0.0),
           ),
           BottomNavigationBarItem(
@@ -164,7 +169,7 @@ class _TabsWidgetState extends State<TabsWidget> {
                     color: Theme.of(context).primaryColor),
               )),
           BottomNavigationBarItem(
-            icon: new Icon(UiIcons.chat),
+            icon: Icon(UiIcons.shopping_cart),
             title: new Container(height: 0.0),
           ),
           BottomNavigationBarItem(

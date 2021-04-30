@@ -19,12 +19,25 @@ class ProfileSettingsDialog extends StatefulWidget {
 class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
   GlobalKey<FormState> _profileSettingsFormKey = new GlobalKey<FormState>();
 
-  /*Future<String> updateProfile(Object data) async {
-    var res = await http.post(Uri.parse(SERVER_DOMAIN + 'users/' + ),
-        body: {'email': email, 'password': password});
+  Future<String> updateProfile() async {
+    var res = await http.post(
+        Uri.parse(SERVER_DOMAIN + 'users/' + Global.instance.authId),
+        body: {
+          'name': Global.instance.authName,
+          'address': Global.instance.authAddress,
+          'phone': Global.instance.authPhone,
+          'email': Global.instance.authEmail,
+          'gender': Global.instance.authGender,
+          'school_origin': Global.instance.authSchool,
+          'graduation_year': Global.instance.authGraduate,
+          'birth_place': Global.instance.authBirthPlace,
+          'birth_date': Global.instance.authBirthDate,
+          'identity_number': Global.instance.authIdentity,
+          'religion': Global.instance.authReligion
+        });
     if (res.statusCode == 200) return res.body;
     return null;
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,10 +102,10 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
                               },
                               onSaved: (input) => widget.user.gender = input,
                               items: [
-                                /*new DropdownMenuItem(
+                                new DropdownMenuItem(
                                     value: 'Male', child: Text('Male')),
                                 new DropdownMenuItem(
-                                    value: 'Female', child: Text('Female')),*/
+                                    value: 'Female', child: Text('Female')),
                               ],
                             );
                           },
@@ -104,6 +117,7 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
                                   hintText: '1996-12-31',
                                   labelText: 'Birth Date'),
                               format: new DateFormat('dd-MM-yyyy'),
+                              //initialValue: DateTime(1996, 12, 31),
                               initialValue: widget.user.dateOfBirth,
                               onShowPicker: (context, currentValue) {
                                 return showDatePicker(
@@ -144,7 +158,7 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
                         ),
                         new TextFormField(
                           style: TextStyle(color: Theme.of(context).hintColor),
-                          keyboardType: TextInputType.text,
+                          keyboardType: TextInputType.number,
                           decoration: getInputDecoration(
                               hintText: '08781122333', labelText: 'Phone'),
                           initialValue: widget.user.phone,
@@ -253,7 +267,7 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
     );
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (_profileSettingsFormKey.currentState.validate()) {
       _profileSettingsFormKey.currentState.save();
 
@@ -296,6 +310,8 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
         storage.delete(key: 'authReligion');
         storage.write(key: 'authReligion', value: widget.user.religion);
       });
+
+      //var jwt = await updateProfile();
 
       Navigator.pop(context);
     }

@@ -1,3 +1,4 @@
+import 'package:Unio/src/screens/account.dart';
 import 'package:flutter/material.dart';
 import 'src/models/route_argument.dart';
 import 'src/screens/Categorie.dart';
@@ -18,19 +19,30 @@ class RouteGenerator {
       case '/':
         return MaterialPageRoute(builder: (_) => Splash());
       case '/SignIn':
-        return MaterialPageRoute(builder: (_) => SignInWidget()); 
+        return MaterialPageRoute(builder: (_) => SignInWidget());
+      case '/Setting':
+        return MaterialPageRoute(builder: (_) => AccountWidget());
       case '/SignUp':
-        return MaterialPageRoute(builder: (_) => SignUpWidget());  
+        return MaterialPageRoute(builder: (_) => SignUpWidget());
       case '/Tabs':
-        return MaterialPageRoute(builder: (_) => TabsWidget(currentTab: args,));    
+        return MaterialPageRoute(
+            builder: (_) => TabsWidget(
+                  currentTab: args,
+                ));
       case '/Utilities':
-        return MaterialPageRoute(builder: (_) => UtilitieWidget(routeArgument: args as RouteArgument,));
+        return MaterialPageRoute(
+            builder: (_) => UtilitieWidget(
+                  routeArgument: args as RouteArgument,
+                ));
       case '/Languages':
         return MaterialPageRoute(builder: (_) => LanguagesWidget());
       case '/Categories':
         return MaterialPageRoute(builder: (_) => CategoriesWidget());
       case '/Categorie':
-        return MaterialPageRoute(builder: (_) => CategorieWidget(routeArgument: args as  RouteArgument,));
+        return MaterialPageRoute(
+            builder: (_) => CategorieWidget(
+                  routeArgument: args as RouteArgument,
+                ));
 
       default:
         // If there is no such named route in the switch statement, e.g. /third

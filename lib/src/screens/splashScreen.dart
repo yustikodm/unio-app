@@ -20,6 +20,7 @@ class _SplashState extends State<Splash> {
 
   getAuthData() async {
     var date = await storage.read(key: 'authBirthDate');
+    Global.instance.authId = await storage.read(key: 'authId');
     Global.instance.apiToken = await storage.read(key: 'apiToken');
     Global.instance.authName = await storage.read(key: 'authName');
     Global.instance.authEmail = await storage.read(key: 'authEmail');

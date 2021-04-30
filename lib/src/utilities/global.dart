@@ -8,6 +8,7 @@ class Global {
   Global._internal();
   static Global get instance => _singleton;
 
+  var authId;
   var apiToken;
   var authName;
   var authEmail;

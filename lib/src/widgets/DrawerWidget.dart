@@ -56,7 +56,7 @@ class DrawerWidget extends StatelessWidget {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              Navigator.of(context).pushNamed('/Tabs', arguments: 1);
+              Navigator.of(context).pushNamed('/Setting');
             },
             child: UserAccountsDrawerHeader(
               decoration: BoxDecoration(
@@ -141,7 +141,7 @@ class DrawerWidget extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pushNamed('/Tabs', arguments: 1);
+              Navigator.of(context).pushNamed('/Setting');
             },
             leading: Icon(
               UiIcons.settings_1,

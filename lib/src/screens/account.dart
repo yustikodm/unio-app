@@ -1,7 +1,6 @@
 import '../../config/ui_icons.dart';
 import '../models/user.dart';
 import '../widgets/ProfileSettingsDialog.dart';
-import '../widgets/SearchBarWidget.dart';
 import 'package:flutter/material.dart';
 
 class AccountWidget extends StatefulWidget {
@@ -18,9 +17,8 @@ class _AccountWidgetState extends State<AccountWidget> {
       padding: EdgeInsets.symmetric(vertical: 7),
       child: Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: SearchBarWidget(),
+          SizedBox(
+            height: 40,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),

@@ -158,20 +158,22 @@ class _SignInWidgetState extends State<SignInWidget> {
 
                             if (jwt != null) {
                               var data = convert.jsonDecode(jwt);
+                              dynamic date =
+                                  data['data']['biodata']['birth_date'];
 
                               DateTime formattedDate;
 
-                              if (data['data']['biodata']['birth_date'] !=
-                                  null) {
-                                DateTime date = DateTime.parse(
-                                    data['data']['biodata']['birth_date']);
-
+                              if (date != null) {
+                                DateTime date2 = DateTime.parse(date);
                                 formattedDate = DateTime.parse(
-                                    DateFormat('dd-MM-yyyy').format(date));
+                                    DateFormat('yyyy-MM-dd').format(date2));
                               } else {
-                                formattedDate = DateTime(0001, 01, 01);
+                                formattedDate = DateTime(2000, 01, 01);
                               }
 
+                              var authId = data['data']['id'].toString();
+
+                              Global.instance.authId = authId;
                               Global.instance.apiToken =
                                   data['data']['token']['api_token'];
                               Global.instance.authName =
@@ -199,6 +201,8 @@ class _SignInWidgetState extends State<SignInWidget> {
                               Global.instance.authReligion =
                                   data['data']['biodata']['religion'];
 
+                              storage.write(
+                                  key: 'authId', value: authId ?? '1');
                               storage.write(
                                   key: 'apiToken',
                                   value: data['data']['api_token'] ?? '-');

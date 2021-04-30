@@ -47,7 +47,7 @@ class User {
           'Guest',
           'guest@mail.com',
           'Male',
-          DateTime(0001, 01, 01),
+          DateTime(2000, 01, 01),
           'Surabaya',
           'img/user2.jpg',
           '4600 Isaacs Creek Road Golden, IL 62339',
