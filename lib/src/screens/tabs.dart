@@ -45,6 +45,39 @@ class _TabsWidgetState extends State<TabsWidget> {
     super.didUpdateWidget(oldWidget);
   }
 
+  Future<void> _showNeedLoginAlert(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('You are not logged in!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you wanna login first?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pushNamed('/SignIn');
+              },
+            ),
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _selectTab(int tabItem) {
     setState(() {
       widget.currentTab = tabItem;
@@ -55,8 +88,12 @@ class _TabsWidgetState extends State<TabsWidget> {
           widget.currentPage = NotificationsWidget();
           break;
         case 3:
-          widget.currentTitle = 'Cart';
-          widget.currentPage = CartWidget();
+          if (Global.instance.apiToken != null) {
+            widget.currentTitle = 'Cart';
+            widget.currentPage = CartWidget();
+          } else {
+            _showNeedLoginAlert(context);
+          }
           break;
         case 2:
           widget.currentTitle = 'Home';
@@ -67,8 +104,12 @@ class _TabsWidgetState extends State<TabsWidget> {
           widget.currentPage = MessagesWidget();
           break;
         case 4:
-          widget.currentTitle = 'Favorites';
-          widget.currentPage = FavoritesWidget();
+          if (Global.instance.apiToken != null) {
+            widget.currentTitle = 'Favorites';
+            widget.currentPage = FavoritesWidget();
+          } else {
+            _showNeedLoginAlert(context);
+          }
           break;
         case 5:
           widget.selectedTab = 3;

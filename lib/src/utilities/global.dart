@@ -23,3 +23,20 @@ class Global {
   var authIdentity = '';
   var authReligion = '';
 }
+
+convertType(type) {
+  switch (type) {
+    case 'vendors':
+      return 'Vendor';
+    case 'universities':
+      return 'University';
+    case 'majors':
+      return 'Field of Study';
+    case 'services':
+      return 'Service';
+    case 'place_lives':
+      return 'Place to Live';
+    default:
+      return '-';
+  }
+}

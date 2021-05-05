@@ -1,11 +1,18 @@
+import 'dart:io';
+
+import 'package:Unio/src/widgets/FavoriteGridItemWidget.dart';
+
 import '../../config/ui_icons.dart';
-import '../models/utilities.dart';
+import '../models/favorites.dart';
 import '../widgets/EmptyFavoritesWidget.dart';
 import '../widgets/FavoriteListItemWidget.dart';
-import '../widgets/UtilitiesGridItemWidget.dart';
 import '../widgets/SearchBarWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'dart:convert';
+import 'package:Unio/src/utilities/global.dart';
 
 class FavoritesWidget extends StatefulWidget {
   @override
@@ -14,7 +21,13 @@ class FavoritesWidget extends StatefulWidget {
 
 class _FavoritesWidgetState extends State<FavoritesWidget> {
   String layout = 'list';
-  UtilitiesList _utilitiesList = new UtilitiesList();
+  FavoriteList _favoriteList = new FavoriteList();
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +44,12 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
           ),
           SizedBox(height: 10),
           Offstage(
-            offstage: _utilitiesList.favoritesList.isEmpty,
+            offstage: _favoriteList.favoritesList.isEmpty,
             child: Padding(
               padding: const EdgeInsets.only(left: 20, right: 10),
               child: ListTile(
-                contentPadding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                 leading: Icon(
                   UiIcons.heart,
                   color: Theme.of(context).hintColor,
@@ -57,7 +71,9 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
                       },
                       icon: Icon(
                         Icons.format_list_bulleted,
-                        color: this.layout == 'list' ? Theme.of(context).focusColor: Theme.of(context).focusColor.withOpacity(0.4),
+                        color: this.layout == 'list'
+                            ? Theme.of(context).focusColor
+                            : Theme.of(context).focusColor.withOpacity(0.4),
                       ),
                     ),
                     IconButton(
@@ -68,7 +84,9 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
                       },
                       icon: Icon(
                         Icons.apps,
-                        color: this.layout == 'grid' ? Theme.of(context).focusColor: Theme.of(context).focusColor.withOpacity(0.4),
+                        color: this.layout == 'grid'
+                            ? Theme.of(context).focusColor
+                            : Theme.of(context).focusColor.withOpacity(0.4),
                       ),
                     )
                   ],
@@ -77,41 +95,44 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
             ),
           ),
           Offstage(
-            offstage: this.layout != 'list' || _utilitiesList.favoritesList.isEmpty,
+            offstage:
+                this.layout != 'list' || _favoriteList.favoritesList.isEmpty,
             child: ListView.separated(
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               primary: false,
-              itemCount: _utilitiesList.favoritesList.length,
+              itemCount: _favoriteList.favoritesList.length,
               separatorBuilder: (context, index) {
                 return SizedBox(height: 10);
               },
               itemBuilder: (context, index) {
                 return FavoriteListItemWidget(
                   heroTag: 'favorites_list',
-                  utilitie: _utilitiesList.favoritesList.elementAt(index),
+                  favorite: _favoriteList.favoritesList.elementAt(index),
                   onDismissed: () {
                     setState(() {
-                      _utilitiesList.favoritesList.removeAt(index);
+                      _favoriteList.favoritesList.removeAt(index);
                     });
                   },
                 );
               },
             ),
           ),
-          Offstage(
-            offstage: this.layout != 'grid' || _utilitiesList.favoritesList.isEmpty,
+          /*Offstage(
+            offstage:
+                this.layout != 'grid' || _favoriteList.favoritesList.isEmpty,
             child: Container(
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: new StaggeredGridView.countBuilder(
                 primary: false,
                 shrinkWrap: true,
                 crossAxisCount: 4,
-                itemCount: _utilitiesList.favoritesList.length,
+                itemCount: _favoriteList.favoritesList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  Utilitie utilitie = _utilitiesList.favoritesList.elementAt(index);
-                  return UtilitietGridItemWidget(
-                    utilitie: utilitie,
+                  Favorite favorite =
+                      _favoriteList.favoritesList.elementAt(index);
+                  return FavoriteGridItemWidget(
+                    favorite: favorite,
                     heroTag: 'favorites_grid',
                   );
                 },
@@ -121,13 +142,99 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
                 crossAxisSpacing: 15.0,
               ),
             ),
-          ),
+          ),*/
           Offstage(
-            offstage: _utilitiesList.favoritesList.isNotEmpty,
+            offstage: _favoriteList.favoritesList.isNotEmpty,
             child: EmptyFavoritesWidget(),
           )
         ],
       ),
     );
+  }
+
+  getData() async {
+    String url = SERVER_DOMAIN + "wishlists";
+
+    Map<String, dynamic> request = Map();
+    request['user_id'] = Global.instance.authId;
+    request['entity_type'] = '';
+    request['name'] = '';
+
+    String requestMap = '';
+    int index = 0;
+    request.forEach((key, value) {
+      requestMap += '$key=$value';
+      if (index != request.length - 1) requestMap += '&';
+      index++;
+    });
+    url += '?$requestMap';
+
+    Map<String, String> headers = <String, String>{
+      HttpHeaders.contentTypeHeader: 'application/json'
+    };
+    var token = Global.instance.apiToken;
+    headers.addAll(
+        <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
+    print('============ noted: token ' + token);
+
+    try {
+      final client = new http.Client();
+      final response = await client
+          .get(
+        Uri.parse(url),
+        headers: headers,
+        // body: json.encode(request),
+      )
+          .timeout(Duration(seconds: 60), onTimeout: () {
+        throw 'Koneksi terputus. Silahkan coba lagi.';
+      });
+      print('========= noted: get requestMap ' +
+          request.toString() +
+          "===== url " +
+          url);
+
+      // var result = Map<String, dynamic>();
+      if (response.statusCode == 200) {
+        print('========= noted: get response body ' + response.body.toString());
+        if (response.body.isNotEmpty) {
+          List jsonMap = json.decode(response.body)['data'];
+          if (jsonMap != null) {
+            //print('lala');
+            //print(jsonMap);
+            //print('lala');
+            //print('============ noted: jsonMap response ' + jsonMap.toString());
+
+            for (var i = 0; i < jsonMap.length; i++) {
+              print(i);
+              setState(() {
+                _favoriteList.favoritesList.add(new Favorite(
+                  jsonMap[i]['name'].toString() ?? '-',
+                  jsonMap[i]['picture'].toString() ?? '-',
+                  jsonMap[i]['description'].toString() ?? '-',
+                  jsonMap[i]['entity_id'] ?? null,
+                  jsonMap[i]['entity_type'].toString() ?? '-',
+                  jsonMap[i]['detail_id'] == ''
+                      ? null
+                      : int.parse(jsonMap[i]['detail_id']),
+                  jsonMap[i]['detail_name'].toString() ?? '-',
+                ));
+              });
+            }
+
+            // return jsonMap;
+          }
+
+          String error = json.decode(response.body)['error'];
+          if (error != null) {
+            throw error;
+          }
+        }
+      } else {
+        String error = json.decode(response.body)['error'];
+        throw (error == '') ? 'Gagal memproses data' : error;
+      }
+    } on SocketException {
+      throw 'Tidak ada koneksi internet. Silahkan coba lagi.';
+    }
   }
 }

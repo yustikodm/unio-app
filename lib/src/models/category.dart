@@ -1,6 +1,7 @@
 import '../../config/ui_icons.dart';
 import 'package:flutter/material.dart';
 import '../models/utilities.dart';
+import '../models/favorites.dart';
 
 class Category {
   String id = UniqueKey().toString();
@@ -9,6 +10,7 @@ class Category {
   IconData icon;
   Color color;
   List<Utilitie> utilities;
+  List<Favorite> favorites;
 
   Category(this.name, this.icon, this.selected, this.color, this.utilities);
 }

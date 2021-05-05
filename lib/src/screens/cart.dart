@@ -1,11 +1,18 @@
+import 'dart:io';
+
+import 'package:Unio/src/utilities/global.dart';
+
 import '../../config/ui_icons.dart';
-import '../models/utilities.dart';
+import '../models/carts.dart';
 import '../widgets/EmptyCartWidget.dart';
 import '../widgets/CartListItemWidget.dart';
-import '../widgets/UtilitiesGridItemWidget.dart';
+import '../widgets/CartsGridItemWidget.dart';
 import '../widgets/SearchBarWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'dart:convert';
 
 class CartWidget extends StatefulWidget {
   @override
@@ -14,7 +21,14 @@ class CartWidget extends StatefulWidget {
 
 class _CartWidgetState extends State<CartWidget> {
   String layout = 'list';
-  UtilitiesList _utilitiesList = new UtilitiesList();
+  var queryResult = [];
+  CartsList _cartsList = new CartsList();
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +45,7 @@ class _CartWidgetState extends State<CartWidget> {
           ),
           SizedBox(height: 10),
           Offstage(
-            offstage: _utilitiesList.cartList.isEmpty,
+            offstage: _cartsList.cartList.isEmpty,
             child: Padding(
               padding: const EdgeInsets.only(left: 20, right: 10),
               child: ListTile(
@@ -82,22 +96,22 @@ class _CartWidgetState extends State<CartWidget> {
             ),
           ),
           Offstage(
-            offstage: this.layout != 'list' || _utilitiesList.cartList.isEmpty,
+            offstage: this.layout != 'list' || _cartsList.cartList.isEmpty,
             child: ListView.separated(
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               primary: false,
-              itemCount: _utilitiesList.cartList.length,
+              itemCount: _cartsList.cartList.length,
               separatorBuilder: (context, index) {
                 return SizedBox(height: 10);
               },
               itemBuilder: (context, index) {
                 return CartListItemWidget(
                   heroTag: 'cart_list',
-                  utilitie: _utilitiesList.cartList.elementAt(index),
+                  carts: _cartsList.cartList.elementAt(index),
                   onDismissed: () {
                     setState(() {
-                      _utilitiesList.cartList.removeAt(index);
+                      _cartsList.cartList.removeAt(index);
                     });
                   },
                 );
@@ -105,18 +119,18 @@ class _CartWidgetState extends State<CartWidget> {
             ),
           ),
           Offstage(
-            offstage: this.layout != 'grid' || _utilitiesList.cartList.isEmpty,
+            offstage: this.layout != 'grid' || _cartsList.cartList.isEmpty,
             child: Container(
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: new StaggeredGridView.countBuilder(
                 primary: false,
                 shrinkWrap: true,
                 crossAxisCount: 4,
-                itemCount: _utilitiesList.cartList.length,
+                itemCount: _cartsList.cartList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  Utilitie utilitie = _utilitiesList.cartList.elementAt(index);
-                  return UtilitietGridItemWidget(
-                    utilitie: utilitie,
+                  Carts carts = _cartsList.cartList.elementAt(index);
+                  return CartsGridItemWidget(
+                    carts: carts,
                     heroTag: 'cart_grid',
                   );
                 },
@@ -128,11 +142,96 @@ class _CartWidgetState extends State<CartWidget> {
             ),
           ),
           Offstage(
-            offstage: _utilitiesList.cartList.isNotEmpty,
+            offstage: _cartsList.cartList.isNotEmpty,
             child: EmptyCartWidget(),
           )
         ],
       ),
     );
+  }
+
+  getData() async {
+    String url = SERVER_DOMAIN + "carts";
+
+    Map<String, dynamic> request = Map();
+    request['user_id'] = Global.instance.authId;
+
+    String requestMap = '';
+    int index = 0;
+    request.forEach((key, value) {
+      requestMap += '$key=$value';
+      if (index != request.length - 1) requestMap += '&';
+      index++;
+    });
+    url += '?$requestMap';
+
+    Map<String, String> headers = <String, String>{
+      HttpHeaders.contentTypeHeader: 'application/json'
+    };
+    var token = Global.instance.apiToken;
+    headers.addAll(
+        <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
+    print('============ noted: token ' + token);
+
+    try {
+      final client = new http.Client();
+      final response = await client
+          .get(
+        Uri.parse(url),
+        headers: headers,
+        // body: json.encode(request),
+      )
+          .timeout(Duration(seconds: 60), onTimeout: () {
+        throw 'Koneksi terputus. Silahkan coba lagi.';
+      });
+      print('========= noted: get requestMap ' +
+          request.toString() +
+          "===== url " +
+          url);
+
+      // var result = Map<String, dynamic>();
+      if (response.statusCode == 200) {
+        print('========= noted: get response body ' + response.body.toString());
+        if (response.body.isNotEmpty) {
+          Map<String, dynamic> jsonMap = json.decode(response.body)['data'];
+          if (jsonMap != null) {
+            print('lala');
+            print(jsonMap['data']);
+            print('lala');
+            print('============ noted: jsonMap response ' + jsonMap.toString());
+
+            for (var i = 0; i < jsonMap['data'].length; i++) {
+              setState(() {
+                _cartsList.cartList.add(new Carts(
+                    int.parse(Global.instance.authId),
+                    jsonMap['data'][i]['entity_id'],
+                    jsonMap['data'][i]['entity_type'].toString(),
+                    jsonMap['data'][i]['service']['name'].toString(),
+                    jsonMap['data'][i]['service']['description'].toString(),
+                    jsonMap['data'][i]['service']['level'].toString(),
+                    jsonMap['data'][i]['service']['picture'].toString(),
+                    jsonMap['data'][i]['qty'],
+                    jsonMap['data'][i]['price'],
+                    jsonMap['data'][i]['total_price'],
+                    jsonMap['data'][i]['service']['vendor']['name']
+                        .toString()));
+              });
+            }
+
+            // return jsonMap;
+          }
+
+          String error = json.decode(response.body)['error'];
+          if (error != null) {
+            throw error;
+          }
+        }
+      } else {
+        String error = json.decode(response.body)['error'];
+        throw (error == '') ? 'Gagal memproses data' : error;
+      }
+    } on SocketException {
+      throw 'Tidak ada koneksi internet. Silahkan coba lagi.';
+    }
   }
 }

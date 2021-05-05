@@ -1,13 +1,16 @@
+import 'package:Unio/src/models/favorites.dart';
+
 import '../models/route_argument.dart';
 import 'package:flutter/material.dart';
-import '../models/utilities.dart';
 
 // Not Used it an optional grid
+// ignore: must_be_immutable
 class FavoriteGridItemWidget extends StatelessWidget {
-  Utilitie utilitie;
+  Favorite favorite;
   String heroTag;
 
-  FavoriteGridItemWidget({Key key, this.heroTag, this.utilitie}) : super(key: key);
+  FavoriteGridItemWidget({Key key, this.heroTag, this.favorite})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -15,7 +18,9 @@ class FavoriteGridItemWidget extends StatelessWidget {
       splashColor: Theme.of(context).accentColor.withOpacity(0.08),
       onTap: () {
         Navigator.of(context).pushNamed('/Utilitie',
-            arguments: new RouteArgument(argumentsList: [this.utilitie, this.heroTag], id: this.utilitie.id));
+            arguments: new RouteArgument(
+                argumentsList: [this.favorite, this.heroTag],
+                id: this.favorite.id));
       },
       child: Stack(
         alignment: AlignmentDirectional.topEnd,
@@ -28,11 +33,12 @@ class FavoriteGridItemWidget extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: Hero(
-                    tag: heroTag + utilitie.id,
+                    tag: heroTag + favorite.id,
                     child: Container(
-                      
                       decoration: BoxDecoration(
-                        image: DecorationImage(image: AssetImage(this.utilitie.image), fit: BoxFit.cover),
+                        image: DecorationImage(
+                            image: AssetImage(this.favorite.image),
+                            fit: BoxFit.cover),
                         borderRadius: BorderRadius.circular(5),
                       ),
                     ),
@@ -40,13 +46,13 @@ class FavoriteGridItemWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 2),
                 Text(
-                  utilitie.name,
+                  favorite.name,
                   style: Theme.of(context).textTheme.body2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 2),
                 Text(
-                  utilitie.available.toString(),
+                  favorite.parentId.toString(),
                   style: Theme.of(context).textTheme.display1,
                   overflow: TextOverflow.ellipsis,
                 )

@@ -32,7 +32,7 @@ class EmptyCartWidget extends StatelessWidget {
                           Theme.of(context).focusColor.withOpacity(0.1),
                         ])),
                 child: Icon(
-                  UiIcons.heart,
+                  UiIcons.shopping_cart,
                   color: Theme.of(context).primaryColor,
                   size: 70,
                 ),

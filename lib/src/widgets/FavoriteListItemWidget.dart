@@ -1,15 +1,20 @@
+import 'package:Unio/src/models/favorites.dart';
+
 import '../../config/ui_icons.dart';
-import '../models/utilities.dart';
+import '../models/favorites.dart';
 import '../models/route_argument.dart';
 import 'package:flutter/material.dart';
+import 'package:Unio/src/utilities/global.dart';
 
 // ignore: must_be_immutable
 class FavoriteListItemWidget extends StatefulWidget {
   String heroTag;
-  Utilitie utilitie;
+  Favorite favorite;
   VoidCallback onDismissed;
 
-  FavoriteListItemWidget({Key key, this.heroTag, this.utilitie, this.onDismissed}) : super(key: key);
+  FavoriteListItemWidget(
+      {Key key, this.heroTag, this.favorite, this.onDismissed})
+      : super(key: key);
 
   @override
   _FavoriteListItemWidgetState createState() => _FavoriteListItemWidgetState();
@@ -19,7 +24,7 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key(this.widget.utilitie.hashCode.toString()),
+      key: Key(this.widget.favorite.hashCode.toString()),
       background: Container(
         color: Colors.red,
         child: Align(
@@ -40,8 +45,9 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
         });
 
         // Then show a snackbar.
-        Scaffold.of(context)
-            .showSnackBar(SnackBar(content: Text("The ${widget.utilitie.name} utilitie is removed from wish list")));
+        Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(
+                "The ${widget.favorite.name} utilitie is removed from wish list")));
       },
       child: InkWell(
         splashColor: Theme.of(context).accentColor,
@@ -50,27 +56,33 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
         onTap: () {
           Navigator.of(context).pushNamed('/Utilities',
               arguments: new RouteArgument(
-                  argumentsList: [this.widget.utilitie, this.widget.heroTag], id: this.widget.utilitie.id));
+                  argumentsList: [this.widget.favorite, this.widget.heroTag],
+                  id: this.widget.favorite.id));
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           decoration: BoxDecoration(
             color: Theme.of(context).primaryColor.withOpacity(0.9),
             boxShadow: [
-              BoxShadow(color: Theme.of(context).focusColor.withOpacity(0.1), blurRadius: 5, offset: Offset(0, 2)),
+              BoxShadow(
+                  color: Theme.of(context).focusColor.withOpacity(0.1),
+                  blurRadius: 5,
+                  offset: Offset(0, 2)),
             ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Hero(
-                tag: widget.heroTag + widget.utilitie.id,
+                tag: widget.heroTag + widget.favorite.id,
                 child: Container(
                   height: 60,
                   width: 60,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                    image: DecorationImage(image: AssetImage(widget.utilitie.image), fit: BoxFit.cover),
+                    image: DecorationImage(
+                        image: NetworkImage(widget.favorite.image),
+                        fit: BoxFit.cover),
                   ),
                 ),
               ),
@@ -84,7 +96,7 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            widget.utilitie.name,
+                            widget.favorite.name,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
                             style: Theme.of(context).textTheme.subhead,
@@ -95,12 +107,15 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
                               Icon(
                                 Icons.star,
                                 color: Colors.amber,
-                                size: 18,
+                                size:
+                                    widget.favorite.parentName == '-' ? 1 : 18,
                               ),
-                              SizedBox(width: 4,),
+                              SizedBox(
+                                width: 4,
+                              ),
                               Text(
-                                widget.utilitie.rate.toString(),
-                                style: Theme.of(context).textTheme.body2,
+                                widget.favorite.parentName.toString(),
+                                style: Theme.of(context).textTheme.body1,
                               )
                             ],
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -109,7 +124,8 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
                       ),
                     ),
                     SizedBox(width: 8),
-                    Text('${widget.utilitie.available} viewers', style: Theme.of(context).textTheme.display1),
+                    Text(convertType(widget.favorite.entityType.toString()),
+                        style: Theme.of(context).textTheme.body2),
                   ],
                 ),
               )

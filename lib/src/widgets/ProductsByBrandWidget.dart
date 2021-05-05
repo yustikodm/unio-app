@@ -1,11 +1,13 @@
 import '../../config/ui_icons.dart';
 import '../models/category.dart';
 import '../models/utilities.dart';
+import '../models/favorites.dart';
 import '../widgets/FavoriteListItemWidget.dart';
 import '../widgets/UtilitiesGridItemWidget.dart';
 import '../widgets/SearchBarWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
 // ignore: must_be_immutable
 class UtilitiesByBrandWidget extends StatefulWidget {
   Category category;
@@ -52,7 +54,9 @@ class _UtilitiesByBrandWidgetState extends State<UtilitiesByBrandWidget> {
                   },
                   icon: Icon(
                     Icons.format_list_bulleted,
-                    color: this.layout == 'list' ? Theme.of(context).focusColor : Theme.of(context).focusColor.withOpacity(0.4),
+                    color: this.layout == 'list'
+                        ? Theme.of(context).focusColor
+                        : Theme.of(context).focusColor.withOpacity(0.4),
                   ),
                 ),
                 IconButton(
@@ -63,7 +67,9 @@ class _UtilitiesByBrandWidgetState extends State<UtilitiesByBrandWidget> {
                   },
                   icon: Icon(
                     Icons.apps,
-                    color: this.layout == 'grid' ? Theme.of(context).focusColor : Theme.of(context).focusColor.withOpacity(0.4),
+                    color: this.layout == 'grid'
+                        ? Theme.of(context).focusColor
+                        : Theme.of(context).focusColor.withOpacity(0.4),
                   ),
                 )
               ],
@@ -83,7 +89,7 @@ class _UtilitiesByBrandWidgetState extends State<UtilitiesByBrandWidget> {
             itemBuilder: (context, index) {
               return FavoriteListItemWidget(
                 heroTag: 'Utilities_by_category_list',
-                utilitie: widget.category.utilities.elementAt(index),
+                favorite: widget.category.favorites.elementAt(index),
                 onDismissed: () {
                   setState(() {
                     widget.category.utilities.removeAt(index);
