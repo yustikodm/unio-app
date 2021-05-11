@@ -20,6 +20,8 @@ class _SplashState extends State<Splash> {
 
   getAuthData() async {
     var date = await storage.read(key: 'authBirthDate');
+    print(date);
+    print('lala');
     Global.instance.authId = await storage.read(key: 'authId');
     Global.instance.apiToken = await storage.read(key: 'apiToken');
     Global.instance.authName = await storage.read(key: 'authName');
@@ -31,9 +33,8 @@ class _SplashState extends State<Splash> {
     Global.instance.authSchool = await storage.read(key: 'authSchool');
     Global.instance.authGraduate = await storage.read(key: 'authGraduate');
     Global.instance.authBirthPlace = await storage.read(key: 'authBirthPlace');
-    Global.instance.authBirthDate = DateTime.parse(date);
+    //Global.instance.authBirthDate = DateTime.parse(date);
     Global.instance.authIdentity = await storage.read(key: 'authIdentity');
-    Global.instance.authReligion = await storage.read(key: 'authReligion');
   }
 
   @override

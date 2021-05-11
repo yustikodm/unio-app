@@ -177,7 +177,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                                 Global.instance.apiToken =
                                     data['data']['token']['api_token'];
                                 Global.instance.authName =
-                                    data['data']['fullname'];
+                                    data['data']['biodata']['fullname'];
                                 Global.instance.authEmail =
                                     data['data']['email'];
                                 Global.instance.authPhone =
@@ -213,7 +213,9 @@ class _SignInWidgetState extends State<SignInWidget> {
                                     value: data['data']['email'] ?? '-');
                                 storage.write(
                                     key: 'authName',
-                                    value: data['data']['fullname'] ?? '-');
+                                    value: data['data']['biodata']
+                                            ['fullname'] ??
+                                        '-');
                                 storage.write(
                                     key: 'authPicture',
                                     value: data['data']['image_path'] ?? '-');

@@ -265,18 +265,6 @@ class _AccountWidgetState extends State<AccountWidget> {
                     style: TextStyle(color: Theme.of(context).focusColor),
                   ),
                 ),
-                ListTile(
-                  onTap: () {},
-                  dense: true,
-                  title: Text(
-                    'Religion',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                  trailing: Text(
-                    _user.religion,
-                    style: TextStyle(color: Theme.of(context).focusColor),
-                  ),
-                ),
               ],
             ),
           ),

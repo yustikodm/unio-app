@@ -1,4 +1,7 @@
 import 'package:Unio/main.dart';
+import 'package:Unio/src/models/route_argument.dart';
+import 'package:Unio/src/widgets/FavoriteFilterWidget.dart';
+import 'package:Unio/src/widgets/FilterWidget.dart';
 
 import '../../config/ui_icons.dart';
 import '../screens/account.dart';
@@ -9,12 +12,12 @@ import '../screens/home.dart';
 import '../screens/messages.dart';
 import '../screens/notifications.dart';
 import '../widgets/DrawerWidget.dart';
-import '../widgets/FilterWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:Unio/src/utilities/global.dart';
 
 // ignore: must_be_immutable
 class TabsWidget extends StatefulWidget {
+  RouteArgument routeArgument;
   int currentTab = 2;
   int selectedTab = 2;
   String currentTitle = 'Home';
@@ -23,6 +26,7 @@ class TabsWidget extends StatefulWidget {
   TabsWidget({
     Key key,
     this.currentTab,
+    this.routeArgument,
   }) : super(key: key);
 
   @override
@@ -106,7 +110,13 @@ class _TabsWidgetState extends State<TabsWidget> {
         case 4:
           if (Global.instance.apiToken != null) {
             widget.currentTitle = 'Favorites';
-            widget.currentPage = FavoritesWidget();
+            if (widget.routeArgument == null) {
+              widget.currentPage = FavoritesWidget();
+            } else {
+              widget.currentPage = FavoritesWidget(
+                routeArgument: widget.routeArgument,
+              );
+            }
           } else {
             _showNeedLoginAlert(context);
           }
@@ -129,6 +139,7 @@ class _TabsWidgetState extends State<TabsWidget> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: DrawerWidget(),
+      //endDrawer: FavoriteFilterWidget(),
       endDrawer: FilterWidget(),
       appBar: AppBar(
         automaticallyImplyLeading: false,

@@ -1,20 +1,22 @@
 import 'dart:io';
-
-import 'package:Unio/src/widgets/FavoriteGridItemWidget.dart';
+import 'package:Unio/src/models/route_argument.dart';
+import 'package:Unio/src/widgets/FavoriteSearchWidget.dart';
 
 import '../../config/ui_icons.dart';
 import '../models/favorites.dart';
 import '../widgets/EmptyFavoritesWidget.dart';
 import '../widgets/FavoriteListItemWidget.dart';
-import '../widgets/SearchBarWidget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:Unio/src/utilities/global.dart';
 
+// ignore: must_be_immutable
 class FavoritesWidget extends StatefulWidget {
+  RouteArgument routeArgument;
+
+  FavoritesWidget({Key key, this.routeArgument}) : super(key: key);
+
   @override
   _FavoritesWidgetState createState() => _FavoritesWidgetState();
 }
@@ -25,7 +27,15 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
 
   @override
   void initState() {
-    getData();
+    String type = '';
+    String name = '';
+
+    if (widget.routeArgument != null) {
+      type = widget.routeArgument.param1;
+      name = widget.routeArgument.param2;
+    }
+
+    getData(type, name);
     super.initState();
   }
 
@@ -40,7 +50,7 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: SearchBarWidget(),
+            child: FavoriteSearchWidget(),
           ),
           SizedBox(height: 10),
           Offstage(
@@ -152,13 +162,13 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
     );
   }
 
-  getData() async {
+  getData(type, name) async {
     String url = SERVER_DOMAIN + "wishlists";
 
     Map<String, dynamic> request = Map();
     request['user_id'] = Global.instance.authId;
-    request['entity_type'] = '';
-    request['name'] = '';
+    request['entity_type'] = type;
+    request['name'] = name;
 
     String requestMap = '';
     int index = 0;
@@ -199,11 +209,6 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
         if (response.body.isNotEmpty) {
           List jsonMap = json.decode(response.body)['data'];
           if (jsonMap != null) {
-            //print('lala');
-            //print(jsonMap);
-            //print('lala');
-            //print('============ noted: jsonMap response ' + jsonMap.toString());
-
             for (var i = 0; i < jsonMap.length; i++) {
               print(i);
               setState(() {

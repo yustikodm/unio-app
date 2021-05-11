@@ -1,4 +1,5 @@
 import 'package:Unio/src/screens/account.dart';
+import 'package:Unio/src/screens/detail.dart';
 import 'package:flutter/material.dart';
 import 'src/models/route_argument.dart';
 import 'src/screens/Categorie.dart';
@@ -24,10 +25,21 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => AccountWidget());
       case '/SignUp':
         return MaterialPageRoute(builder: (_) => SignUpWidget());
+      case '/Detail':
+        return MaterialPageRoute(
+            builder: (_) => DetailWidget(
+                  routeArgument: args as RouteArgument,
+                ));
       case '/Tabs':
         return MaterialPageRoute(
             builder: (_) => TabsWidget(
                   currentTab: args,
+                ));
+      case '/Favorites':
+        return MaterialPageRoute(
+            builder: (_) => TabsWidget(
+                  currentTab: 4,
+                  routeArgument: args as RouteArgument,
                 ));
       case '/Utilities':
         return MaterialPageRoute(

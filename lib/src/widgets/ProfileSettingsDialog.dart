@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import '../../config/ui_icons.dart';
 import '../models/user.dart';
@@ -6,6 +10,7 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:Unio/src/utilities/global.dart';
 import 'package:http/http.dart' as http;
 
+// ignore: must_be_immutable
 class ProfileSettingsDialog extends StatefulWidget {
   User user;
   VoidCallback onChanged;
@@ -20,22 +25,44 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
   GlobalKey<FormState> _profileSettingsFormKey = new GlobalKey<FormState>();
 
   Future<String> updateProfile() async {
-    var res = await http.post(
-        Uri.parse(SERVER_DOMAIN + 'users/' + Global.instance.authId),
-        body: {
+    Map<String, String> headers = <String, String>{
+      HttpHeaders.contentTypeHeader: 'application/json'
+    };
+    var url = SERVER_DOMAIN + 'users/' + Global.instance.authId;
+    var token = Global.instance.apiToken;
+    headers.addAll(
+        <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
+    print(url);
+    print(headers);
+
+    final client = new http.Client();
+    print(jsonEncode({
+      'name': Global.instance.authName,
+      'address': Global.instance.authAddress,
+      'phone': Global.instance.authPhone,
+      'gender': Global.instance.authGender,
+      'school_origin': Global.instance.authSchool,
+      'graduation_year': Global.instance.authGraduate,
+      'birth_place': Global.instance.authBirthPlace,
+      'birth_date': Global.instance.authBirthDate.toString(),
+      'identity_number': Global.instance.authIdentity,
+    }));
+    final response = await client.put(Uri.parse(url),
+        headers: headers,
+        body: jsonEncode({
           'name': Global.instance.authName,
           'address': Global.instance.authAddress,
           'phone': Global.instance.authPhone,
-          'email': Global.instance.authEmail,
           'gender': Global.instance.authGender,
           'school_origin': Global.instance.authSchool,
           'graduation_year': Global.instance.authGraduate,
           'birth_place': Global.instance.authBirthPlace,
-          'birth_date': Global.instance.authBirthDate,
+          'birth_date': Global.instance.authBirthDate.toString(),
           'identity_number': Global.instance.authIdentity,
-          'religion': Global.instance.authReligion
-        });
-    if (res.statusCode == 200) return res.body;
+        }));
+    print(response.body);
+
+    if (response.statusCode == 200) return response.body;
     return null;
   }
 
@@ -76,17 +103,6 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
                                 ? 'Not a valid full name'
                                 : null,
                             onSaved: (input) => widget.user.name = input),
-                        new TextFormField(
-                          style: TextStyle(color: Theme.of(context).hintColor),
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: getInputDecoration(
-                              hintText: 'johndo@gmail.com',
-                              labelText: 'Email Address'),
-                          initialValue: widget.user.email,
-                          validator: (input) =>
-                              !input.contains('@') ? 'Not a valid email' : null,
-                          onSaved: (input) => widget.user.email = input,
-                        ),
                         FormField<String>(
                           builder: (FormFieldState<String> state) {
                             return DropdownButtonFormField<String>(
@@ -202,17 +218,6 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
                               : null,
                           onSaved: (input) => widget.user.identity = input,
                         ),
-                        new TextFormField(
-                          style: TextStyle(color: Theme.of(context).hintColor),
-                          keyboardType: TextInputType.text,
-                          decoration: getInputDecoration(
-                              hintText: 'Islam', labelText: 'Religion'),
-                          initialValue: widget.user.religion,
-                          validator: (input) => input.trim().length < 3
-                              ? 'Not a valid religion'
-                              : null,
-                          onSaved: (input) => widget.user.religion = input,
-                        ),
                       ],
                     ),
                   ),
@@ -273,21 +278,15 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
 
       setState(() {
         Global.instance.authName = widget.user.name;
-        Global.instance.authEmail = widget.user.email;
         Global.instance.authGender = widget.user.gender;
-        //Global.instance.authBirthDate = widget.user.getDateOfBirth();
-        /*Global.instance.authBirthDate = DateTime.parse(
-          DateFormat('dd-MM-yyyy').format(widget.user.getDateOfBirth()));*/
+        Global.instance.authBirthDate = widget.user.dateOfBirth;
         Global.instance.authBirthPlace = widget.user.birthPlace;
         Global.instance.authAddress = widget.user.address;
         Global.instance.authPhone = widget.user.phone;
         Global.instance.authSchool = widget.user.school;
         Global.instance.authGraduate = widget.user.graduate;
         Global.instance.authIdentity = widget.user.identity;
-        Global.instance.authReligion = widget.user.religion;
 
-        storage.delete(key: 'authEmail');
-        storage.write(key: 'authEmail', value: widget.user.email);
         storage.delete(key: 'authName');
         storage.write(key: 'authName', value: widget.user.name);
         storage.delete(key: 'authPhone');
@@ -300,20 +299,45 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
         storage.write(key: 'authGraduate', value: widget.user.graduate);
         storage.delete(key: 'authSchool');
         storage.write(key: 'authSchool', value: widget.user.school);
-        //storage.delete(key: 'authBirthDate');
-        /*storage.write(
-          key: 'authBirthDate', value: widget.user.getDateOfBirth().toString());*/
+        storage.delete(key: 'authBirthDate');
+        storage.write(
+            key: 'authBirthDate',
+            value: widget.user.getDateOfBirth().toString());
         storage.delete(key: 'authBirthPlace');
         storage.write(key: 'authBirthPlace', value: widget.user.birthPlace);
         storage.delete(key: 'authIdentity');
         storage.write(key: 'authIdentity', value: widget.user.identity);
-        storage.delete(key: 'authReligion');
-        storage.write(key: 'authReligion', value: widget.user.religion);
       });
 
-      //var jwt = await updateProfile();
+      var jwt = await updateProfile();
 
-      Navigator.pop(context);
+      print(jwt);
+
+      _showDialog(context);
+
+      // ignore: unnecessary_statements
+
     }
+  }
+
+  _showDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Update Profile Success!"),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text("Ok"),
+                onPressed: () {
+                  print('lala');
+                  Navigator.of(context).pushNamed(
+                    '/Setting',
+                  );
+                },
+              ),
+            ],
+          );
+        });
   }
 }

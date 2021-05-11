@@ -47,17 +47,17 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
         // Then show a snackbar.
         Scaffold.of(context).showSnackBar(SnackBar(
             content: Text(
-                "The ${widget.favorite.name} utilitie is removed from wish list")));
+                "The ${widget.favorite.name} favorite is removed from wish list")));
       },
       child: InkWell(
         splashColor: Theme.of(context).accentColor,
         focusColor: Theme.of(context).accentColor,
         highlightColor: Theme.of(context).primaryColor,
         onTap: () {
-          Navigator.of(context).pushNamed('/Utilities',
-              arguments: new RouteArgument(
-                  argumentsList: [this.widget.favorite, this.widget.heroTag],
-                  id: this.widget.favorite.id));
+          Navigator.of(context).pushNamed('/Detail',
+              arguments: RouteArgument(
+                  param1: widget.favorite.entityId,
+                  param2: widget.favorite.entityType));
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),

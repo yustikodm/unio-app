@@ -1,8 +1,7 @@
-import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:Unio/src/screens/quiz/quiz_screen.dart';
+import 'package:get/get.dart';
 
 import '../../config/ui_icons.dart';
-import '../../main.dart';
 import '../models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:Unio/src/utilities/global.dart';
@@ -111,7 +110,20 @@ class DrawerWidget extends StatelessWidget {
               color: Theme.of(context).focusColor.withOpacity(1),
             ),
             title: Text(
-              "Wish List",
+              "Bookmark",
+              style: Theme.of(context).textTheme.subhead,
+            ),
+          ),
+          ListTile(
+            onTap: () {
+              Get.to(QuizScreen());
+            },
+            leading: Icon(
+              UiIcons.user,
+              color: Theme.of(context).focusColor.withOpacity(1),
+            ),
+            title: Text(
+              "Questionnaire",
               style: Theme.of(context).textTheme.subhead,
             ),
           ),
