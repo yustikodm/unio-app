@@ -116,7 +116,7 @@ class DrawerWidget extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Get.to(QuizScreen());
+              Get.to(() => QuizScreen());
             },
             leading: Icon(
               UiIcons.user,

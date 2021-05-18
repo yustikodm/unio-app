@@ -11,7 +11,7 @@ const List sample_data = [
     "id": 1,
     "question": "Mana yg lebih anda sukai?",
     "options": ["bersepeda.jpg", "jalan.jpg"],
-    "answer_index": 1,
+    "answer_index": 2,
   },
   {
     "id": 2,

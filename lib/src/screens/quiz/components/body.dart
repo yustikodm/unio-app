@@ -26,7 +26,7 @@ class Body extends StatelessWidget {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                child: ProgressBar(),
+                // child: ProgressBar(),
               ),
               SizedBox(height: kDefaultPadding),
               Padding(
@@ -57,7 +57,7 @@ class Body extends StatelessWidget {
               Divider(thickness: 1.5),
               SizedBox(height: kDefaultPadding),
               Expanded(
-                child: PageView.builder(
+                child: new PageView.builder(
                   // Block swipe to next qn
                   physics: NeverScrollableScrollPhysics(),
                   controller: _questionController.pageController,

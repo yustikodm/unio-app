@@ -50,18 +50,18 @@ class QuestionController extends GetxController
   void onInit() {
     // Our animation duration is 60 s
     // so our plan is to fill the progress bar within 60s
-    _animationController =
-        AnimationController(duration: Duration(seconds: 60), vsync: this);
-    _animation = Tween<double>(begin: 0, end: 1).animate(_animationController)
-      ..addListener(() {
-        // update like setState
-        update();
-      });
+    // _animationController =
+    //     AnimationController(duration: Duration(seconds: 60), vsync: this);
+    // _animation = Tween<double>(begin: 0, end: 1).animate(_animationController)
+    //   ..addListener(() {
+    //     // update like setState
+    //     update();
+    //   });
 
     // start our animation
     // Once 60s is completed go to the next qn
-    _animationController.forward().whenComplete(nextQuestion);
-    _pageController = PageController();
+    // _animationController.forward().whenComplete(nextQuestion);
+    _pageController = new PageController();
     super.onInit();
   }
 
@@ -69,7 +69,7 @@ class QuestionController extends GetxController
   @override
   void onClose() {
     super.onClose();
-    _animationController.dispose();
+    // _animationController.dispose();
     _pageController.dispose();
   }
 
@@ -79,10 +79,10 @@ class QuestionController extends GetxController
     _correctAns = question.answer;
     _selectedAns = selectedIndex;
 
-    if (_correctAns == _selectedAns) _numOfCorrectAns++;
+    // if (_correctAns == _selectedAns) _numOfCorrectAns++;
 
     // It will stop the counter
-    _animationController.stop();
+    // _animationController.stop();
     update();
 
     // Once user select an ans after 3s it will go to the next qn
@@ -98,19 +98,31 @@ class QuestionController extends GetxController
           duration: Duration(milliseconds: 250), curve: Curves.ease);
 
       // Reset the counter
-      _animationController.reset();
+      // _animationController.reset();
 
       // Then start it again
       // Once timer is finish go to the next qn
-      _animationController.forward().whenComplete(nextQuestion);
+      // _animationController.forward().whenComplete(nextQuestion);
+      // update();
     } else {
       updateTheQnNum(0);
+
+      resetDefault();
+
       // Get package provide us simple way to naviigate another page
-      Get.to(ScoreScreen());
+      Get.to(() => ScoreScreen());
     }
   }
 
   void updateTheQnNum(int index) {
     _questionNumber.value = index + 1;
+  }
+
+  void resetDefault() {
+    _correctAns = null;
+    _selectedAns = null;
+    _pageController.dispose();
+    _pageController = new PageController();
+    update();
   }
 }
