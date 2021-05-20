@@ -40,7 +40,8 @@ class _CategoriesIconsContainertState extends State<CategoriesIconsContainerWidg
           child: CategoryIconWidget(
             category: item,
             onPressed: (id) {
-              Navigator.of(context).pushNamed('/Categorie', arguments: new RouteArgument(id: item.id, argumentsList: [item]));
+              // Navigator.of(context).pushNamed('/Categorie', arguments: new RouteArgument(id: item.id, argumentsList: [item]));
+              Navigator.of(context).pushNamed('/Directory', arguments: new RouteArgument(argumentsList: [item]));
             },
           ),
         ),

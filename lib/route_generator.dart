@@ -1,5 +1,6 @@
 import 'package:Unio/src/screens/account.dart';
 import 'package:Unio/src/screens/detail.dart';
+import 'package:Unio/src/screens/directory.dart';
 import 'package:flutter/material.dart';
 import 'src/models/route_argument.dart';
 import 'src/screens/Categorie.dart';
@@ -55,6 +56,8 @@ class RouteGenerator {
             builder: (_) => CategorieWidget(
                   routeArgument: args as RouteArgument,
                 ));
+      case '/Directory':
+        return MaterialPageRoute(builder: (_) => DirectoryWidget(routeArgument: args as RouteArgument,));
 
       default:
         // If there is no such named route in the switch statement, e.g. /third
