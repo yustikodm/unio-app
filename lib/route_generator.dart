@@ -57,7 +57,10 @@ class RouteGenerator {
                   routeArgument: args as RouteArgument,
                 ));
       case '/Directory':
-        return MaterialPageRoute(builder: (_) => DirectoryWidget(routeArgument: args as RouteArgument,));
+        return MaterialPageRoute(
+            builder: (_) => DirectoryWidget(
+                  routeArgument: args as RouteArgument,
+                ));
 
       default:
         // If there is no such named route in the switch statement, e.g. /third

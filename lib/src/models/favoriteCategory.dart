@@ -33,53 +33,18 @@ class CategoriesList {
 
   CategoriesList() {
     this._list = [
+      new Category('University', 'universities', UiIcons.bar_chart, false,
+          Colors.cyan, []),
       new Category(
-          'University', 'universities', UiIcons.bar_chart, false, Colors.cyan, [
-        // new Utilitie('Lounge Coffee Bar', 'img/coffeebar.jpg',
-        //     'Arts & Humanities', 25, 130, 4.3, 12.1),
-        // new Utilitie('Night Bar', 'img/coffeebar1.jpg', 'Health & Fitness', 25,
-        //     130, 4.3, 12.1),
-        // new Utilitie('Summer Coffee', 'img/coffeebar3.jpeg', 'Health & Fitness',
-        //     25, 130, 4.3, 12.1),
-        // new Utilitie('Winter Coffee Bar', 'img/coffeebar4.jpg',
-        //     'Health & Fitness', 25, 130, 4.3, 12.1),
-      ]),
-      new Category(
-          'Field of study', 'majors', UiIcons.laptop, false, Colors.orange, [
-        // new Utilitie('WebSite Design ', 'img/jobs2.jpg', 'Business & Finance',
-        //     80, 2554, 3.1, 10.5),
-        // new Utilitie('House Keeper', 'img/jobs3.jpg', 'Health & Fitness', 10,
-        //     415, 4.9, 15.3),
-      ]),
+          'Field of study', 'majors', UiIcons.laptop, false, Colors.orange, []),
       new Category('Vendor', 'vendors', UiIcons.shopping_cart, false,
-          Colors.greenAccent, [
-        // new Utilitie('Zogaa FlameSweater', 'img/mall1.jpeg', 'Health & Fitness',
-        //     80, 2554, 3.1, 10.5),
-        // new Utilitie('Elu Shopping', 'img/elu.png', 'Business & Finance', 60,
-        //     63, 5.0, 20.2),
-        // new Utilitie('Ritaj Mall', 'img/mall.jpg', 'Business & Finance', 80,
-        //     2554, 3.1, 10.5),
-      ]),
-      new Category('Vendor Service', 'services', UiIcons.settings_1, false,
-          Colors.greenAccent, [
-        // new Utilitie('Zogaa FlameSweater', 'img/mall1.jpeg', 'Health & Fitness',
-        //     80, 2554, 3.1, 10.5),
-        // new Utilitie('Elu Shopping', 'img/elu.png', 'Business & Finance', 60,
-        //     63, 5.0, 20.2),
-        // new Utilitie('Ritaj Mall', 'img/mall.jpg', 'Business & Finance', 80,
-        //     2554, 3.1, 10.5),
-      ]),
+          Colors.greenAccent, []),
       new Category('Places to Live', 'place_lives', UiIcons.bedroom, false,
-          Colors.blueAccent, [
-        // new Utilitie('Sequins Party Dance Ballet Event', 'img/event2.jpeg',
-        //     'Business & Finance', 80, 2554, 3.1, 10.5),
-        // new Utilitie('Cenima film Event', 'img/event3.jpeg',
-        //     'Business & Finance', 80, 2554, 3.1, 10.5),
-        // new Utilitie('TomorrowLand Event', 'img/event4.jpg',
-        //     'Arts & Humanities', 80, 2554, 3.1, 10.5),
-        // new Utilitie('Creative Design Event', 'img/event1.jpg',
-        //     'Business & Finance', 80, 2554, 3.1, 10.5),
-      ])
+          Colors.blueAccent, []),
+      new Category('Scholarship', 'scholarship', UiIcons.id_card, false,
+          Colors.pinkAccent, []),
+      new Category('Article', 'article', UiIcons.books, false,
+          Colors.deepPurpleAccent, []),
     ];
   }
 

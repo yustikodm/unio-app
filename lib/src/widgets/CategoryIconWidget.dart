@@ -30,7 +30,9 @@ class _CategoryIconWidgetState extends State<CategoryIconWidget>
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       onPressed: () {
         setState(() {
-          if(widget.category.name != 'Ranking' && widget.category.name != 'Advice') { //widget.category.name == 'University' || widget.category.name == 'Field of study'
+          if (widget.category.name != 'Ranking' &&
+              widget.category.name != 'Advice') {
+            // widget.category.name == 'University' || widget.category.name == 'Field of study'
             widget.onPressed(widget.category.id);
           } else {
             showOkAlertDialog(

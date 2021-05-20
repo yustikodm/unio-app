@@ -2,6 +2,7 @@ import 'package:Unio/main.dart';
 import 'package:Unio/src/models/route_argument.dart';
 import 'package:Unio/src/widgets/FavoriteFilterWidget.dart';
 import 'package:Unio/src/widgets/FilterWidget.dart';
+import 'package:Unio/src/widgets/NewFilterWidget.dart';
 
 import '../../config/ui_icons.dart';
 import '../screens/account.dart';
@@ -140,7 +141,8 @@ class _TabsWidgetState extends State<TabsWidget> {
       key: _scaffoldKey,
       drawer: DrawerWidget(),
       //endDrawer: FavoriteFilterWidget(),
-      endDrawer: FilterWidget(),
+      //endDrawer: FilterWidget(),
+      endDrawer: NewFilterWidget(),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: new IconButton(
