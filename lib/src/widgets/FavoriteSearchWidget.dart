@@ -1,10 +1,21 @@
+import 'package:Unio/src/models/route_argument.dart';
+
 import '../../config/ui_icons.dart';
 import 'package:flutter/material.dart';
 
-class FavoriteSearchWidget extends StatelessWidget {
+class FavoriteSearchWidget extends StatefulWidget {
   FavoriteSearchWidget({
     Key key,
   }) : super(key: key);
+
+  @override
+  _FavoriteSearchWidgetState createState() => _FavoriteSearchWidgetState();
+}
+
+class _FavoriteSearchWidgetState extends State<FavoriteSearchWidget> {
+  final myController = TextEditingController();
+  String searchType = '';
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,13 +36,14 @@ class FavoriteSearchWidget extends StatelessWidget {
             alignment: Alignment.centerRight,
             children: <Widget>[
               TextField(
+                controller: myController,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(12),
                   hintText: 'Search',
                   hintStyle: TextStyle(
                       color: Theme.of(context).focusColor.withOpacity(0.8)),
-                  prefixIcon: Icon(UiIcons.loupe,
-                      size: 20, color: Theme.of(context).hintColor),
+                  /*prefixIcon: Icon(UiIcons.loupe,
+                      size: 20, color: Theme.of(context).hintColor),*/
                   border: UnderlineInputBorder(borderSide: BorderSide.none),
                   enabledBorder:
                       UnderlineInputBorder(borderSide: BorderSide.none),
@@ -41,9 +53,12 @@ class FavoriteSearchWidget extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-                  Scaffold.of(context).openEndDrawer();
+                  Navigator.of(context).pushNamed('/Favorites',
+                      arguments: RouteArgument(
+                          param1: searchType ?? '', param2: myController.text));
+                  //Scaffold.of(context).openEndDrawer();
                 },
-                icon: Icon(UiIcons.settings_2,
+                icon: Icon(UiIcons.loupe,
                     size: 20,
                     color: Theme.of(context).hintColor.withOpacity(0.5)),
               ),

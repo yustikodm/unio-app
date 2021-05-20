@@ -2,6 +2,7 @@ import '../../config/ui_icons.dart';
 import 'package:flutter/material.dart';
 import '../models/utilities.dart';
 import '../models/favorites.dart';
+import '../models/university.dart';
 
 class Category {
   String id = UniqueKey().toString();
@@ -9,6 +10,7 @@ class Category {
   bool selected;
   IconData icon;
   Color color;
+  List<University> universities = [];
   List<Utilitie> utilities;
   List<Favorite> favorites;
 

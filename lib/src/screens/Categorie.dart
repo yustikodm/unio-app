@@ -1,18 +1,19 @@
+import 'package:Unio/src/utilities/global.dart';
+
 import '../../config/ui_icons.dart';
 import '../models/category.dart';
 import '../models/route_argument.dart';
 import '../widgets/BrandHomeTabWidget.dart';
 import '../widgets/DrawerWidget.dart';
 import '../widgets/ProductsByBrandWidget.dart';
-import '../widgets/ShoppingCartButtonWidget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import '../models/utilities.dart';
 import 'package:Unio/main.dart';
+import '../models/university.dart';
 
 class CategorieWidget extends StatefulWidget {
   RouteArgument routeArgument;
@@ -28,6 +29,7 @@ class CategorieWidget extends StatefulWidget {
 
 class _CategorieWidgetState extends State<CategorieWidget>
     with SingleTickerProviderStateMixin {
+  UniversityList _universityList = new UniversityList();
   TabController _tabController;
   UtilitiesList utilitiesList = new UtilitiesList();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -44,6 +46,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
     print(widget._category.name);
     if ((widget._category.name == "University") &&
         (widget.routeArgument.id != 101)) {
+      //getUniversities();
       getuniversity2();
     }
     if ((widget._category.name == "Field of study") &&
@@ -328,14 +331,71 @@ class _CategorieWidgetState extends State<CategorieWidget>
     }
   }
 
+  getUniversities() async {
+    String url = SERVER_DOMAIN + "universities";
+    Map<String, dynamic> request = Map();
+
+    try {
+      final client = new http.Client();
+      final response = await client
+          .get(
+        Uri.parse(url),
+        /*headers: headers,*/
+        // body: json.encode(request),
+      )
+          .timeout(Duration(seconds: 60), onTimeout: () {
+        throw 'Koneksi terputus. Silahkan coba lagi.';
+      });
+      print('========= noted: get requestMap ' +
+          request.toString() +
+          "===== url " +
+          url);
+
+      // var result = Map<String, dynamic>();
+      if (response.statusCode == 200) {
+        print('========= noted: get response body ' + response.body.toString());
+        if (response.body.isNotEmpty) {
+          dynamic jsonMap = json.decode(response.body)['data']['data'];
+          if (jsonMap != null) {
+            for (var i = 0; i < jsonMap.length; i++) {
+              print(i);
+              setState(() {
+                widget._category.universities.add(new University(
+                  jsonMap[i]['id'],
+                  jsonMap[i]['name'].toString(),
+                  jsonMap[i]['description'].toString(),
+                  jsonMap[i]['website'].toString(),
+                  jsonMap[i]['logo_src'].toString(),
+                  jsonMap[i]['header_src'].toString(),
+                ));
+              });
+            }
+
+            // return jsonMap;
+          }
+
+          String error = json.decode(response.body)['error'];
+          if (error != null) {
+            throw error;
+          }
+        }
+      } else {
+        String error = json.decode(response.body)['error'];
+        throw (error == '') ? 'Gagal memproses data' : error;
+      }
+    } on SocketException {
+      throw 'Tidak ada koneksi internet. Silahkan coba lagi.';
+    }
+  }
+
   void getuniversity() async {
     final response = await http.get(
-      Uri.parse(
-          // 'https://primavisiglobalindo.net/unio/public/api/universities?country_id=1&page=' +
-          'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities' +
+      Uri.parse('https://primavisiglobalindo.net/unio/public/api/universities'
+          /*'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities' +
               cari_query +
               '&page=' +
-              halaman.toString()),
+              halaman.toString()*/
+          ),
       // Send authorization headers to the backend.
       headers: {
         HttpHeaders.authorizationHeader:
@@ -731,6 +791,7 @@ class _CategorieWidgetState extends State<CategorieWidget>
                         // widget._category.utilities.add(new Utilitie("its", "-",
                         //     '-', 25, 130, 4.3, 12.1),);
                         if (widget._category.name == "University") {
+                          //getUniversities();
                           getuniversity();
                         }
                         if (widget._category.name == "Field of study") {

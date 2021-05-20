@@ -1,4 +1,5 @@
 import 'package:Unio/src/models/favorites.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 
 import '../../config/ui_icons.dart';
 import '../models/favorites.dart';
@@ -54,10 +55,18 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
         focusColor: Theme.of(context).accentColor,
         highlightColor: Theme.of(context).primaryColor,
         onTap: () {
-          Navigator.of(context).pushNamed('/Detail',
-              arguments: RouteArgument(
-                  param1: widget.favorite.entityId,
-                  param2: widget.favorite.entityType));
+          if (widget.favorite.entityType == 'universities' ||
+              widget.favorite.entityType == 'majors') {
+            Navigator.of(context).pushNamed('/Detail',
+                arguments: RouteArgument(
+                    param1: widget.favorite.entityId,
+                    param2: widget.favorite.entityType));
+          } else {
+            showOkAlertDialog(
+              context: context,
+              title: 'This feature is under development.',
+            );
+          }
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
