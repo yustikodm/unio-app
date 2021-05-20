@@ -1,9 +1,20 @@
 class Question {
-  final int id, answer;
-  final String question;
-  final List<String> options;
+  final String typeOne;
+  final String imgOne;
+  final String typeTwo;
+  final String imgTwo;
 
-  Question({this.id, this.question, this.answer, this.options});
+  Question({this.typeOne, this.imgOne, this.typeTwo, this.imgTwo});
+
+  factory Question.fromJson(Map<String, dynamic> json) {
+    // Map<String, dynamic> data = json['data'];
+    return Question(
+      typeOne: json['quest_one_type'],
+      imgOne: json['quest_one_img_src'],
+      typeTwo: json['quest_two_type'],
+      imgTwo: json['quest_two_img_src'],
+    );
+  }
 }
 
 const List sample_data = [

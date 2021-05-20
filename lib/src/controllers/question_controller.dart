@@ -1,8 +1,13 @@
+import 'dart:convert';
+
+import 'package:Unio/src/models/questionaire_score.dart';
+import 'package:Unio/src/utilities/global.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:Unio/src/models/Questions.dart';
 import 'package:Unio/src/screens/score/score_screen.dart';
+import 'package:http/http.dart' as http;
 
 // We use get package for our state management
 
@@ -18,16 +23,20 @@ class QuestionController extends GetxController
   PageController _pageController;
   PageController get pageController => this._pageController;
 
-  List<Question> _questions = sample_data
-      .map(
-        (question) => Question(
-            id: question['id'],
-            question: question['question'],
-            options: question['options'],
-            answer: question['answer_index']),
-      )
-      .toList();
+  // List<Question> _questions = sample_data
+  //     .map(
+  //       (question) => Question(
+  //           id: question['id'],
+  //           question: question['question'],
+  //           options: question['options'],
+  //           answer: question['answer_index']),
+  //     )
+  //     .toList();
+  List<Question> _questions;
   List<Question> get questions => this._questions;
+
+  QuestionaireScore _score;
+  QuestionaireScore get score => this._score;
 
   bool _isAnswered = false;
   bool get isAnswered => this._isAnswered;
@@ -62,6 +71,8 @@ class QuestionController extends GetxController
     // Once 60s is completed go to the next qn
     // _animationController.forward().whenComplete(nextQuestion);
     _pageController = new PageController();
+    _score = new QuestionaireScore();
+    fetchQuestion();
     super.onInit();
   }
 
@@ -73,22 +84,60 @@ class QuestionController extends GetxController
     _pageController.dispose();
   }
 
-  void checkAns(Question question, int selectedIndex) {
-    // because once user press any option then it will run
-    _isAnswered = true;
-    _correctAns = question.answer;
-    _selectedAns = selectedIndex;
-
-    // if (_correctAns == _selectedAns) _numOfCorrectAns++;
-
-    // It will stop the counter
-    // _animationController.stop();
-    update();
-
-    // Once user select an ans after 3s it will go to the next qn
-    Future.delayed(Duration(seconds: 1), () {
-      nextQuestion();
+  // get data from api
+  Future<List<Question>> fetchQuestion() async {
+    final url = Uri.parse('${SERVER_DOMAIN}questionnaire_image');
+    final token = await storage.read(key: 'apiToken');
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
     });
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      // print(response.body);
+      var res = json.decode(response.body);
+      var data = res['data'];
+
+      // print(data);
+
+      _questions =
+          List<Question>.from(data.map((model) => Question.fromJson(model)));
+      print(_questions);
+
+      return _questions;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load questions');
+    }
+  }
+
+  void checkAns(String answer, int selectedIndex) {
+    // because once user press any option then it will run
+    if (!_isAnswered) {
+      _isAnswered = true;
+      // _correctAns = 2;
+      _selectedAns = selectedIndex;
+
+      // add score by answer
+      _score.addScore(answer);
+
+      // _score.calculateFinalScore();
+
+      // if (_correctAns == _selectedAns) _numOfCorrectAns++;
+
+      // It will stop the counter
+      // _animationController.stop();
+      update();
+
+      // Once user select an ans after 3s it will go to the next qn
+      Future.delayed(Duration(seconds: 1), () {
+        nextQuestion();
+      });
+    }
   }
 
   void nextQuestion() {
@@ -116,13 +165,38 @@ class QuestionController extends GetxController
 
   void updateTheQnNum(int index) {
     _questionNumber.value = index + 1;
+    print(_questionNumber);
   }
 
   void resetDefault() {
+    _isAnswered = false;
+    _questionNumber = 1.obs;
     _correctAns = null;
     _selectedAns = null;
     _pageController.dispose();
     _pageController = new PageController();
     update();
+  }
+
+  void resetScore() {
+    _score = new QuestionaireScore();
+    update();
+  }
+
+  void adviceStudent() async {
+    // update hc of student profile
+    final url =
+        Uri.parse('${SERVER_DOMAIN}user/set-hc/${Global.instance.authId}');
+    final token = await storage.read(key: 'apiToken');
+    final response = await http.post(url, headers: {
+      'Authorization': 'Bearer $token',
+    }, body: {
+      'hc': '${_score.score}',
+    });
+
+    // save to local storage
+    storage.write(key: 'hc', value: _score.score);
+    print('${_score.score} added to user profile');
+    resetScore();
   }
 }

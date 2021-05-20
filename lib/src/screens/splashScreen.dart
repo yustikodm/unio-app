@@ -1,4 +1,5 @@
 import 'package:Unio/main.dart';
+import 'package:Unio/src/screens/signin.dart';
 import 'package:flutter/material.dart';
 import '../screens/on_boarding.dart';
 import 'package:splashscreen/splashscreen.dart';
@@ -41,7 +42,8 @@ class _SplashState extends State<Splash> {
   Widget build(BuildContext context) {
     return new SplashScreen(
       seconds: 8,
-      navigateAfterSeconds: new OnBoardingWidget(),
+      // navigateAfterSeconds: new OnBoardingWidget(),
+      navigateAfterSeconds:  new SignInWidget(),
       title: new Text(
         ' UNIO ',
         textAlign: TextAlign.center,

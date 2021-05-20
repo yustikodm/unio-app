@@ -24,11 +24,10 @@ class Option extends StatelessWidget {
         builder: (qnController) {
           Color getTheRightColor() {
             if (qnController.isAnswered) {
-              if (index == qnController.correctAns) {
-                return kRedColor;
-              } else if (index == qnController.selectedAns &&
-                  qnController.selectedAns != qnController.correctAns) {
+              if (index == qnController.selectedAns) {
                 return kGreenColor;
+              } else {
+                return kRedColor;
               }
             }
             return kGrayColor;
@@ -50,8 +49,8 @@ class Option extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image(
-                    image: AssetImage("assets/" + text),
+                  Image.network(
+                    text,
                     height: 100,
                     width: 200,
                   ),

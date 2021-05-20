@@ -78,4 +78,22 @@ class User {
   getDateOfBirth() {
     return DateFormat('dd-MM-yyyy').format(this.dateOfBirth);
   }
+
+  String initials() {
+    List<String> name = this.name.split(' ');
+
+    return ((name[0]?.isNotEmpty == true ? name[0][0] : "") +
+            (name[1]?.isNotEmpty == true ? name[1][0] : ""))
+        .toUpperCase();
+  }
+
+  bool hasPicture() {
+    final url_avatar = 'https://ui-avatars.com/api/';
+    final uri = Uri.parse(url_avatar);
+    if (uri.host == 'ui-avatars.com') {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }

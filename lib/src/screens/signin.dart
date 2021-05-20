@@ -28,6 +28,15 @@ class _SignInWidgetState extends State<SignInWidget> {
     return null;
   }
 
+  Future<bool> hasLoggedIn() async {
+    var apiToken = await storage.read(key: 'apiToken');
+    if (apiToken.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).accentColor,
@@ -207,7 +216,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                                     key: 'authId', value: authId ?? '1');
                                 storage.write(
                                     key: 'apiToken',
-                                    value: data['data']['api_token']);
+                                    value: data['data']['token']['api_token']);
                                 storage.write(
                                     key: 'authEmail',
                                     value: data['data']['email'] ?? '-');

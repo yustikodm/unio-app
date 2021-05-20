@@ -28,20 +28,22 @@ class QuestionCard extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            question.question,
+            'Mana yg lebih anda sukai?',
             style: Theme.of(context)
                 .textTheme
                 .headline6
                 .copyWith(color: kBlackColor),
           ),
           SizedBox(height: kDefaultPadding / 2),
-          ...List.generate(
-            question.options.length,
-            (index) => Option(
-              index: index,
-              text: question.options[index],
-              press: () => _controller.checkAns(question, index),
-            ),
+          Option(
+            index: 1,
+            text: question.imgOne,
+            press: () => _controller.checkAns(question.typeOne, 1),
+          ),
+          Option(
+            index: 2,
+            text: question.imgTwo,
+            press: () => _controller.checkAns(question.typeTwo, 2),
           ),
         ],
       ),

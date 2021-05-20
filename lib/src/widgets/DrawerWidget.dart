@@ -69,10 +69,14 @@ class DrawerWidget extends StatelessWidget {
                 _user.email,
                 style: Theme.of(context).textTheme.caption,
               ),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: Theme.of(context).accentColor,
-                backgroundImage: AssetImage(_user.avatar),
-              ),
+              currentAccountPicture: (_user.avatar == '-' || !_user.hasPicture()) ?   
+                CircleAvatar(
+                  child: Text(_user.initials()),
+                ) :
+                CircleAvatar(
+                  backgroundColor: Theme.of(context).accentColor,
+                  backgroundImage: NetworkImage(_user.avatar),
+                ),
             ),
           ),
           ListTile(
