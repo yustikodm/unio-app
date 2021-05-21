@@ -1,3 +1,6 @@
+import 'package:Unio/config/ui_icons.dart';
+import 'package:Unio/src/models/category.dart';
+import 'package:Unio/src/models/route_argument.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:Unio/constants.dart';
@@ -41,7 +44,12 @@ class ScoreScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 12, horizontal: 70),
                 onPressed: () {
                   _qnController.adviceStudent();
-                  Navigator.of(context).pushNamed('/Tabs', arguments: 2);
+                  Navigator.of(context).pushNamed('/Advice',
+                      arguments: new RouteArgument(argumentsList: [
+                        Category('Advice', UiIcons.compass, true,
+                            Colors.redAccent, []),
+                        ''
+                      ]));
                 },
                 child: Text(
                   'Advice',

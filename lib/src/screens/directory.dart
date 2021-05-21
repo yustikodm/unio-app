@@ -317,12 +317,16 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                           ),
                           IconButton(
                             onPressed: () {
-                              Navigator.of(context).pushNamed('/Directory',
+                              /*Navigator.of(context).pushNamed('/Directory',
                                   arguments: new RouteArgument(argumentsList: [
                                     widget._category,
                                     myController.text
-                                  ]));
-                              //Scaffold.of(context).openEndDrawer();
+                                  ]));*/
+                              widget._keyword = myController.text;
+                              page = 1;
+                              widget._category.utilities.clear();
+                              setState(() {});
+                              getData();
                             },
                             icon: Icon(UiIcons.loupe,
                                 size: 20,
