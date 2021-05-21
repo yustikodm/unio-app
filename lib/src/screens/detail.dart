@@ -26,17 +26,20 @@ class DetailWidget extends StatefulWidget {
 class _DetailWidgetState extends State<DetailWidget>
     with SingleTickerProviderStateMixin {
   dynamic data;
+  String detailType;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TabController _tabController;
   int _tabIndex = 0;
 
   @override
   void initState() {
-    getData(widget.routeArgument.param1, widget.routeArgument.param2);
+    detailType = widget.routeArgument.param2;
+    getData(widget.routeArgument.param1, detailType);
     _tabController =
         TabController(length: 2, initialIndex: _tabIndex, vsync: this);
     _tabController.addListener(_handleTabSelection);
 
+    print('lala');
     super.initState();
   }
 
@@ -116,11 +119,17 @@ class _DetailWidgetState extends State<DetailWidget>
                               EdgeInsets.symmetric(horizontal: 5, vertical: 20),
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(data['header_src']),
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                      'https://aseanop.com/wp-content/uploads/2019/08/Harvard-Online-Course.jpg'))
+                              /*image: DecorationImage(
+                              image: (detailType == 'universities')
+                                  ? NetworkImage(data['header_src'])
+                                  : NetworkImage(
+                                      data['university']['header_src']),
                               fit: BoxFit.fill,
-                            ),
-                          ),
+                            ),*/
+                              ),
                         ),
                         Container(
                           width: double.infinity,
@@ -266,19 +275,43 @@ class _DetailWidgetState extends State<DetailWidget>
                                 children: <Widget>[
                                   Row(
                                     children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            _launchURL(data['website']);
-                                          });
-                                        },
-                                        child: Text(
-                                            "Website: " + data['website'],
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .body2),
+                                      Column(
+                                        children: [
+                                          detailType != 'universities'
+                                              ? Text('Level : ' + data['level'],
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .body2)
+                                              : SizedBox(),
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                if (detailType ==
+                                                    'universities') {
+                                                  _launchURL(data['website']);
+                                                } else {
+                                                  _launchURL(data['university']
+                                                      ['website']);
+                                                }
+                                              });
+                                            },
+                                            child: Text(
+                                                detailType == 'universities'
+                                                    ? "Website: " +
+                                                        data['website']
+                                                    : "Website: " +
+                                                        data['university']
+                                                            ['website'],
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .body2),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -327,7 +360,8 @@ class _DetailWidgetState extends State<DetailWidget>
                                     children: [
                                       // Text(widget.utilitie.description.split("#")[0],maxLines: 5,),
                                       Text(
-                                        data['description'],
+                                        data['description'] ??
+                                            'There is no description',
                                         maxLines: 5,
                                       ),
                                     ],
@@ -341,7 +375,9 @@ class _DetailWidgetState extends State<DetailWidget>
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 20, vertical: 0),
-                                  child: Text(data['address']),
+                                  child: Text(detailType == 'universities'
+                                      ? data['address']
+                                      : data['university']['address']),
                                 ),
                               ],
                             ),
@@ -457,8 +493,11 @@ class _DetailWidgetState extends State<DetailWidget>
                                 child: GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      print('lala');
-                                      _launchMap(data['name']);
+                                      if (detailType != 'universities') {
+                                        _launchMap(data['university']['name']);
+                                      } else {
+                                        _launchMap(data['name']);
+                                      }
                                     });
                                   },
                                   child: Container(
@@ -610,6 +649,9 @@ class _DetailWidgetState extends State<DetailWidget>
             throw error;
           }
         }
+
+        print('lala2');
+        print(data['university']['website']);
       } else {
         String error = json.decode(response.body)['error'];
         throw (error == '') ? 'Gagal memproses data' : error;

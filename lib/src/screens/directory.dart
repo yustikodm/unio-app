@@ -73,11 +73,11 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
         break;
       case 'Vendor':
         subUrl = 'vendors';
-        entity = 'vendors';
+        entity = '';
         break;
       case 'Places to Live':
         subUrl = 'place-to-lives';
-        entity = 'place_lives';
+        entity = '';
         break;
       case 'Scholarship':
         subUrl = 'university-scholarships';

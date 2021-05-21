@@ -80,46 +80,11 @@ class SearchBarHomeWidget extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 40),
                   child: IconButton(
                     onPressed: () async {
-                      // cari_keyword = myController.text;
-                      // Scaffold.of(context).openEndDrawer();
-                      cari_query =
-                          "&name=" + myController.text.replaceAll(" ", "%20");
-                      final response = await http.get(
-                        Uri.parse(
-                            // 'https://primavisiglobalindo.net/unio/public/api/university-majors'),
-                            'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities' +
-                                cari_query),
-                        // Send authorization headers to the backend.
-                        headers: {
-                          HttpHeaders.authorizationHeader:
-                              "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
-                        },
-                      );
-
-                      var hasilsearch = jsonDecode(response.body)['data'];
-                      print(hasilsearch.toString());
-                      // print(hasilsearch.length);
-                      _categoriesList.list.elementAt(1).utilities.clear();
-                      for (var i = 0; i < hasilsearch.length; i++) {
-                        print(hasilsearch[i]['name']);
-
-                        _categoriesList.list.elementAt(1).utilities.add(
-                              new Utilitie(
-                                  hasilsearch[i]['name'],
-                                  hasilsearch[i]['logo_src'],
-                                  '-',
-                                  '-',
-                                  '-',
-                                  25,
-                                  130,
-                                  4.3,
-                                  12.1),
-                            );
-                      }
-                      // print(CategoriesList().list.elementAt(1).name);
-                      Navigator.of(context).pushNamed('/Categorie',
-                          arguments: RouteArgument(id: 101, argumentsList: [
-                            _categoriesList.list.elementAt(1)
+                      Navigator.of(context).pushNamed('/Directory',
+                          arguments: new RouteArgument(argumentsList: [
+                            Category('Field of study', UiIcons.laptop, false,
+                                Colors.orange, []),
+                            myController.text
                           ]));
                     },
                     icon: Icon(UiIcons.loupe,

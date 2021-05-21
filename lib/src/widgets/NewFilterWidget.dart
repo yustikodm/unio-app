@@ -34,13 +34,14 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                   MaterialButton(
                     onPressed: () {
                       setState(() {
+                        categoryId = 1;
                         clearSelection();
                       });
                     },
-                    child: Text(
+                    /*child: Text(
                       'Clear',
                       style: Theme.of(context).textTheme.body2,
-                    ),
+                    ),*/
                   )
                 ],
               ),
@@ -131,7 +132,9 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                     arguments: new RouteArgument(argumentsList: [
                       /*Category('University', UiIcons.bar_chart, true,
                           Colors.cyan, [])*/
-                      _filterList.list[categoryId],
+                      _filterList.list[categoryId] ??
+                          Category('Field of study', UiIcons.laptop, false,
+                              Colors.orange, []),
                       myController.text
                     ]));
               },
