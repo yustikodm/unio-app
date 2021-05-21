@@ -28,15 +28,6 @@ class _SignInWidgetState extends State<SignInWidget> {
     return null;
   }
 
-  Future<bool> hasLoggedIn() async {
-    var apiToken = await storage.read(key: 'apiToken');
-    if (apiToken.isNotEmpty) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).accentColor,

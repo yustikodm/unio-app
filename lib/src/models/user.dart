@@ -44,7 +44,7 @@ class User {
   User getCurrentUser() {
     if (Global.instance.apiToken == null) {
       return User.advanced(
-          'Guest',
+          'Guest User',
           'guest@mail.com',
           'Male',
           DateTime(2000, 01, 01),

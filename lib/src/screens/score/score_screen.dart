@@ -17,7 +17,7 @@ class ScoreScreen extends StatelessWidget {
             children: [
               Spacer(flex: 3),
               Text(
-                "Your Holland Code is",
+                "Task Completed",
                 style: Theme.of(context)
                     .textTheme
                     .headline3
@@ -26,14 +26,14 @@ class ScoreScreen extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              Text(
-                _qnController.score.calculateFinalScore(),
-                // "test",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2
-                    .copyWith(color: kSecondaryColor),
-              ),
+              // Text(
+              //   "Great",
+              //   // "test",
+              //   style: Theme.of(context)
+              //       .textTheme
+              //       .headline2
+              //       .copyWith(color: kSecondaryColor),
+              // ),
               SizedBox(
                 height: 20,
               ),

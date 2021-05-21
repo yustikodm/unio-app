@@ -48,6 +48,39 @@ class DrawerWidget extends StatelessWidget {
     );
   }
 
+  Future<void> _showNeedLoginAlert(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('You are not logged in!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you wanna login first?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pushNamed('/SignIn');
+              },
+            ),
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -69,14 +102,15 @@ class DrawerWidget extends StatelessWidget {
                 _user.email,
                 style: Theme.of(context).textTheme.caption,
               ),
-              currentAccountPicture: (_user.avatar == '-' || !_user.hasPicture()) ?   
-                CircleAvatar(
-                  child: Text(_user.initials()),
-                ) :
-                CircleAvatar(
-                  backgroundColor: Theme.of(context).accentColor,
-                  backgroundImage: NetworkImage(_user.avatar),
-                ),
+              currentAccountPicture:
+                  (_user.avatar == '-' || !_user.hasPicture())
+                      ? CircleAvatar(
+                          child: Text(_user.initials()),
+                        )
+                      : CircleAvatar(
+                          backgroundColor: Theme.of(context).accentColor,
+                          backgroundImage: NetworkImage(_user.avatar),
+                        ),
             ),
           ),
           ListTile(
@@ -120,7 +154,11 @@ class DrawerWidget extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Get.to(() => QuizScreen());
+              if (Global.instance.apiToken != null) {
+                Get.to(() => QuizScreen());
+              } else {
+                _showNeedLoginAlert(context);
+              }
             },
             leading: Icon(
               UiIcons.user,
