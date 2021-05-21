@@ -1,4 +1,5 @@
 import 'package:Unio/src/screens/quiz/quiz_screen.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:get/get.dart';
 
 import '../../config/ui_icons.dart';
@@ -105,7 +106,8 @@ class DrawerWidget extends StatelessWidget {
               currentAccountPicture:
                   (_user.avatar == '-' || !_user.hasPicture())
                       ? CircleAvatar(
-                          child: Text(_user.initials()),
+                          child: Text(''),
+                          //child: Text(_user.initials()),
                         )
                       : CircleAvatar(
                           backgroundColor: Theme.of(context).accentColor,
@@ -171,7 +173,11 @@ class DrawerWidget extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pushNamed('/Categories');
+              showOkAlertDialog(
+                context: context,
+                title: 'This feature is under development.',
+              );
+              //Navigator.of(context).pushNamed('/Categories');
             },
             leading: Icon(
               UiIcons.folder_1,

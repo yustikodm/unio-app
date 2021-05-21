@@ -1,16 +1,19 @@
+import 'package:Unio/src/models/university.dart';
+
 import '../../config/ui_icons.dart';
 import '../models/utilities.dart';
 import '../widgets/PopularLocationCarouselWidget.dart';
 import 'package:flutter/material.dart';
 
 class UtilitiesDetailsTabWidget extends StatefulWidget {
-  Utilitie utilitie;
-  UtilitiesList _utilitiesList = new UtilitiesList();
+  University university;
+  UniversityList _universityList = new UniversityList();
 
-  UtilitiesDetailsTabWidget({this.utilitie});
+  UtilitiesDetailsTabWidget({this.university});
 
   @override
-  UtilitiesDetailsTabWidgetState createState() => UtilitiesDetailsTabWidgetState();
+  UtilitiesDetailsTabWidgetState createState() =>
+      UtilitiesDetailsTabWidgetState();
 }
 
 class UtilitiesDetailsTabWidgetState extends State<UtilitiesDetailsTabWidget> {
@@ -55,7 +58,8 @@ class UtilitiesDetailsTabWidgetState extends State<UtilitiesDetailsTabWidget> {
           ),
         ),
         PopularLocationCarouselWidget(
-            heroTag: 'product_details_related_products', utilitiesList: widget._utilitiesList.popularList),
+            heroTag: 'product_details_related_products',
+            universityList: widget._universityList.popularListHome),
       ],
     );
   }
@@ -113,4 +117,3 @@ class _SelectColorWidgetState extends State<SelectColorWidget> {
     );
   }
 }
-

@@ -1,14 +1,16 @@
+import 'package:Unio/src/models/university.dart';
+
 import '../models/utilities.dart';
 import '../widgets/PopularLocationCarouselItemWidget.dart';
 import 'package:flutter/material.dart';
 
 class PopularLocationCarouselWidget extends StatelessWidget {
-  List<Utilitie> utilitiesList;
+  List<University> universityList;
   String heroTag;
 
   PopularLocationCarouselWidget({
     Key key,
-    this.utilitiesList,
+    this.universityList,
     this.heroTag,
   }) : super(key: key);
 
@@ -18,14 +20,14 @@ class PopularLocationCarouselWidget extends StatelessWidget {
         height: 230,
         margin: EdgeInsets.only(top: 10),
         child: ListView.builder(
-          itemCount: utilitiesList.length,
+          itemCount: universityList.length,
           itemBuilder: (context, index) {
             double _marginLeft = 0;
             (index == 0) ? _marginLeft = 20 : _marginLeft = 0;
             return PopularLocationCarouselItemWidget(
               heroTag: this.heroTag,
               marginLeft: _marginLeft,
-              utilitie: utilitiesList.elementAt(index),
+              university: universityList.elementAt(index),
             );
           },
           scrollDirection: Axis.horizontal,

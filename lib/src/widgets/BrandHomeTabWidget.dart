@@ -14,15 +14,14 @@ class BrandHomeTabWidget extends StatefulWidget {
   Category category;
   UtilitiesList utilitiesList = new UtilitiesList();
 
-  BrandHomeTabWidget({this.category,this.utilitiesList});
+  BrandHomeTabWidget({this.category, this.utilitiesList});
 
   @override
   _BrandHomeTabWidgetState createState() => _BrandHomeTabWidgetState();
 }
 
 class _BrandHomeTabWidgetState extends State<BrandHomeTabWidget> {
-  var universities=List();
-
+  var universities = List();
 
   @override
   void initState() {
@@ -70,7 +69,7 @@ class _BrandHomeTabWidgetState extends State<BrandHomeTabWidget> {
             ),
           ),
         ),*/
-        Padding( 
+        Padding(
           padding: const EdgeInsets.only(left: 20, right: 20, top: 15),
           child: ListTile(
             dense: true,
@@ -105,7 +104,7 @@ class _BrandHomeTabWidgetState extends State<BrandHomeTabWidget> {
             ),
           ),
         ),
-        PopularLocationCarouselWidget(heroTag: 'brand_featured_products', utilitiesList: widget.utilitiesList.popularList),
+        /*PopularLocationCarouselWidget(heroTag: 'brand_featured_products', utilitiesList: widget.utilitiesList.popularList),*/
       ],
     );
   }

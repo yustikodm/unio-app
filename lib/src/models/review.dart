@@ -9,7 +9,8 @@ class Review {
   User user;
   String review;
   double rate;
-  DateTime dateTime = DateTime.now().subtract(Duration(days: Random().nextInt(20)));
+  DateTime dateTime =
+      DateTime.now().subtract(Duration(days: Random().nextInt(20)));
 
   Review(this.user, this.review, this.rate);
 
@@ -26,23 +27,9 @@ class ReviewsList {
   ReviewsList() {
     this._reviewsList = [
       new Review(
-          new User.basic('Maria R. Garza', 'img/user0.jpg', UserState.available),
-          'There are a few foods that predate colonization, and the European colonization of the Americas brought about the introduction of a large number of new ingredients',
-          3.2),
-      new Review(
-          new User.basic('George T. Larkin', 'img/user1.jpg', UserState.available),
-          'There are a few foods that predate colonization, and the European colonization of the Americas brought about the introduction of a large number of new ingredients',
-          3.2),
-      new Review(
-          new User.basic('Edward E. Linn', 'img/user3.jpg', UserState.available),
-          'There are a few foods that predate colonization, and the European colonization of the Americas brought about the introduction of a large number of new ingredients',
-          3.2),
-      new Review(
-          new User.basic('George T. Larkin', 'img/user0.jpg', UserState.available),
-          'There are a few foods that predate colonization, and the European colonization of the Americas brought about the introduction of a large number of new ingredients',
-          3.2),
-      new Review(new User.basic('Laurie Z. Bergeron', 'img/user1.jpg', UserState.available),
-          'There are a few foods that predate colonization, and the European colonization of the Americas brought', 3.2)
+          new User.basic('Anam Saputra', 'img/user0.jpg', UserState.available),
+          'Best University in the world',
+          5.0),
     ];
   }
 }

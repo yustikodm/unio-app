@@ -295,7 +295,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
                             if (res.statusCode == 200) {
                               EasyLoading.dismiss();
-                              _showMyDialog('Register successful!', 'signIn');
+                              _showMyDialog(
+                                  'Register successful!, Please check your email.',
+                                  'signIn');
                             } else {
                               EasyLoading.dismiss();
                               _showMyDialog(

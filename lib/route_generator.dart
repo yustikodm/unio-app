@@ -1,4 +1,5 @@
 import 'package:Unio/src/screens/account.dart';
+import 'package:Unio/src/screens/advice.dart';
 import 'package:Unio/src/screens/detail.dart';
 import 'package:Unio/src/screens/directory.dart';
 import 'package:Unio/src/screens/on_boarding.dart';
@@ -30,6 +31,11 @@ class RouteGenerator {
       case '/Detail':
         return MaterialPageRoute(
             builder: (_) => DetailWidget(
+                  routeArgument: args as RouteArgument,
+                ));
+      case '/Advice':
+        return MaterialPageRoute(
+            builder: (_) => AdviceWidget(
                   routeArgument: args as RouteArgument,
                 ));
       case '/Tabs':

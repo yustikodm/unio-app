@@ -388,9 +388,9 @@ class UtilitieHomeTabWidgetState extends State<UtilitieHomeTabWidget> {
             ),
           ),
         ),
-        PopularLocationCarouselWidget(
+        /*PopularLocationCarouselWidget(
             heroTag: 'product_related_products',
-            utilitiesList: widget._productsList.popularList),
+            utilitiesList: widget._productsList.popularList),*/
       ],
     );
   }

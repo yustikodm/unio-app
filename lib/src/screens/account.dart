@@ -1,3 +1,5 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
+
 import '../../config/ui_icons.dart';
 import '../models/user.dart';
 import '../widgets/ProfileSettingsDialog.dart';
@@ -48,14 +50,14 @@ class _AccountWidgetState extends State<AccountWidget> {
                       onTap: () {
                         Navigator.of(context).pushNamed('/Tabs', arguments: 1);
                       },
-                      child: (_user.avatar == '-' || !_user.hasPicture()) ?   
-                        CircleAvatar(
-                          child: Text(_user.initials()),
-                        ) :
-                        CircleAvatar(
-                          backgroundColor: Theme.of(context).accentColor,
-                          backgroundImage: NetworkImage(_user.avatar),
-                        ),
+                      child: (_user.avatar == '-' || !_user.hasPicture())
+                          ? CircleAvatar(
+                              child: Text(_user.initials()),
+                            )
+                          : CircleAvatar(
+                              backgroundColor: Theme.of(context).accentColor,
+                              backgroundImage: NetworkImage(_user.avatar),
+                            ),
                     )),
               ],
             ),
@@ -78,7 +80,11 @@ class _AccountWidgetState extends State<AccountWidget> {
                   child: FlatButton(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/Tabs', arguments: 0);
+                      showOkAlertDialog(
+                        context: context,
+                        title: 'This feature is under development.',
+                      );
+                      //Navigator.of(context).pushNamed('/Tabs', arguments: 0);
                     },
                     child: Column(
                       children: <Widget>[
@@ -112,7 +118,11 @@ class _AccountWidgetState extends State<AccountWidget> {
                   child: FlatButton(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/Tabs', arguments: 3);
+                      showOkAlertDialog(
+                        context: context,
+                        title: 'This feature is under development.',
+                      );
+                      //Navigator.of(context).pushNamed('/Tabs', arguments: 3);
                     },
                     child: Column(
                       children: <Widget>[

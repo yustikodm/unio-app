@@ -1,3 +1,5 @@
+import 'package:Unio/src/models/university.dart';
+
 import '../../config/ui_icons.dart';
 import '../models/category.dart';
 import '../models/utilities.dart';
@@ -18,7 +20,7 @@ class _HomeWidgetState extends State<HomeWidget>
   List<Utilitie> _utilitiesOfCategoryList;
   List<Utilitie> _utilitiesfBrandList;
   CategoriesList _categoriesList = new CategoriesList();
-  UtilitiesList _utilitiesList = new UtilitiesList();
+  UniversityList _universityList = new UniversityList();
 
   Animation animationOpacity;
   AnimationController animationController;
@@ -64,8 +66,7 @@ class _HomeWidgetState extends State<HomeWidget>
     //       '-',10, 415, 4.9, 15.3),
     // );
 
-
-        //_utilitiesfBrandList = _brandsList.list.firstWhere((brand) {
+    //_utilitiesfBrandList = _brandsList.list.firstWhere((brand) {
     //return brand.selected;
     //}).utilities;
     super.initState();
@@ -111,8 +112,8 @@ class _HomeWidgetState extends State<HomeWidget>
             )),
         PopularLocationCarouselWidget(
             heroTag: 'home_flash_sales',
-            utilitiesList: _utilitiesList.popularListHome),
-        Padding(
+            universityList: _universityList.popularListHome),
+        /*Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Column(
               children: <Widget>[
@@ -129,11 +130,11 @@ class _HomeWidgetState extends State<HomeWidget>
                   ),
                 ),
               ],
-            )),
-        CategorizedUtilitiesWidget(
+            )),*/
+        /*CategorizedUtilitiesWidget(
           animationOpacity: animationOpacity,
           utilitiesList: _utilitiesList.recentList,
-        )
+        )*/
       ],
     ));
   }

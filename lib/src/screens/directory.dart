@@ -34,6 +34,7 @@ class DirectoryWidget extends StatefulWidget {
 }
 
 class _DirectoryWidgetState extends State<DirectoryWidget> {
+  final myController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   ScrollController scrollController = ScrollController();
   bool hasMore = true;
@@ -277,9 +278,63 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
         SliverList(
           delegate: SliverChildListDelegate([
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              child: SearchBarWidget(),
-            ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                //child: SearchBarWidget(),
+                child: Container(
+                  padding: const EdgeInsets.all(4.0),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Theme.of(context).hintColor.withOpacity(0.10),
+                          offset: Offset(0, 4),
+                          blurRadius: 10)
+                    ],
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      Stack(
+                        alignment: Alignment.centerRight,
+                        children: <Widget>[
+                          TextField(
+                            controller: myController,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(12),
+                              hintText: 'Search',
+                              hintStyle: TextStyle(
+                                  color: Theme.of(context)
+                                      .focusColor
+                                      .withOpacity(0.8)),
+                              border: UnderlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide.none),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamed('/Directory',
+                                  arguments: new RouteArgument(argumentsList: [
+                                    widget._category,
+                                    myController.text
+                                  ]));
+                              //Scaffold.of(context).openEndDrawer();
+                            },
+                            icon: Icon(UiIcons.loupe,
+                                size: 20,
+                                color: Theme.of(context)
+                                    .hintColor
+                                    .withOpacity(0.5)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )),
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 10),
               child: ListTile(

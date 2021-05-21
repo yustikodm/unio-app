@@ -5,6 +5,7 @@ import 'package:Unio/src/models/product_color.dart';
 import 'package:Unio/src/models/route_argument.dart';
 import 'package:Unio/src/widgets/CircularLoadingWidget.dart';
 import 'package:Unio/src/widgets/ReviewsListWidget.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 
 import '../../config/ui_icons.dart';
 import 'package:Unio/src/utilities/global.dart';
@@ -41,6 +42,31 @@ class _DetailWidgetState extends State<DetailWidget>
 
     print('lala');
     super.initState();
+  }
+
+  Future<String> addBookmark() async {
+    Map<String, String> headers = <String, String>{
+      HttpHeaders.contentTypeHeader: 'application/json'
+    };
+    var url = SERVER_DOMAIN + 'wishlists';
+    var token = Global.instance.apiToken;
+    headers.addAll(
+        <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
+    print(url);
+    print(headers);
+
+    final client = new http.Client();
+    final response = await client.post(Uri.parse(url),
+        headers: headers,
+        body: jsonEncode({
+          'user_id': Global.instance.authId,
+          'entity_id': widget.routeArgument.param1,
+          'entity_type': widget.routeArgument.param2,
+        }));
+    print(response.body);
+
+    if (response.statusCode == 200) return response.body;
+    return null;
   }
 
   void _launchURL(url) async {
@@ -212,30 +238,48 @@ class _DetailWidgetState extends State<DetailWidget>
                                 children: <Widget>[
                                   Expanded(
                                     child: Text(
-                                      data['name'],
+                                      data['name'] != null ? data['name'] : '',
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                       style:
                                           Theme.of(context).textTheme.display2,
                                     ),
                                   ),
-                                  Chip(
-                                    padding: EdgeInsets.all(0),
-                                    label: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Icon(
-                                          Icons.bookmark,
-                                          color: Theme.of(context).primaryColor,
-                                          size: 16,
-                                        ),
-                                      ],
+                                  GestureDetector(
+                                    onTap: () async {
+                                      var jwt = await addBookmark();
+                                      if (jwt != null) {
+                                        showOkAlertDialog(
+                                          context: context,
+                                          title: 'Add bookmark successfully.',
+                                        );
+                                      } else {
+                                        showOkAlertDialog(
+                                          context: context,
+                                          title:
+                                              'This item already bookmarked.',
+                                        );
+                                      }
+                                    },
+                                    child: Chip(
+                                      padding: EdgeInsets.all(0),
+                                      label: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.bookmark,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            size: 16,
+                                          ),
+                                        ],
+                                      ),
+                                      backgroundColor: Theme.of(context)
+                                          .accentColor
+                                          .withOpacity(0.9),
+                                      shape: StadiumBorder(),
                                     ),
-                                    backgroundColor: Theme.of(context)
-                                        .accentColor
-                                        .withOpacity(0.9),
-                                    shape: StadiumBorder(),
                                   ),
                                   SizedBox(width: 4),
                                   Chip(
@@ -278,7 +322,11 @@ class _DetailWidgetState extends State<DetailWidget>
                                       Column(
                                         children: [
                                           detailType != 'universities'
-                                              ? Text('Level : ' + data['level'],
+                                              ? Text(
+                                                  data['level'] != null
+                                                      ? 'Level : ' +
+                                                          data['level']
+                                                      : '',
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   maxLines: 1,

@@ -89,8 +89,12 @@ class _TabsWidgetState extends State<TabsWidget> {
       widget.selectedTab = tabItem;
       switch (tabItem) {
         case 0:
-          widget.currentTitle = 'Notifications';
-          widget.currentPage = NotificationsWidget();
+          if (Global.instance.apiToken != null) {
+            widget.currentTitle = 'Notifications';
+            widget.currentPage = NotificationsWidget();
+          } else {
+            _showNeedLoginAlert(context);
+          }
           break;
         case 3:
           if (Global.instance.apiToken != null) {
@@ -105,8 +109,12 @@ class _TabsWidgetState extends State<TabsWidget> {
           widget.currentPage = HomeWidget();
           break;
         case 1:
-          widget.currentTitle = 'Messages';
-          widget.currentPage = MessagesWidget();
+          if (Global.instance.apiToken != null) {
+            widget.currentTitle = 'Messages';
+            widget.currentPage = MessagesWidget();
+          } else {
+            _showNeedLoginAlert(context);
+          }
           break;
         case 4:
           if (Global.instance.apiToken != null) {
@@ -123,9 +131,13 @@ class _TabsWidgetState extends State<TabsWidget> {
           }
           break;
         case 5:
-          widget.selectedTab = 3;
-          widget.currentTitle = 'Chat';
-          widget.currentPage = ChatWidget();
+          if (Global.instance.apiToken != null) {
+            widget.selectedTab = 3;
+            widget.currentTitle = 'Chat';
+            widget.currentPage = ChatWidget();
+          } else {
+            _showNeedLoginAlert(context);
+          }
           break;
         case 6:
           widget.currentTitle = 'Profile';

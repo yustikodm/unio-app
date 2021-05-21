@@ -1,31 +1,29 @@
-import 'package:Unio/src/models/favorites.dart';
+import 'package:Unio/src/models/advice.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 
 import '../../config/ui_icons.dart';
-import '../models/favorites.dart';
 import '../models/route_argument.dart';
 import 'package:flutter/material.dart';
 import 'package:Unio/src/utilities/global.dart';
 
 // ignore: must_be_immutable
-class FavoriteListItemWidget extends StatefulWidget {
+class AdviceListItemWidget extends StatefulWidget {
   String heroTag;
-  Favorite favorite;
+  Advice advice;
   VoidCallback onDismissed;
 
-  FavoriteListItemWidget(
-      {Key key, this.heroTag, this.favorite, this.onDismissed})
+  AdviceListItemWidget({Key key, this.heroTag, this.advice, this.onDismissed})
       : super(key: key);
 
   @override
-  _FavoriteListItemWidgetState createState() => _FavoriteListItemWidgetState();
+  _AdviceListItemWidgetState createState() => _AdviceListItemWidgetState();
 }
 
-class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
+class _AdviceListItemWidgetState extends State<AdviceListItemWidget> {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key(this.widget.favorite.hashCode.toString()),
+      key: Key(this.widget.advice.hashCode.toString()),
       background: Container(
         color: Colors.red,
         child: Align(
@@ -48,27 +46,17 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
         // Then show a snackbar.
         Scaffold.of(context).showSnackBar(SnackBar(
             content: Text(
-                "The ${widget.favorite.name} favorite is removed from wish list")));
+                "The ${widget.advice.majorName} favorite is removed from wish list")));
       },
       child: InkWell(
         splashColor: Theme.of(context).accentColor,
         focusColor: Theme.of(context).accentColor,
         highlightColor: Theme.of(context).primaryColor,
         onTap: () {
-          print(widget.favorite.entityId);
-          print(widget.favorite.entityType);
-          if (widget.favorite.entityType == 'universities' ||
-              widget.favorite.entityType == 'majors') {
-            Navigator.of(context).pushNamed('/Detail',
-                arguments: RouteArgument(
-                    param1: widget.favorite.entityId,
-                    param2: widget.favorite.entityType));
-          } else {
-            showOkAlertDialog(
-              context: context,
-              title: 'This feature is under development.',
-            );
-          }
+          print(widget.advice.majorId);
+          Navigator.of(context).pushNamed('/Detail',
+              arguments: RouteArgument(
+                  param1: widget.advice.majorId, param2: 'majors'));
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -85,16 +73,16 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Hero(
-                tag: widget.heroTag + widget.favorite.id,
+                tag: widget.heroTag + widget.advice.id,
                 child: Container(
                   height: 60,
                   width: 60,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                      /*borderRadius: BorderRadius.all(Radius.circular(5)),
                     image: DecorationImage(
                         image: NetworkImage(widget.favorite.image),
-                        fit: BoxFit.cover),
-                  ),
+                        fit: BoxFit.cover),*/
+                      ),
                 ),
               ),
               SizedBox(width: 15),
@@ -107,7 +95,7 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            widget.favorite.name,
+                            widget.advice.majorName,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
                             style: Theme.of(context).textTheme.subhead,
@@ -118,14 +106,15 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
                               Icon(
                                 Icons.star,
                                 color: Colors.amber,
-                                size:
-                                    widget.favorite.parentName == '-' ? 1 : 18,
+                                size: widget.advice.universityName == '-'
+                                    ? 1
+                                    : 18,
                               ),
                               SizedBox(
                                 width: 4,
                               ),
                               Text(
-                                widget.favorite.parentName.toString(),
+                                widget.advice.universityName.toString(),
                                 style: Theme.of(context).textTheme.body1,
                               )
                             ],
@@ -135,8 +124,7 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
                       ),
                     ),
                     SizedBox(width: 8),
-                    Text(convertType(widget.favorite.entityType.toString()),
-                        style: Theme.of(context).textTheme.body2),
+                    Text('FOS', style: Theme.of(context).textTheme.body2),
                   ],
                 ),
               )

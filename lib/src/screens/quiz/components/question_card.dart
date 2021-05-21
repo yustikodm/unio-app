@@ -28,7 +28,7 @@ class QuestionCard extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'Mana yg lebih anda sukai?',
+            'If you like doing activities? click on the image.',
             style: Theme.of(context)
                 .textTheme
                 .headline6

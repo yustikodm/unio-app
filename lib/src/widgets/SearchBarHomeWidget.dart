@@ -110,10 +110,12 @@ class SearchBarHomeWidget extends StatelessWidget {
             children: [
               FlatButton(
                 onPressed: () {
-                  // Navigator.of(context).pushNamed('/Categories',
-                  //     arguments: RouteArgument(id: 2, argumentsList: [
-                  //       new CategoriesList().list.elementAt(0)
-                  //     ]));
+                  Navigator.of(context).pushNamed('/Advice',
+                      arguments: new RouteArgument(argumentsList: [
+                        Category('Advice', UiIcons.compass, true,
+                            Colors.redAccent, []),
+                        ''
+                      ]));
                 },
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 color: Theme.of(context).backgroundColor,

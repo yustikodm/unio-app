@@ -54,18 +54,7 @@ class UtilitiesList {
           'Computers & Technology', '-###University', '-', 25, 130, 4.3, 12.1),
     ];
 
-    _popularList = [
-      // new Utilitie(
-      //     'MIT', 'img/mit.jpg', 'Arts & Humanities', '-',25, 130, 4.3, 12.1),
-      // new Utilitie('Harvard University', 'img/harvard.jpg',
-      //     'Business & Finance', '-',80, 2554, 3.1, 10.5),
-      // new Utilitie('Stanford University', 'img/stanford.jpg',
-      //     'Business & Finance', '-',60, 63, 5.0, 20.2),
-      // new Utilitie('Cambridge University', 'img/cambridge.jpg',
-      //     'Arts & Humanities', '-',80, 2554, 3.1, 10.5),
-      // new Utilitie('Oxford University', 'img/oxford.jpg', 'Arts & Humanities',
-      //     '-',10, 415, 4.9, 15.3),
-    ];
+    _popularList = [];
 
     _popularListHome = [
       new Utilitie('MIT', 'img/mit.jpg', 'Arts & Humanities', '-###University',
