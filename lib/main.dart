@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'config/app_config.dart' as config;
 import 'package:flutter/material.dart';
 import 'route_generator.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() => runApp(MyApp());
 String cari_keyword = "";

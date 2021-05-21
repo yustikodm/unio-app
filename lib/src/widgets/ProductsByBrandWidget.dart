@@ -1,8 +1,9 @@
+import 'package:Unio/src/models/university.dart';
+import 'package:Unio/src/widgets/UniversitiesGridItemWidget.dart';
+
 import '../../config/ui_icons.dart';
 import '../models/category.dart';
 import '../models/utilities.dart';
-import '../models/favorites.dart';
-import '../widgets/FavoriteListItemWidget.dart';
 import '../widgets/UtilitiesGridItemWidget.dart';
 import '../widgets/SearchBarWidget.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 // ignore: must_be_immutable
 class UtilitiesByBrandWidget extends StatefulWidget {
   Category category;
-
   UtilitiesByBrandWidget({Key key, this.category}) : super(key: key);
 
   @override
@@ -19,9 +19,19 @@ class UtilitiesByBrandWidget extends StatefulWidget {
 }
 
 class _UtilitiesByBrandWidgetState extends State<UtilitiesByBrandWidget> {
+  @override
+  void initState() {
+    setState(() {
+      //
+    });
+
+    super.initState();
+  }
+
   String layout = 'grid';
   @override
   Widget build(BuildContext context) {
+    //return Text(widget.category.name.toString());
     return Wrap(
       children: <Widget>[
         Padding(
@@ -46,7 +56,7 @@ class _UtilitiesByBrandWidgetState extends State<UtilitiesByBrandWidget> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                IconButton(
+                /*IconButton(
                   onPressed: () {
                     setState(() {
                       this.layout = 'list';
@@ -58,8 +68,8 @@ class _UtilitiesByBrandWidgetState extends State<UtilitiesByBrandWidget> {
                         ? Theme.of(context).focusColor
                         : Theme.of(context).focusColor.withOpacity(0.4),
                   ),
-                ),
-                IconButton(
+                ),*/
+                /*IconButton(
                   onPressed: () {
                     setState(() {
                       this.layout = 'grid';
@@ -71,12 +81,12 @@ class _UtilitiesByBrandWidgetState extends State<UtilitiesByBrandWidget> {
                         ? Theme.of(context).focusColor
                         : Theme.of(context).focusColor.withOpacity(0.4),
                   ),
-                )
+                )*/
               ],
             ),
           ),
         ),
-        Offstage(
+        /*Offstage(
           offstage: this.layout != 'list',
           child: ListView.separated(
             scrollDirection: Axis.vertical,
@@ -89,7 +99,7 @@ class _UtilitiesByBrandWidgetState extends State<UtilitiesByBrandWidget> {
             itemBuilder: (context, index) {
               return FavoriteListItemWidget(
                 heroTag: 'Utilities_by_category_list',
-                favorite: widget.category.favorites.elementAt(index),
+                favorite: FavoriteFilterWidget.elementAt(index),
                 onDismissed: () {
                   setState(() {
                     widget.category.utilities.removeAt(index);
@@ -98,7 +108,7 @@ class _UtilitiesByBrandWidgetState extends State<UtilitiesByBrandWidget> {
               );
             },
           ),
-        ),
+        ),*/
         Offstage(
           offstage: this.layout != 'grid',
           child: Container(
@@ -107,13 +117,25 @@ class _UtilitiesByBrandWidgetState extends State<UtilitiesByBrandWidget> {
               primary: false,
               shrinkWrap: true,
               crossAxisCount: 4,
-              itemCount: widget.category.utilities.length,
+              itemCount: widget.category.utilities.length <= 12
+                  ? widget.category.utilities.length
+                  : 12,
               itemBuilder: (BuildContext context, int index) {
-                Utilitie utilitie = widget.category.utilities.elementAt(index);
-                return UtilitietGridItemWidget(
-                  utilitie: utilitie,
-                  heroTag: 'Utilities_by_category_grid',
-                );
+                if (widget.category.name == '-university') {
+                  University university =
+                      widget.category.universities.elementAt(index);
+                  return UniversitiesGridItemWidget(
+                    university: university,
+                    heroTag: 'Utilities_by_category_grid',
+                  );
+                } else {
+                  Utilitie utilitie =
+                      widget.category.utilities.elementAt(index);
+                  return UtilitietGridItemWidget(
+                    utilitie: utilitie,
+                    heroTag: 'Utilities_by_category_grid',
+                  );
+                }
               },
 //                  staggeredTileBuilder: (int index) => new StaggeredTile.fit(index % 2 == 0 ? 1 : 2),
               staggeredTileBuilder: (int index) => new StaggeredTile.fit(2),

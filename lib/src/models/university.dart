@@ -1,29 +1,27 @@
-import 'package:Unio/src/models/faculty.dart';
 import 'package:flutter/material.dart';
 
 class University {
   String id = UniqueKey().toString();
+  int universityId;
   String name;
   String description;
-  String logoSrc;
-  String headerSrc;
-  String type;
   String website;
-  String email;
-  String accreditation;
-  String address;
-  List<Faculty> faculty;
-  
+  String logo;
+  String header;
 
-  University(
-      {this.name,
-      this.description,
-      this.logoSrc,
-      this.headerSrc,
-      this.type,
-      this.website,
-      this.email,
-      this.accreditation,
-      this.address,
-      this.faculty});
+  University(this.universityId, this.name, this.description, this.website,
+      this.logo, this.header);
+}
+
+class UniversityList {
+  List<University> _universitiesList;
+  List<University> get universitiesList => _universitiesList;
+
+  UniversityList() {
+    _universitiesList = [
+      new University(
+          77, 'Surabaya Kampus', 'Business & Finance', '-', '-', '-'),
+    ];
+  }
+
 }
