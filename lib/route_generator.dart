@@ -1,6 +1,7 @@
 import 'package:Unio/src/screens/account.dart';
 import 'package:Unio/src/screens/detail.dart';
 import 'package:Unio/src/screens/directory.dart';
+import 'package:Unio/src/screens/on_boarding.dart';
 import 'package:flutter/material.dart';
 import 'src/models/route_argument.dart';
 import 'src/screens/Categorie.dart';
@@ -36,6 +37,8 @@ class RouteGenerator {
             builder: (_) => TabsWidget(
                   currentTab: args,
                 ));
+      case '/OnBoarding':
+        return MaterialPageRoute(builder: (_) => OnBoardingWidget());
       case '/Favorites':
         return MaterialPageRoute(
             builder: (_) => TabsWidget(

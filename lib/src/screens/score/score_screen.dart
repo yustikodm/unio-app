@@ -12,12 +12,12 @@ class ScoreScreen extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          SvgPicture.asset("assets/icons/bg.svg", fit: BoxFit.fill),
+          // SvgPicture.asset("assets/icons/bg.svg", fit: BoxFit.fill),
           Column(
             children: [
               Spacer(flex: 3),
               Text(
-                "Your Holland Code is",
+                "Task Completed",
                 style: Theme.of(context)
                     .textTheme
                     .headline3
@@ -26,19 +26,21 @@ class ScoreScreen extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              Text(
-                "RCIA",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2
-                    .copyWith(color: kSecondaryColor),
-              ),
+              // Text(
+              //   "Great",
+              //   // "test",
+              //   style: Theme.of(context)
+              //       .textTheme
+              //       .headline2
+              //       .copyWith(color: kSecondaryColor),
+              // ),
               SizedBox(
                 height: 20,
               ),
               FlatButton(
                 padding: EdgeInsets.symmetric(vertical: 12, horizontal: 70),
                 onPressed: () {
+                  _qnController.adviceStudent();
                   Navigator.of(context).pushNamed('/Tabs', arguments: 2);
                 },
                 child: Text(

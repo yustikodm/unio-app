@@ -207,7 +207,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                                     key: 'authId', value: authId ?? '1');
                                 storage.write(
                                     key: 'apiToken',
-                                    value: data['data']['api_token']);
+                                    value: data['data']['token']['api_token']);
                                 storage.write(
                                     key: 'authEmail',
                                     value: data['data']['email'] ?? '-');

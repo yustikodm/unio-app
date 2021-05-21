@@ -23,4 +23,5 @@ class UniversityList {
           77, 'Surabaya Kampus', 'Business & Finance', '-', '-', '-'),
     ];
   }
+
 }

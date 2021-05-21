@@ -1,4 +1,5 @@
 import 'package:Unio/main.dart';
+import 'package:Unio/src/screens/signin.dart';
 import 'package:flutter/material.dart';
 import '../screens/on_boarding.dart';
 import 'package:splashscreen/splashscreen.dart';
@@ -33,7 +34,7 @@ class _SplashState extends State<Splash> {
     Global.instance.authSchool = await storage.read(key: 'authSchool');
     Global.instance.authGraduate = await storage.read(key: 'authGraduate');
     Global.instance.authBirthPlace = await storage.read(key: 'authBirthPlace');
-    //Global.instance.authBirthDate = DateTime.parse(date);
+    Global.instance.authBirthDate = DateTime.parse(date);
     Global.instance.authIdentity = await storage.read(key: 'authIdentity');
   }
 
@@ -42,6 +43,7 @@ class _SplashState extends State<Splash> {
     return new SplashScreen(
       seconds: 8,
       navigateAfterSeconds: new OnBoardingWidget(),
+      // navigateAfterSeconds:  new SignInWidget(),
       title: new Text(
         ' UNIO ',
         textAlign: TextAlign.center,

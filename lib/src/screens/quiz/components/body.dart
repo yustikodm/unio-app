@@ -1,3 +1,4 @@
+import 'package:Unio/src/models/Questions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:Unio/constants.dart';
@@ -18,7 +19,7 @@ class Body extends StatelessWidget {
     QuestionController _questionController = Get.put(QuestionController());
     return Stack(
       children: [
-        SvgPicture.asset("assets/icons/bg.svg", fit: BoxFit.fill),
+        // new SvgPicture.asset("assets/icons/bg.svg", fit: BoxFit.fill),
         SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +27,7 @@ class Body extends StatelessWidget {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                child: ProgressBar(),
+                // child: ProgressBar(),
               ),
               SizedBox(height: kDefaultPadding),
               Padding(
@@ -43,7 +44,7 @@ class Body extends StatelessWidget {
                           .copyWith(color: kSecondaryColor),
                       children: [
                         TextSpan(
-                          text: "/${_questionController.questions.length}",
+                          text: "/15",
                           style: Theme.of(context)
                               .textTheme
                               .headline5
@@ -57,14 +58,27 @@ class Body extends StatelessWidget {
               Divider(thickness: 1.5),
               SizedBox(height: kDefaultPadding),
               Expanded(
-                child: PageView.builder(
-                  // Block swipe to next qn
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: _questionController.pageController,
-                  onPageChanged: _questionController.updateTheQnNum,
-                  itemCount: _questionController.questions.length,
-                  itemBuilder: (context, index) => QuestionCard(
-                      question: _questionController.questions[index]),
+                child: FutureBuilder<List<Question>>(
+                  future: _questionController.fetchQuestion(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return new PageView.builder(
+                        // Block swipe to next qn
+                        physics: NeverScrollableScrollPhysics(),
+                        controller: _questionController.pageController,
+                        onPageChanged: _questionController.updateTheQnNum,
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) =>
+                            QuestionCard(question: snapshot.data[index]),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
+                    // By default, show a loading spinner.
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
                 ),
               ),
             ],

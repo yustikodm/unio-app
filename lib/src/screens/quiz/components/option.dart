@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:Unio/src/controllers/question_controller.dart';
+import 'package:get/get.dart';
 
 import '../../../../constants.dart';
 
@@ -17,15 +18,15 @@ class Option extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // QuestionController _questionController = Get.put(QuestionController());
     return GetBuilder<QuestionController>(
         init: QuestionController(),
         builder: (qnController) {
           Color getTheRightColor() {
             if (qnController.isAnswered) {
-              if (index == qnController.correctAns) {
+              if (index == qnController.selectedAns) {
                 return kGreenColor;
-              } else if (index == qnController.selectedAns &&
-                  qnController.selectedAns != qnController.correctAns) {
+              } else {
                 return kRedColor;
               }
             }
@@ -48,8 +49,8 @@ class Option extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image(
-                    image: AssetImage("assets/" + text),
+                  Image.network(
+                    text,
                     height: 100,
                     width: 200,
                   ),

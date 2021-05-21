@@ -48,9 +48,14 @@ class _AccountWidgetState extends State<AccountWidget> {
                       onTap: () {
                         Navigator.of(context).pushNamed('/Tabs', arguments: 1);
                       },
-                      child: CircleAvatar(
-                        backgroundImage: AssetImage(_user.avatar),
-                      ),
+                      child: (_user.avatar == '-' || !_user.hasPicture()) ?   
+                        CircleAvatar(
+                          child: Text(_user.initials()),
+                        ) :
+                        CircleAvatar(
+                          backgroundColor: Theme.of(context).accentColor,
+                          backgroundImage: NetworkImage(_user.avatar),
+                        ),
                     )),
               ],
             ),
