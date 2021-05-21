@@ -1,5 +1,6 @@
 import 'package:Unio/src/utilities/global.dart';
 import 'package:Unio/src/widgets/AdviceListItemWidget.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import '../../config/ui_icons.dart';
 import '../models/category.dart';
 import '../models/route_argument.dart';
@@ -131,6 +132,11 @@ class _AdviceWidgetState extends State<AdviceWidget> {
           if (error != null) {
             throw error;
           }
+        } else {
+          showOkAlertDialog(
+            context: context,
+            title: 'You need to do Questionnaire first!',
+          );
         }
       } else {
         String error = json.decode(response.body)['error'];

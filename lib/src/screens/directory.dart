@@ -201,9 +201,9 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                   onTap: () {
                     Navigator.of(context).pushNamed('/Tabs', arguments: 1);
                   },
-                  child: CircleAvatar(
+                  /*child: CircleAvatar(
                     backgroundImage: AssetImage('img/user2.jpg'),
-                  ),
+                  )*/
                 )),
           ],
           backgroundColor: widget._category.color,
