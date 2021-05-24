@@ -125,9 +125,9 @@ class _DetailWidgetState extends State<DetailWidget>
                           Navigator.of(context)
                               .pushNamed('/Tabs', arguments: 1);
                         },
-                        child: CircleAvatar(
+                        /*child: CircleAvatar(
                           backgroundImage: AssetImage('img/user2.jpg'),
-                        ),
+                        ),*/
                       )),
                 ],
                 backgroundColor: Theme.of(context).primaryColor,
@@ -348,11 +348,9 @@ class _DetailWidgetState extends State<DetailWidget>
                                             },
                                             child: Text(
                                                 detailType == 'universities'
-                                                    ? "Website: " +
-                                                        data['website']
-                                                    : "Website: " +
-                                                        data['university']
-                                                            ['website'],
+                                                    ? data['website']
+                                                    : data['university']
+                                                        ['website'],
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                                 style: Theme.of(context)
@@ -560,7 +558,7 @@ class _DetailWidgetState extends State<DetailWidget>
                                 ),
                               ),
                             ),
-                            Padding(
+                            /*Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 8),
                               child: ListTile(
@@ -576,7 +574,7 @@ class _DetailWidgetState extends State<DetailWidget>
                                   style: Theme.of(context).textTheme.display1,
                                 ),
                               ),
-                            ),
+                            ),*/
                             /*PopularLocationCarouselWidget(
                                 heroTag: 'product_related_products',
                                 utilitiesList: widget._productsList.popularList),*/

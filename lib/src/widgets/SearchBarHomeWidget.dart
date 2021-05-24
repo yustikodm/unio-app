@@ -1,3 +1,5 @@
+import 'package:Unio/src/utilities/global.dart';
+
 import '../../config/ui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:Unio/main.dart';
@@ -9,19 +11,55 @@ import '../models/category.dart';
 import '../models/utilities.dart';
 import '../models/route_argument.dart';
 
-class SearchBarHomeWidget extends StatelessWidget {
+class SearchBarHomeWidget extends StatefulWidget {
   // final TextEditingController _controller = TextEditingController();
   SearchBarHomeWidget({
     Key key,
   }) : super(key: key);
-  List<String> suggestions = [
-    /*"MIT",
-    "Harvard University",
-    "Stanford University",
-    "Columbia University",*/
-  ];
+
+  @override
+  _SearchBarHomeWidgetState createState() => _SearchBarHomeWidgetState();
+}
+
+class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
+  List<String> suggestions = [];
+
   final myController = TextEditingController();
+
   CategoriesList _categoriesList = new CategoriesList();
+
+  Future<void> _showNeedLoginAlert(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('You are not logged in!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you wanna login first?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pushNamed('/SignIn');
+              },
+            ),
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,12 +148,16 @@ class SearchBarHomeWidget extends StatelessWidget {
             children: [
               FlatButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed('/Advice',
-                      arguments: new RouteArgument(argumentsList: [
-                        Category('Advice', UiIcons.compass, true,
-                            Colors.redAccent, []),
-                        ''
-                      ]));
+                  if (Global.instance.apiToken == null) {
+                    _showNeedLoginAlert(context);
+                  } else {
+                    Navigator.of(context).pushNamed('/Advice',
+                        arguments: new RouteArgument(argumentsList: [
+                          Category('Advice', UiIcons.compass, true,
+                              Colors.redAccent, []),
+                          ''
+                        ]));
+                  }
                 },
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 color: Theme.of(context).backgroundColor,

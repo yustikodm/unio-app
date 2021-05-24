@@ -184,6 +184,7 @@ class QuestionController extends GetxController
   }
 
   void adviceStudent() async {
+    String finalScore = _score.calculateFinalScore();
     // update hc of student profile
     final url =
         Uri.parse('${SERVER_DOMAIN}user/set-hc/${Global.instance.authId}');
@@ -191,8 +192,11 @@ class QuestionController extends GetxController
     final response = await http.post(url, headers: {
       'Authorization': 'Bearer $token',
     }, body: {
-      'hc': '${_score.score}',
+      'hc': '$finalScore',
     });
+
+    print(_score.score);
+    print(response);
 
     // save to local storage
     storage.write(key: 'hc', value: _score.score);
