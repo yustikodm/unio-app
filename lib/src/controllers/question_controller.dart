@@ -140,6 +140,29 @@ class QuestionController extends GetxController
     }
   }
 
+  void prevQuestion() {
+    if (_questionNumber.value != 1) {
+      _isAnswered = false;
+      _pageController.previousPage(
+          duration: Duration(milliseconds: 250), curve: Curves.ease);
+
+      // Reset the counter
+      // _animationController.reset();
+
+      // Then start it again
+      // Once timer is finish go to the next qn
+      // _animationController.forward().whenComplete(nextQuestion);
+      // update();
+    } else {
+      updateTheQnNum(0);
+
+      resetDefault();
+
+      // Get package provide us simple way to naviigate another page
+      Get.to(() => ScoreScreen());
+    }
+  }
+
   void nextQuestion() {
     if (_questionNumber.value != _questions.length) {
       _isAnswered = false;
