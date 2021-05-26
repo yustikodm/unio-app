@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:Unio/src/models/questionaire_score.dart';
 import 'package:Unio/src/utilities/global.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
@@ -154,12 +155,12 @@ class QuestionController extends GetxController
       // _animationController.forward().whenComplete(nextQuestion);
       // update();
     } else {
-      updateTheQnNum(0);
+      /*updateTheQnNum(0);
 
       resetDefault();
 
       // Get package provide us simple way to naviigate another page
-      Get.to(() => ScoreScreen());
+      Get.to(() => ScoreScreen());*/
     }
   }
 

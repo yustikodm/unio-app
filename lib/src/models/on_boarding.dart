@@ -12,8 +12,14 @@ class OnBoardingList {
 
   OnBoardingList() {
     _list = [
-      new OnBoarding(image: 'img/onboarding1.png', description: 'Discover your location in detail pick up information and enjoy.'),
-      new OnBoarding(image: 'img/onboarding2.png', description: 'Easily find your category with felixible display support.'),
+      new OnBoarding(
+          image: 'img/onboarding1.png',
+          description:
+              'Find information on the field of study, scholarships and universities of your dreams domestically and abroad.'),
+      new OnBoarding(
+          image: 'img/onboarding2.png',
+          description:
+              'get information about articles, places to live, tips and tricks for studying abroad easily.'),
       //new OnBoarding(image: 'images/onboarding1.png', description: 'So many books, so little time.'),
       //new OnBoarding(image: 'images/onboarding2.png', description: 'A room without books is like a body without a soul.'),
     ];

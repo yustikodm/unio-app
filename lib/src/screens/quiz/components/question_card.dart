@@ -45,6 +45,8 @@ class QuestionCard extends StatelessWidget {
             text: question.imgTwo,
             press: () => _controller.checkAns(question.typeTwo, 2),
           ),
+          FlatButton(onPressed: _controller.prevQuestion, child: Text("Back")),
+          FlatButton(onPressed: _controller.nextQuestion, child: Text("Next")),
         ],
       ),
     );
