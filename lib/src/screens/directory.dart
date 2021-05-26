@@ -23,10 +23,26 @@ class DirectoryWidget extends StatefulWidget {
   RouteArgument routeArgument;
   Category _category;
   String _keyword;
+  int panjangarg;
+  String _countryid;
+  String _stateid;
+  String _uniid;
 
   DirectoryWidget({Key key, this.routeArgument}) {
     _category = this.routeArgument.argumentsList[0] as Category;
     _keyword = this.routeArgument.argumentsList[1] as String;
+    panjangarg = this.routeArgument.argumentsList.length;
+    print("panjang="+panjangarg.toString());
+    if (panjangarg>2)
+    {
+      _countryid= this.routeArgument.argumentsList[2] as String;
+      _stateid= (this.routeArgument.argumentsList[3]==null) ? "" : this.routeArgument.argumentsList[3];
+      if (panjangarg==5) {
+        _uniid= this.routeArgument.argumentsList[4] as String;
+
+      }
+
+    }
   }
 
   @override
@@ -96,9 +112,22 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
   }
 
   void getData() async {
-    String url =
-        SERVER_DOMAIN + subUrl + '?name=' + widget._keyword + '&page=$page';
-    print('========= noted: get requestMap ' + "===== url " + url);
+    String url;
+    if (widget.panjangarg>2)
+    {
+      url =
+          SERVER_DOMAIN + "search?keyword=universities" + '&country=' + widget._countryid + '&state=' + widget._stateid + '&page=$page';
+      if (widget.panjangarg==5)
+      {
+        url =
+            SERVER_DOMAIN + "search?keyword=university-majors/" + widget._uniid ;
+      }
+    } else {
+      url =
+          SERVER_DOMAIN + subUrl + '?name=' + widget._keyword + '&page=$page';
+      print('========= noted: get requestMap ' + "===== url " + url);
+
+    }
     try {
       final client = new http.Client();
       final response = await client
@@ -112,7 +141,17 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
       if (response.statusCode == 200) {
         print('========= noted: get response body ' + response.body.toString());
         if (response.body.isNotEmpty) {
-          dynamic jsonMap = json.decode(response.body)['data']['data'];
+          dynamic jsonMap;
+          if (widget.panjangarg>2)
+          {
+            jsonMap = json.decode(response.body)['data'];
+
+          } else
+          {
+            jsonMap = json.decode(response.body)['data']['data'];
+
+          }
+
           if (jsonMap != null) {
             for (var i = 0; i < jsonMap.length; i++) {
               dynamic jsonUniv;
@@ -152,8 +191,18 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
             }
           }
 
-          int currentPage = json.decode(response.body)['data']['current_page'];
-          int lastPage = json.decode(response.body)['data']['last_page'];
+          int currentPage;
+          int lastPage;
+          if (widget.panjangarg>2)
+          {
+            currentPage = json.decode(response.body)['meta']['current_page'];
+            lastPage = json.decode(response.body)['meta']['last_page'];
+          } else
+          {
+            currentPage = json.decode(response.body)['data']['current_page'];
+            lastPage = json.decode(response.body)['data']['last_page'];
+          }
+
           if (currentPage < lastPage) {
             page++;
             hasMore = true;
