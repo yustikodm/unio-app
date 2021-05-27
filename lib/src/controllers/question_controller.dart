@@ -118,32 +118,31 @@ class QuestionController extends GetxController
 
   void checkAns(String answer, int selectedIndex) {
     // because once user press any option then it will run
-    if (!_isAnswered) {
-      _isAnswered = true;
-      // _correctAns = 2;
-      _selectedAns = selectedIndex;
+    if (!_isAnswered) {}
+    _isAnswered = true;
+    // _correctAns = 2;
+    _selectedAns = selectedIndex;
 
-      // add score by answer
-      _score.addScore(answer);
+    // add score by answer
+    _score.addScore(answer);
 
-      // _score.calculateFinalScore();
+    // _score.calculateFinalScore();
 
-      // if (_correctAns == _selectedAns) _numOfCorrectAns++;
+    // if (_correctAns == _selectedAns) _numOfCorrectAns++;
 
-      // It will stop the counter
-      // _animationController.stop();
-      update();
+    // It will stop the counter
+    // _animationController.stop();
+    update();
 
-      // Once user select an ans after 3s it will go to the next qn
-      Future.delayed(Duration(seconds: 1), () {
-        nextQuestion();
-      });
-    }
+    // Once user select an ans after 3s it will go to the next qn
+    Future.delayed(Duration(seconds: 1), () {
+      nextQuestion();
+    });
   }
 
   void prevQuestion() {
     if (_questionNumber.value != 1) {
-      _isAnswered = false;
+      _isAnswered = true;
       _pageController.previousPage(
           duration: Duration(milliseconds: 250), curve: Curves.ease);
 

@@ -56,7 +56,7 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
       // Send authorization headers to the backend.
       headers: {
         HttpHeaders.authorizationHeader:
-        "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+            "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
       },
     );
     print(response.body);
@@ -77,12 +77,11 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
 
   void getcountry() async {
     final response = await http.get(
-      Uri.parse(
-          'https://primavisiglobalindo.net/unio/public/api/countries'),
+      Uri.parse('https://primavisiglobalindo.net/unio/public/api/countries'),
       // Send authorization headers to the backend.
       headers: {
         HttpHeaders.authorizationHeader:
-        "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+            "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
       },
     );
     print(response.body);
@@ -140,7 +139,7 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
       // Send authorization headers to the backend.
       headers: {
         HttpHeaders.authorizationHeader:
-        "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+            "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
       },
     );
     print(response.body);
@@ -159,19 +158,26 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
     }
   }
 
-  void getuniversity(String countryid,String stateid) async {
+  void getuniversity(String countryid, String stateid) async {
     print(countryid);
     print(stateid);
 
-    if (stateid==null)
-      stateid="";
-    print('https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities&country='+countryid+'&state='+stateid);
+    if (stateid == null) stateid = "";
+    print(
+        'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities&country=' +
+            countryid +
+            '&state=' +
+            stateid);
     final response = await http.get(
-      Uri.parse('https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities&country='+countryid+'&state='+stateid),
+      Uri.parse(
+          'https://primavisiglobalindo.net/unio/public/api/search/?keyword=universities&country=' +
+              countryid +
+              '&state=' +
+              stateid),
       // Send authorization headers to the backend.
       headers: {
         HttpHeaders.authorizationHeader:
-        "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+            "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
       },
     );
     print(response.body);
@@ -191,7 +197,6 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
     }
   }
 
-
   void getCategory() async {
     final response = await http.get(
       Uri.parse(
@@ -199,7 +204,7 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
       // Send authorization headers to the backend.
       headers: {
         HttpHeaders.authorizationHeader:
-        "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+            "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
       },
     );
     print(response.body);
@@ -321,8 +326,7 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                                   // _valCountry = null;
                                   // countryitem.clear();
                                   // getcountry();
-                                  if (_category.name=="Field of study")
-                                  {
+                                  if (_category.name == "Field of study") {
                                     getuniversity(_valCountryid, _valStateid);
                                   }
                                   _categoryGroup = value;
@@ -339,166 +343,146 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
             ),
             SizedBox(height: 15),
             (_categoryGroup == "University" ||
-                _categoryGroup == "Field of study")
+                    _categoryGroup == "Field of study")
                 ? Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Row(
-                children: [
-                  Text("Country :"),
-                ],
-              ),
-            )
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: Row(
+                      children: [
+                        Text("Country :"),
+                      ],
+                    ),
+                  )
                 : Container(),
             (_categoryGroup == "University" ||
-                _categoryGroup == "Field of study") ? Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: SearchableDropdown.single(
-                items: countryitem,
-                value: _valCountry,
-                hint: "Country",
-                searchHint: "Country",
-                onChanged: (value) {
-                  setState(() {
-                    _valCountry = value;
-                    if (_valCountry!=null) {
-                      print("nilai="+value.toString());
-                      var estateSelected = propinsi.firstWhere((element) => element['name'] == value);
-                      _valCountryid = estateSelected['id'].toString();
-                      // someStuffs.firstWhereOrNull((element) => element.id == 'Cat');
-                      // print(estateSelected);
-                      print(value);
-                      // print(estateSelected['id']);
-
-                      getstate(estateSelected['id'].toString());
-                      if (_categoryGroup == "Field of study") {
-                        getuniversity(estateSelected['id'].toString(),"");
-                      }
-
-                    }
-
-                  });
-                },
-                isExpanded: true,
-              ),
-            )
-                : Container(),
-
-            (_categoryGroup == "University" ||
-                _categoryGroup == "Field of study" ||
-                _categoryGroup == "Vendor")
+                    _categoryGroup == "Field of study")
                 ? Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Row(
-                children: [
-                  Text("State :"),
-                ],
-              ),
-            )
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: SearchableDropdown.single(
+                      items: countryitem,
+                      value: _valCountry,
+                      hint: "Country",
+                      searchHint: "Country",
+                      onChanged: (value) {
+                        setState(() {
+                          _valCountry = value;
+                          if (_valCountry != null) {
+                            print("nilai=" + value.toString());
+                            var estateSelected = propinsi.firstWhere(
+                                (element) => element['name'] == value);
+                            _valCountryid = estateSelected['id'].toString();
+                            // someStuffs.firstWhereOrNull((element) => element.id == 'Cat');
+                            // print(estateSelected);
+                            print(value);
+                            // print(estateSelected['id']);
+
+                            getstate(estateSelected['id'].toString());
+                            if (_categoryGroup == "Field of study") {
+                              getuniversity(
+                                  estateSelected['id'].toString(), "");
+                            }
+                          }
+                        });
+                      },
+                      isExpanded: true,
+                    ),
+                  )
                 : Container(),
             (_categoryGroup == "University" ||
-                _categoryGroup == "Field of study" ||
-                _categoryGroup == "Vendor")
-                ?
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: SearchableDropdown.single(
-                items: stateitem,
-                value: _valState,
-                hint: "State",
-                searchHint: "State",
-                onChanged: (value) {
-                  setState(() {
-                    _valState = value;
-                    var estateSelected2 = propinsi.firstWhere((element) => element['name'] == _valCountry);
-                    _valStateid = "";
-                    _valCountryid = estateSelected2['id'].toString();
-                    if (_valState!=null) {
-                      var estateSelected = state.firstWhere((
-                          element) => element['name'] == value);
-                      _valStateid = estateSelected['id'].toString();
-
-
-                      // someStuffs.firstWhereOrNull((element) => element.id == 'Cat');
-                      // print(estateSelected);
-                      print(value);
-                      // print(estateSelected['id']);
-
-                    }
-                    print(value);
-                    // if (_categoryGroup == "Field of study") {
-                    getuniversity(_valCountryid, _valStateid);
-                    // }
-                    // getuniversity(countryid, stateid)
-                  });
-                },
-                isExpanded: true,
-              ),
-            )
+                    _categoryGroup == "Field of study" ||
+                    _categoryGroup == "Vendor")
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: Row(
+                      children: [
+                        Text("State :"),
+                      ],
+                    ),
+                  )
                 : Container(),
+            (_categoryGroup == "University" ||
+                    _categoryGroup == "Field of study" ||
+                    _categoryGroup == "Vendor")
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: SearchableDropdown.single(
+                      items: stateitem,
+                      value: _valState,
+                      hint: "State",
+                      searchHint: "State",
+                      onChanged: (value) {
+                        setState(() {
+                          _valState = value;
+                          var estateSelected2 = propinsi.firstWhere(
+                              (element) => element['name'] == _valCountry);
+                          _valStateid = "";
+                          _valCountryid = estateSelected2['id'].toString();
+                          if (_valState != null) {
+                            var estateSelected = state.firstWhere(
+                                (element) => element['name'] == value);
+                            _valStateid = estateSelected['id'].toString();
 
+                            // someStuffs.firstWhereOrNull((element) => element.id == 'Cat');
+                            // print(estateSelected);
+                            print(value);
+                            // print(estateSelected['id']);
+
+                          }
+                          print(value);
+                          // if (_categoryGroup == "Field of study") {
+                          getuniversity(_valCountryid, _valStateid);
+                          // }
+                          // getuniversity(countryid, stateid)
+                        });
+                      },
+                      isExpanded: true,
+                    ),
+                  )
+                : Container(),
             (_categoryGroup == "Field of study")
                 ? Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Row(
-                children: [
-                  Text("University :"),
-                ],
-              ),
-            )
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: Row(
+                      children: [
+                        Text("University :"),
+                      ],
+                    ),
+                  )
                 : Container(),
             (_categoryGroup == "Field of study")
-                ?
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: SearchableDropdown.single(
-                items: universityitem,
-                value: _valUniversity,
-                hint: "University",
-                searchHint: "University",
-                onChanged: (value) {
-                  setState(() {
-                    _valUniversity = value;
-                    if (_valUniversity!=null) {
-                      var estateSelected = universities.firstWhere((
-                          element) => element['name'] == value);
-                      _valUniid = estateSelected['id'].toString();
-                    }
-                    print(value);
-                    print(_valUniid);
-                  });
-                },
-                isExpanded: true,
-              ),
-            )
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: SearchableDropdown.single(
+                      items: universityitem,
+                      value: _valUniversity,
+                      hint: "University",
+                      searchHint: "University",
+                      onChanged: (value) {
+                        setState(() {
+                          _valUniversity = value;
+                          if (_valUniversity != null) {
+                            var estateSelected = universities.firstWhere(
+                                (element) => element['name'] == value);
+                            _valUniid = estateSelected['id'].toString();
+                          }
+                          print(value);
+                          print(_valUniid);
+                        });
+                      },
+                      isExpanded: true,
+                    ),
+                  )
                 : Container(),
-
             FlatButton(
               onPressed: () {
-                /*Navigator.of(context).pushNamed('/Favorites',
-                    arguments: RouteArgument(
-                        param1: searchType ?? '', param2: myController.text));*/
-                if (_categoryGroup=='University')
-                {
-                  Category item = new Category('University', UiIcons.bar_chart, true, Colors.cyan, []);
-                  Navigator.of(context).pushNamed('/Directory',
-                      arguments: new RouteArgument(argumentsList: [item, '',_valCountryid,_valStateid]));
-                }
-                if (_categoryGroup=='Field of study')
-                {
-                  Category item = new Category('Field of study', UiIcons.laptop, false, Colors.orange, []);
-                  Navigator.of(context).pushNamed('/Directory',
-                      arguments: new RouteArgument(argumentsList: [item, '',_valCountryid,_valStateid,_valUniid]));
-                }
-
-
-                // Navigator.of(context).pushNamed('/Directory',
-                //     arguments: new RouteArgument(argumentsList: [
-                //       /*Category('University', UiIcons.bar_chart, true,
-                //           Colors.cyan, [])*/
-                //       _filterList.list[categoryId] ??
-                //           Category('University', UiIcons.bar_chart, true, Colors.cyan, []),
-                //       myController.text
-                //     ]));
+                Navigator.of(context).pushNamed('/Directory',
+                    arguments: new RouteArgument(argumentsList: [
+                      /*Category('University', UiIcons.bar_chart, true,
+                           Colors.cyan, [])*/
+                      _filterList.list[categoryId] ??
+                          Category('Field of study', UiIcons.bar_chart, true,
+                              Colors.cyan, []),
+                      myController.text
+                    ]));
               },
               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               color: Theme.of(context).accentColor,
