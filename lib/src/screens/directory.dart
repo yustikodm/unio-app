@@ -105,6 +105,79 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
         }
       }
     });
+
+    print(widget._stateid);
+    // print(widget.filterState);
+    // print(widget.filterStateValue);
+
+    if (widget._countryid != null) {
+      setInitialValCountry(widget._countryid);
+    }
+
+    if (widget._countryid != null && widget._stateid != null) {
+      // print('pass');
+      setInitialValState(widget._countryid, widget._stateid);
+      // getstate(widget._stateid);
+    }
+  }
+
+  void setInitialValCountry(String countryid) async {
+    final response = await http.get(
+      Uri.parse('https://primavisiglobalindo.net/unio/public/api/countries'),
+    );
+    // print(response.body);
+    var data = await jsonDecode(response.body)['data'];
+
+    countryRes = data;
+
+    // print(countryRes.toString());
+    // state = [{"id":1,"name":"Jawa Barat"},{"id":2,"name":"Jawa Tengah"},{"id":3,"name":"Jawa Timur"},{"id":4,"name":"DKI Jakarta"}];
+    countries.clear();
+    for (var i = 0; i < countryRes.length; i++) {
+      setState(() {
+        countries.add(DropdownMenuItem(
+          child: Text(countryRes[i]['name']),
+          value: countryRes[i]['name'],
+        ));
+      });
+    }
+
+    var selected = await data
+        .firstWhere((element) => element['id'] == int.parse(countryid));
+    _valCountry = selected['name'];
+    print(_valCountry);
+  }
+
+  void setInitialValState(String countryid, String stateid) async {
+    // getstate(widget._stateid);
+    // print(countryid);
+    final response = await http.get(
+      Uri.parse(
+          'https://primavisiglobalindo.net/unio/public/api/states?country_id=' +
+              countryid),
+      // Send authorization headers to the backend.
+    );
+    // print(response.body);
+    var data = await jsonDecode(response.body)['data']['data'];
+
+    stateRes = data;
+
+    print(stateRes.toString());
+    // state = [{"id":1,"name":"Jawa Barat"},{"id":2,"name":"Jawa Tengah"},{"id":3,"name":"Jawa Timur"},{"id":4,"name":"DKI Jakarta"}];
+    for (var i = 0; i < stateRes.length; i++) {
+      setState(() {
+        states.add(DropdownMenuItem(
+          child: Text(stateRes[i]['name']),
+          value: stateRes[i]['name'],
+        ));
+      });
+    }
+
+    var selected =
+        await data.firstWhere((element) => element['id'] == int.parse(stateid));
+
+    _valState = selected['name'];
+    print('_valState : $_valState');
   }
 
   void setParam() {
@@ -141,7 +214,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
   }
 
   void getData() async {
-    page = 1;
+    // page = 1;
     widget._category.utilities.clear();
     setState(() {});
     String url;
@@ -291,11 +364,11 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
             "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
       },
     );
-    print(response.body);
+    // print(response.body);
     setState(() {
       countryRes = jsonDecode(response.body)['data'];
     });
-    print(countryRes.toString());
+    // print(countryRes.toString());
     // state = [{"id":1,"name":"Jawa Barat"},{"id":2,"name":"Jawa Tengah"},{"id":3,"name":"Jawa Timur"},{"id":4,"name":"DKI Jakarta"}];
     countries.clear();
     for (var i = 0; i < countryRes.length; i++) {
@@ -319,11 +392,11 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
             "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
       },
     );
-    print(response.body);
+    // print(response.body);
     setState(() {
       stateRes = jsonDecode(response.body)['data']['data'];
     });
-    print(stateRes.toString());
+    // print(stateRes.toString());
     // state = [{"id":1,"name":"Jawa Barat"},{"id":2,"name":"Jawa Tengah"},{"id":3,"name":"Jawa Timur"},{"id":4,"name":"DKI Jakarta"}];
     for (var i = 0; i < stateRes.length; i++) {
       setState(() {
@@ -580,22 +653,24 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                         splashColor:
                             Theme.of(context).accentColor.withOpacity(0.08),
                         onTap: () {
-                          if (Global.instance.apiToken != null) {
-                            if (entity != '') {
-                              Navigator.of(context).pushNamed('/Detail',
-                                  arguments: RouteArgument(
-                                      param1: widget
-                                          ._category.utilities[index].available,
-                                      param2: entity));
-                            } else {
-                              showOkAlertDialog(
-                                context: context,
-                                title: 'This feature is under development.',
-                              );
-                            }
-                          } else {
-                            _showNeedLoginAlert(context);
-                          }
+                          // if (Global.instance.apiToken != null) {
+                          //   if (entity != '') {
+                          print(entity);
+                          print(widget._category.utilities[index].available);
+                          Navigator.of(context).pushNamed('/Detail',
+                              arguments: RouteArgument(
+                                  param1: widget
+                                      ._category.utilities[index].available,
+                                  param2: entity));
+                          //   } else {
+                          //     showOkAlertDialog(
+                          //       context: context,
+                          //       title: 'This feature is under development.',
+                          //     );
+                          //   }
+                          // } else {
+                          //   _showNeedLoginAlert(context);
+                          // }
 
                           // Navigator.of(context).pushNamed('/Utilities',
                           //     arguments: new RouteArgument(argumentsList: [this.utilitie, this.heroTag], id: this.utilitie.id));
@@ -728,17 +803,18 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                     padding: const EdgeInsets.only(left: 20.0),
                     child: SearchableDropdown.single(
                       items: countries,
-                      value: widget.filterCountryValue ?? _valCountry,
-                      onClear: () {
-                        setState(() {
-                          _valCountry = '';
-                          widget.filterCountry = '';
-                          widget._countryid = null;
-                        });
-                      },
-                      // value: _valCountry,
+                      value: _valCountry ?? null,
                       hint: "Country",
                       searchHint: "Country",
+                      onClear: () {
+                        setState(() {
+                          print('test');
+                          _valState = null;
+                          // print(_valState);
+                          // states.clear();
+                          // countries.clear();
+                        });
+                      },
                       onChanged: (value) {
                         // print(value);
                         setState(() {
@@ -757,10 +833,6 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                             getstate(selected['id'].toString());
 
                             widget._countryid = selected['id'].toString();
-                            widget.filterCountry = selected['id'].toString();
-                            //lala
-                          } else {
-                            states.clear();
                           }
                         });
                       },
@@ -769,36 +841,49 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0),
-                    child: SearchableDropdown.single(
-                      items: states,
-                      value: widget.filterStateValue ?? _valState,
-                      onClear: () {
-                        setState(() {
-                          _valCountry = '';
-                          widget.filterState = '';
-                          widget._stateid = null;
-                        });
-                      },
-                      hint: states.isEmpty ? "-no-item-" : "State",
-                      searchHint: "State",
-                      onChanged: (value) {
-                        setState(() {
-                          _valState = value;
-                          if (_valState != null) {
-                            var selected = stateRes.firstWhere(
-                                (element) => element['name'] == value);
+                    child: _valState != null
+                        ? SearchableDropdown.single(
+                            items: states,
+                            value: _valState,
+                            hint: states.isEmpty ? "-no-item-" : "State",
+                            searchHint: "State",
+                            onChanged: (value) {
+                              setState(() {
+                                _valState = value;
+                                if (_valState != null) {
+                                  var selected = stateRes.firstWhere(
+                                      (element) => element['name'] == value);
 
-                            print(value);
-                            print(selected['id'].toString());
+                                  print(value);
+                                  print(selected['id'].toString());
 
-                            widget._stateid = selected['id'].toString();
-                            widget.filterState = selected['id'].toString();
-                            ;
-                          }
-                        });
-                      },
-                      isExpanded: true,
-                    ),
+                                  widget._stateid = selected['id'].toString();
+                                }
+                              });
+                            },
+                            isExpanded: true,
+                          )
+                        : SearchableDropdown.single(
+                            items: states,
+                            value: _valState ?? null,
+                            hint: states.isEmpty ? "-no-item-" : "State",
+                            searchHint: "State",
+                            onChanged: (value) {
+                              setState(() {
+                                _valState = value;
+                                if (_valState != null) {
+                                  var selected = stateRes.firstWhere(
+                                      (element) => element['name'] == value);
+
+                                  print(value);
+                                  print(selected['id'].toString());
+
+                                  widget._stateid = selected['id'].toString();
+                                }
+                              });
+                            },
+                            isExpanded: true,
+                          ),
                   ),
                   SizedBox(
                     height: 20,
