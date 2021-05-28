@@ -326,10 +326,12 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                                   // _valCountry = null;
                                   // countryitem.clear();
                                   // getcountry();
-                                  if (_category.name == "Field of study") {
+                                  /*if (_category.name == "Field of study") {
                                     getuniversity(_valCountryid, _valStateid);
-                                  }
+                                  }*/
                                   _categoryGroup = value;
+                                  categoryId = index;
+                                  //
                                 });
                               },
                             ),
@@ -341,7 +343,6 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                 ],
               ),
             ),
-            SizedBox(height: 15),
             (_categoryGroup == "University" ||
                     _categoryGroup == "Field of study")
                 ? Padding(
@@ -358,6 +359,12 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                 ? Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: SearchableDropdown.single(
+                      onClear: () {
+                        setState(() {
+                          _valCountry = '';
+                          _valCountryid = null;
+                        });
+                      },
                       items: countryitem,
                       value: _valCountry,
                       hint: "Country",
@@ -405,6 +412,12 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                 ? Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: SearchableDropdown.single(
+                      onClear: () {
+                        setState(() {
+                          _valState = '';
+                          _valStateid = null;
+                        });
+                      },
                       items: stateitem,
                       value: _valState,
                       hint: "State",
@@ -438,7 +451,7 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                     ),
                   )
                 : Container(),
-            (_categoryGroup == "Field of study")
+            (_categoryGroup == "#Field of study")
                 ? Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: Row(
@@ -448,7 +461,7 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                     ),
                   )
                 : Container(),
-            (_categoryGroup == "Field of study")
+            (_categoryGroup == "#Field of study")
                 ? Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: SearchableDropdown.single(
@@ -481,7 +494,11 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                       _filterList.list[categoryId] ??
                           Category('Field of study', UiIcons.bar_chart, true,
                               Colors.cyan, []),
-                      myController.text
+                      myController.text,
+                      _valCountryid.toString() ?? '',
+                      _valStateid.toString() ?? '',
+                      _valCountry,
+                      _valState
                     ]));
               },
               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),

@@ -1,9 +1,11 @@
+// import 'package:Unio/config/app_config.dart';
 import 'package:Unio/src/utilities/global.dart';
 import 'package:Unio/src/widgets/SearchBarWidget.dart';
 import 'package:Unio/src/widgets/UtilitiesGridItemWidget.dart';
 import 'package:Unio/src/widgets/UniversitiesGridItemWidget.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 import '../../config/ui_icons.dart';
 import '../models/category.dart';
 import '../models/route_argument.dart';
@@ -27,6 +29,10 @@ class DirectoryWidget extends StatefulWidget {
   String _countryid;
   String _stateid;
   String _uniid;
+  String filterCountry = '';
+  String filterState = '';
+  String filterCountryValue = '';
+  String filterStateValue = '';
 
   DirectoryWidget({Key key, this.routeArgument}) {
     _category = this.routeArgument.argumentsList[0] as Category;
@@ -34,11 +40,11 @@ class DirectoryWidget extends StatefulWidget {
     panjangarg = this.routeArgument.argumentsList.length;
     print("panjang=" + panjangarg.toString());
     if (panjangarg > 2) {
-      _countryid = this.routeArgument.argumentsList[2] as String;
-      _stateid = (this.routeArgument.argumentsList[3] == null)
-          ? ""
-          : this.routeArgument.argumentsList[3];
-      if (panjangarg == 5) {
+      _countryid = this.routeArgument.argumentsList[2];
+      _stateid = this.routeArgument.argumentsList[3];
+      filterCountryValue = this.routeArgument.argumentsList[4];
+      filterStateValue = this.routeArgument.argumentsList[5];
+      if (panjangarg > 7) {
         _uniid = this.routeArgument.argumentsList[4] as String;
       }
     }
@@ -58,10 +64,33 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
   String subUrl = '';
   String entity = '';
 
+  double xOffset;
+  double yOffset;
+
+  bool isRightDrawerOpen;
+
+  List<DropdownMenuItem> countries = [];
+  List<DropdownMenuItem> states = [];
+
+  var countryRes = List();
+  var stateRes = List();
+
+  String _valCountry;
+  String _valCountryId;
+
+  String _valState;
+
   @override
   void initState() {
     setParam();
     getData();
+
+    getCountry();
+
+    xOffset = 500;
+    yOffset = 0;
+    isRightDrawerOpen = false;
+
     super.initState();
 
     scrollController.addListener(() {
@@ -112,23 +141,53 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
   }
 
   void getData() async {
+    page = 1;
+    widget._category.utilities.clear();
+    setState(() {});
     String url;
-    if (widget.panjangarg > 2) {
+
+    if (widget._countryid == 'null' || widget._countryid == null) {
+      // ignore: unnecessary_statements
+      widget._countryid == '';
+    } else {
+      widget.filterCountry = widget._countryid;
+    }
+
+    if (widget._stateid == 'null' || widget._stateid == null) {
+      // ignore: unnecessary_statements
+      widget._stateid == '';
+    } else {
+      widget.filterState = widget._stateid;
+    }
+
+    print(widget.filterCountry);
+    print(widget.filterState);
+    if (widget.panjangarg > 7) {
       url = SERVER_DOMAIN +
-          "search?keyword=universities" +
-          '&country=' +
-          widget._countryid +
-          '&state=' +
-          widget._stateid +
-          '&page=$page';
+                  "search?keyword=universities" +
+                  '&country=' +
+                  widget._countryid ==
+              'null'
+          ? ''
+          : widget._countryid + '&state=' + widget._stateid + '&page=$page';
       if (widget.panjangarg == 5) {
         url =
             SERVER_DOMAIN + "search?keyword=university-majors/" + widget._uniid;
       }
     } else {
-      url = SERVER_DOMAIN + subUrl + '?name=' + widget._keyword + '&page=$page';
+      url = SERVER_DOMAIN +
+          subUrl +
+          '?name=' +
+          widget._keyword +
+          '&country=' +
+          widget.filterCountry +
+          '&state=' +
+          widget.filterState +
+          '&page=$page';
       print('========= noted: get requestMap ' + "===== url " + url);
     }
+    print(url);
+    print('lala');
     try {
       final client = new http.Client();
       final response = await client
@@ -144,7 +203,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
         if (response.body.isNotEmpty) {
           dynamic jsonMap;
           if (widget.panjangarg > 2) {
-            jsonMap = json.decode(response.body)['data'];
+            jsonMap = json.decode(response.body)['data']['data'];
           } else {
             jsonMap = json.decode(response.body)['data']['data'];
           }
@@ -190,7 +249,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
           int currentPage;
           int lastPage;
-          if (widget.panjangarg > 2) {
+          if (widget.panjangarg > 4) {
             currentPage = json.decode(response.body)['meta']['current_page'];
             lastPage = json.decode(response.body)['meta']['last_page'];
           } else {
@@ -220,129 +279,130 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
     }
   }
 
+  void getCountry() async {
+    final response = await http.get(
+      Uri.parse('https://primavisiglobalindo.net/unio/public/api/countries'),
+      // Send authorization headers to the backend.
+      headers: {
+        HttpHeaders.authorizationHeader:
+            "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+      },
+    );
+    print(response.body);
+    setState(() {
+      countryRes = jsonDecode(response.body)['data'];
+    });
+    print(countryRes.toString());
+    // state = [{"id":1,"name":"Jawa Barat"},{"id":2,"name":"Jawa Tengah"},{"id":3,"name":"Jawa Timur"},{"id":4,"name":"DKI Jakarta"}];
+    countries.clear();
+    for (var i = 0; i < countryRes.length; i++) {
+      setState(() {
+        countries.add(DropdownMenuItem(
+          child: Text(countryRes[i]['name']),
+          value: countryRes[i]['name'],
+        ));
+      });
+    }
+  }
+
+  void getstate(String countryid) async {
+    final response = await http.get(
+      Uri.parse(
+          'https://primavisiglobalindo.net/unio/public/api/states?country_id=' +
+              countryid),
+      // Send authorization headers to the backend.
+      headers: {
+        HttpHeaders.authorizationHeader:
+            "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
+      },
+    );
+    print(response.body);
+    setState(() {
+      stateRes = jsonDecode(response.body)['data']['data'];
+    });
+    print(stateRes.toString());
+    // state = [{"id":1,"name":"Jawa Barat"},{"id":2,"name":"Jawa Tengah"},{"id":3,"name":"Jawa Timur"},{"id":4,"name":"DKI Jakarta"}];
+    for (var i = 0; i < stateRes.length; i++) {
+      setState(() {
+        states.add(DropdownMenuItem(
+          child: Text(stateRes[i]['name']),
+          value: stateRes[i]['name'],
+        ));
+      });
+    }
+  }
+
+  void openRightDrawer() {
+    setState(() {
+      isRightDrawerOpen = true;
+      xOffset = MediaQuery.of(context).size.width * 1 / 4;
+    });
+  }
+
+  void closeRightDrawer() {
+    setState(() {
+      isRightDrawerOpen = false;
+      xOffset = MediaQuery.of(context).size.width;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       drawer: DrawerWidget(),
-      body: CustomScrollView(controller: scrollController, slivers: <Widget>[
-        SliverAppBar(
-          snap: true,
-          floating: true,
-          automaticallyImplyLeading: false,
-          leading: new IconButton(
-            icon: new Icon(UiIcons.return_icon,
-                color: Theme.of(context).primaryColor),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          actions: <Widget>[
-            Container(
-                width: 30,
-                height: 30,
-                margin: EdgeInsets.only(top: 12.5, bottom: 12.5, right: 20),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(300),
-                  onTap: () {
-                    Navigator.of(context).pushNamed('/Tabs', arguments: 1);
-                  },
-                  /*child: CircleAvatar(
-                    backgroundImage: AssetImage('img/user2.jpg'),
-                  )*/
-                )),
-          ],
-          backgroundColor: widget._category.color,
-          expandedHeight: 200,
-          elevation: 0,
-          flexibleSpace: FlexibleSpaceBar(
-            collapseMode: CollapseMode.parallax,
-            background: Stack(
-              children: <Widget>[
+      body: Stack(
+        children: [
+          CustomScrollView(controller: scrollController, slivers: <Widget>[
+            SliverAppBar(
+              snap: true,
+              floating: true,
+              automaticallyImplyLeading: false,
+              leading: new IconButton(
+                icon: new Icon(UiIcons.return_icon,
+                    color: Theme.of(context).primaryColor),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              actions: <Widget>[
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 20),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.bottomLeft,
-                          end: Alignment.topRight,
-                          colors: [
-                        widget._category.color,
-                        Theme.of(context).primaryColor.withOpacity(0.5),
-                      ])),
-                  child: Center(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Hero(
-                        tag: widget._category.id,
-                        child: new Icon(
-                          widget._category.icon,
-                          color: Theme.of(context).primaryColor,
-                          size: 50,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Text(
-                        '${widget._category.name}',
-                        style: Theme.of(context).textTheme.display3,
-                      ),
-                    ],
-                  )),
-                ),
-                Positioned(
-                  right: -60,
-                  bottom: -100,
-                  child: Container(
-                    width: 300,
-                    height: 300,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withOpacity(0.05),
+                    width: 30,
+                    height: 30,
+                    margin: EdgeInsets.only(top: 12.5, bottom: 12.5, right: 20),
+                    child: InkWell(
                       borderRadius: BorderRadius.circular(300),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: -30,
-                  top: -80,
-                  child: Container(
-                    width: 200,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withOpacity(0.09),
-                      borderRadius: BorderRadius.circular(150),
-                    ),
-                  ),
-                )
+                      onTap: () {
+                        Navigator.of(context).pushNamed('/Tabs', arguments: 1);
+                      },
+                      /*child: CircleAvatar(
+                        backgroundImage: AssetImage('img/user2.jpg'),
+                      )*/
+                    )),
               ],
-            ),
-          ),
-        ),
-        SliverList(
-          delegate: SliverChildListDelegate([
-            Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                //child: SearchBarWidget(),
-                child: Container(
-                  padding: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Theme.of(context).hintColor.withOpacity(0.10),
-                          offset: Offset(0, 4),
-                          blurRadius: 10)
-                    ],
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Stack(
-                        alignment: Alignment.centerRight,
+              backgroundColor: widget._category.color,
+              expandedHeight: 200,
+              elevation: 0,
+              flexibleSpace: FlexibleSpaceBar(
+                collapseMode: CollapseMode.parallax,
+                background: Stack(
+                  children: <Widget>[
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 5, vertical: 20),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.bottomLeft,
+                              end: Alignment.topRight,
+                              colors: [
+                            widget._category.color,
+                            Theme.of(context).primaryColor.withOpacity(0.5),
+                          ])),
+                      child: Center(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          TextFormField(
+                          /*TextFormField(
                             initialValue: widget._keyword,
                             keyboardType: TextInputType.text,
                             onChanged: (input) => myController.text = input,
@@ -358,87 +418,66 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                               enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide.none),
                               focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide.none),
+                                  borderSide: BorderSide.none),*/
+                          Hero(
+                            tag: widget._category.id,
+                            child: new Icon(
+                              widget._category.icon,
+                              color: Theme.of(context).primaryColor,
+                              size: 50,
                             ),
                           ),
-                          IconButton(
-                            onPressed: () {
-                              /*Navigator.of(context).pushNamed('/Directory',
-                                  arguments: new RouteArgument(argumentsList: [
-                                    widget._category,
-                                    myController.text
-                                  ]));*/
-                              widget._keyword = myController.text;
-                              page = 1;
-                              widget._category.utilities.clear();
-                              setState(() {});
-                              getData();
-                            },
-                            icon: Icon(UiIcons.loupe,
-                                size: 20,
-                                color: Theme.of(context)
-                                    .hintColor
-                                    .withOpacity(0.5)),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            '${widget._category.name}',
+                            style: Theme.of(context).textTheme.display3,
                           ),
                         ],
+                      )),
+                    ),
+                    Positioned(
+                      right: -60,
+                      bottom: -100,
+                      child: Container(
+                        width: 300,
+                        height: 300,
+                        decoration: BoxDecoration(
+                          color:
+                              Theme.of(context).primaryColor.withOpacity(0.05),
+                          borderRadius: BorderRadius.circular(300),
+                        ),
                       ),
-                    ],
-                  ),
-                )),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 10),
-              child: ListTile(
-                dense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 0),
-                leading: Icon(
-                  UiIcons.box,
-                  color: Theme.of(context).hintColor,
-                ),
-                title: Text(
-                  '${widget._category.name} Items',
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                  style: Theme.of(context).textTheme.display1,
+                    ),
+                    Positioned(
+                      left: -30,
+                      top: -80,
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color:
+                              Theme.of(context).primaryColor.withOpacity(0.09),
+                          borderRadius: BorderRadius.circular(150),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: new StaggeredGridView.countBuilder(
-                primary: false,
-                shrinkWrap: true,
-                crossAxisCount: 4,
-                itemCount: widget._category.utilities.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    highlightColor: Colors.transparent,
-                    splashColor:
-                        Theme.of(context).accentColor.withOpacity(0.08),
-                    onTap: () {
-                      if (Global.instance.apiToken != null) {
-                        if (entity != '') {
-                          Navigator.of(context).pushNamed('/Detail',
-                              arguments: RouteArgument(
-                                  param1: widget
-                                      ._category.utilities[index].available,
-                                  param2: entity));
-                        } else {
-                          showOkAlertDialog(
-                            context: context,
-                            title: 'This feature is under development.',
-                          );
-                        }
-                      } else {
-                        _showNeedLoginAlert(context);
-                      }
-
-                      // Navigator.of(context).pushNamed('/Utilities',
-                      //     arguments: new RouteArgument(argumentsList: [this.utilitie, this.heroTag], id: this.utilitie.id));
-                    },
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 20),
+                    //child: SearchBarWidget(),
                     child: Container(
+                      padding: const EdgeInsets.all(4.0),
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
                               color:
@@ -448,55 +487,339 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                         ],
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          (widget._category.utilities[index].type == 'null')
-                              ? Image.asset('img/icon_campus.jpg')
-                              : Image.network(
-                                  widget._category.utilities[index].type),
-                          SizedBox(height: 12),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 5),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget._category.utilities[index].name,
-                                  style: Theme.of(context).textTheme.body2,
+                          Stack(
+                            alignment: Alignment.centerRight,
+                            children: <Widget>[
+                              TextFormField(
+                                initialValue: widget._keyword,
+                                keyboardType: TextInputType.text,
+                                onChanged: (input) => myController.text = input,
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(12),
+                                  hintText: 'Search',
+                                  hintStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .focusColor
+                                          .withOpacity(0.8)),
+                                  border: UnderlineInputBorder(
+                                      borderSide: BorderSide.none),
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide.none),
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide.none),
                                 ),
-                                (widget._category.utilities[index].price == 1)
-                                    ? Text(
-                                        widget._category.utilities[index]
-                                            .description,
-                                        style:
-                                            Theme.of(context).textTheme.body1,
-                                      )
-                                    : Container(),
-                              ],
-                            ),
+                              ),
+                              Positioned(
+                                right: 30.0,
+                                child: IconButton(
+                                  onPressed: () {
+                                    openRightDrawer();
+                                  },
+                                  icon: Icon(UiIcons.filter,
+                                      size: 20,
+                                      color: Theme.of(context)
+                                          .hintColor
+                                          .withOpacity(0.5)),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  /*Navigator.of(context).pushNamed('/Directory',
+                                      arguments: new RouteArgument(argumentsList: [
+                                        widget._category,
+                                        myController.text
+                                      ]));*/
+                                  widget._keyword = myController.text;
+                                  page = 1;
+                                  widget._category.utilities.clear();
+                                  setState(() {});
+                                  getData();
+                                },
+                                icon: Icon(UiIcons.loupe,
+                                    size: 20,
+                                    color: Theme.of(context)
+                                        .hintColor
+                                        .withOpacity(0.5)),
+                              ),
+                            ],
                           ),
-                          SizedBox(height: 15),
                         ],
                       ),
+                    )),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 10),
+                  child: ListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 0),
+                    leading: Icon(
+                      UiIcons.box,
+                      color: Theme.of(context).hintColor,
                     ),
-                  );
-                },
-                staggeredTileBuilder: (int index) => new StaggeredTile.fit(2),
-                mainAxisSpacing: 15.0,
-                crossAxisSpacing: 15.0,
+                    title: Text(
+                      '${widget._category.name} Items',
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      style: Theme.of(context).textTheme.display1,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: new StaggeredGridView.countBuilder(
+                    primary: false,
+                    shrinkWrap: true,
+                    crossAxisCount: 4,
+                    itemCount: widget._category.utilities.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        highlightColor: Colors.transparent,
+                        splashColor:
+                            Theme.of(context).accentColor.withOpacity(0.08),
+                        onTap: () {
+                          if (Global.instance.apiToken != null) {
+                            if (entity != '') {
+                              Navigator.of(context).pushNamed('/Detail',
+                                  arguments: RouteArgument(
+                                      param1: widget
+                                          ._category.utilities[index].available,
+                                      param2: entity));
+                            } else {
+                              showOkAlertDialog(
+                                context: context,
+                                title: 'This feature is under development.',
+                              );
+                            }
+                          } else {
+                            _showNeedLoginAlert(context);
+                          }
+
+                          // Navigator.of(context).pushNamed('/Utilities',
+                          //     arguments: new RouteArgument(argumentsList: [this.utilitie, this.heroTag], id: this.utilitie.id));
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(6),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Theme.of(context)
+                                      .hintColor
+                                      .withOpacity(0.10),
+                                  offset: Offset(0, 4),
+                                  blurRadius: 10)
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              (widget._category.utilities[index].type == 'null')
+                                  ? Image.asset('img/icon_campus.jpg')
+                                  : Image.network(
+                                      widget._category.utilities[index].type),
+                              SizedBox(height: 12),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 5),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget._category.utilities[index].name,
+                                      style: Theme.of(context).textTheme.body2,
+                                    ),
+                                    (widget._category.utilities[index].price ==
+                                            1)
+                                        ? Text(
+                                            widget._category.utilities[index]
+                                                .description,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .body1,
+                                          )
+                                        : Container(),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 15),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                    staggeredTileBuilder: (int index) =>
+                        new StaggeredTile.fit(2),
+                    mainAxisSpacing: 15.0,
+                    crossAxisSpacing: 15.0,
+                  ),
+                ),
+                (hasMore)
+                    ? Center(
+                        // optional
+                        child: CircularProgressIndicator(),
+                      )
+                    : Container(),
+              ]),
+            )
+          ]),
+          isRightDrawerOpen
+              ? GestureDetector(
+                  onTap: () {
+                    closeRightDrawer();
+                  },
+                  child: Container(color: Colors.black45),
+                )
+              : SizedBox(),
+          _rightDrawer(),
+        ],
+      ),
+    );
+  }
+
+  Widget _rightDrawer() {
+    return AnimatedContainer(
+      transform: Matrix4.translationValues(xOffset, yOffset, 0),
+      duration: Duration(milliseconds: 250),
+      child: Container(
+        width: xOffset * 3,
+        color: Colors.white,
+        padding: EdgeInsets.only(top: 50, left: 15.0, right: 15.0),
+        child: Column(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(bottom: 10.0),
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    'Filters',
+                    style: Theme.of(context).textTheme.display1,
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Flexible(
+                    child: Container(
+                      alignment: Alignment.topRight,
+                      child: GestureDetector(
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.black,
+                        ),
+                        onTap: () {
+                          closeRightDrawer();
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            (hasMore)
-                ? Center(
-                    // optional
-                    child: CircularProgressIndicator(),
+            Divider(
+              color: Theme.of(context).hintColor,
+            ),
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: SearchableDropdown.single(
+                      items: countries,
+                      value: widget.filterCountryValue ?? _valCountry,
+                      onClear: () {
+                        setState(() {
+                          _valCountry = '';
+                          widget.filterCountry = '';
+                          widget._countryid = null;
+                        });
+                      },
+                      // value: _valCountry,
+                      hint: "Country",
+                      searchHint: "Country",
+                      onChanged: (value) {
+                        // print(value);
+                        setState(() {
+                          _valCountry = value;
+                          if (_valCountry != null) {
+                            print("nilai=" + value.toString());
+                            var selected = countryRes.firstWhere(
+                                (element) => element['name'] == value);
+                            _valCountryId = selected['id'].toString();
+                            // someStuffs.firstWhereOrNull((element) => element.id == 'Cat');
+                            // print(selected);
+                            print(value);
+                            print(selected['id']);
+
+                            // getstate
+                            getstate(selected['id'].toString());
+
+                            widget._countryid = selected['id'].toString();
+                            widget.filterCountry = selected['id'].toString();
+                            //lala
+                          } else {
+                            states.clear();
+                          }
+                        });
+                      },
+                      isExpanded: true,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: SearchableDropdown.single(
+                      items: states,
+                      value: widget.filterStateValue ?? _valState,
+                      onClear: () {
+                        setState(() {
+                          _valCountry = '';
+                          widget.filterState = '';
+                          widget._stateid = null;
+                        });
+                      },
+                      hint: states.isEmpty ? "-no-item-" : "State",
+                      searchHint: "State",
+                      onChanged: (value) {
+                        setState(() {
+                          _valState = value;
+                          if (_valState != null) {
+                            var selected = stateRes.firstWhere(
+                                (element) => element['name'] == value);
+
+                            print(value);
+                            print(selected['id'].toString());
+
+                            widget._stateid = selected['id'].toString();
+                            widget.filterState = selected['id'].toString();
+                            ;
+                          }
+                        });
+                      },
+                      isExpanded: true,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // close window
+                      closeRightDrawer();
+
+                      // search with filter
+                      // widget._category.utilities.clear();
+                      // widget._keyword = myController.text;
+                      // page = 1;
+                      // setState(() {});
+                      // getData();
+                    },
+                    child: Text('Apply'),
                   )
-                : Container(),
-          ]),
-        )
-      ]),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
