@@ -34,6 +34,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
   String subUrl = 'match-with-me';
   String entity = 'match-with-me';
   AdviceList _adviceList = new AdviceList();
+  bool shouldPop = true;
 
   @override
   void initState() {
@@ -149,146 +150,153 @@ class _AdviceWidgetState extends State<AdviceWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: DrawerWidget(),
-      body: CustomScrollView(controller: scrollController, slivers: <Widget>[
-        SliverAppBar(
-          snap: true,
-          floating: true,
-          automaticallyImplyLeading: false,
-          leading: new IconButton(
-            icon: new Icon(UiIcons.return_icon,
-                color: Theme.of(context).primaryColor),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          actions: <Widget>[
-            Container(
-                width: 30,
-                height: 30,
-                margin: EdgeInsets.only(top: 12.5, bottom: 12.5, right: 20),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(300),
-                  onTap: () {
-                    Navigator.of(context).pushNamed('/Tabs', arguments: 1);
-                  },
-                )),
-          ],
-          backgroundColor: widget._category.color,
-          expandedHeight: 200,
-          elevation: 0,
-          flexibleSpace: FlexibleSpaceBar(
-            collapseMode: CollapseMode.parallax,
-            background: Stack(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 20),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.bottomLeft,
-                          end: Alignment.topRight,
-                          colors: [
-                        widget._category.color,
-                        Theme.of(context).primaryColor.withOpacity(0.5),
-                      ])),
-                  child: Center(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Hero(
-                        tag: widget._category.id,
-                        child: new Icon(
-                          widget._category.icon,
-                          color: Theme.of(context).primaryColor,
-                          size: 50,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Text(
-                        '${widget._category.name}',
-                        style: Theme.of(context).textTheme.display3,
-                      ),
-                    ],
-                  )),
-                ),
-                Positioned(
-                  right: -60,
-                  bottom: -100,
-                  child: Container(
-                    width: 300,
-                    height: 300,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(300),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: -30,
-                  top: -80,
-                  child: Container(
-                    width: 200,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withOpacity(0.09),
-                      borderRadius: BorderRadius.circular(150),
-                    ),
-                  ),
-                )
-              ],
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pushNamed('/Tabs', arguments: 2);
+        return shouldPop;
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        drawer: DrawerWidget(),
+        body: CustomScrollView(controller: scrollController, slivers: <Widget>[
+          SliverAppBar(
+            snap: true,
+            floating: true,
+            automaticallyImplyLeading: false,
+            leading: new IconButton(
+              icon: new Icon(UiIcons.return_icon,
+                  color: Theme.of(context).primaryColor),
+              onPressed: () => Navigator.of(context).pop(),
             ),
-          ),
-        ),
-        SliverList(
-          delegate: SliverChildListDelegate([
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 10),
-              child: ListTile(
-                dense: true,
-                leading: Icon(
-                  UiIcons.box,
-                  color: Theme.of(context).hintColor,
-                ),
-                title: Text(
-                  '${widget._category.name} Items',
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                  style: Theme.of(context).textTheme.display1,
-                ),
-              ),
-            ),
-            Container(
-              child: ListView.separated(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                primary: false,
-                itemCount: _adviceList.adviceList.length,
-                separatorBuilder: (context, index) {
-                  return SizedBox(height: 10);
-                },
-                itemBuilder: (context, index) {
-                  return AdviceListItemWidget(
-                    heroTag: 'advice_list',
-                    advice: _adviceList.adviceList.elementAt(index),
-                    onDismissed: () {
-                      setState(() {
-                        _adviceList.adviceList.removeAt(index);
-                      });
+            actions: <Widget>[
+              Container(
+                  width: 30,
+                  height: 30,
+                  margin: EdgeInsets.only(top: 12.5, bottom: 12.5, right: 20),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(300),
+                    onTap: () {
+                      Navigator.of(context).pushNamed('/Tabs', arguments: 1);
                     },
-                  );
-                },
+                  )),
+            ],
+            backgroundColor: widget._category.color,
+            expandedHeight: 200,
+            elevation: 0,
+            flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.parallax,
+              background: Stack(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 20),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.bottomLeft,
+                            end: Alignment.topRight,
+                            colors: [
+                          widget._category.color,
+                          Theme.of(context).primaryColor.withOpacity(0.5),
+                        ])),
+                    child: Center(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Hero(
+                          tag: widget._category.id,
+                          child: new Icon(
+                            widget._category.icon,
+                            color: Theme.of(context).primaryColor,
+                            size: 50,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          '${widget._category.name}',
+                          style: Theme.of(context).textTheme.display3,
+                        ),
+                      ],
+                    )),
+                  ),
+                  Positioned(
+                    right: -60,
+                    bottom: -100,
+                    child: Container(
+                      width: 300,
+                      height: 300,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(300),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: -30,
+                    top: -80,
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor.withOpacity(0.09),
+                        borderRadius: BorderRadius.circular(150),
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
-          ]),
-        )
-      ]),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 10),
+                child: ListTile(
+                  dense: true,
+                  leading: Icon(
+                    UiIcons.box,
+                    color: Theme.of(context).hintColor,
+                  ),
+                  title: Text(
+                    '${widget._category.name} Items',
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                    style: Theme.of(context).textTheme.display1,
+                  ),
+                ),
+              ),
+              Container(
+                child: ListView.separated(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  primary: false,
+                  itemCount: _adviceList.adviceList.length,
+                  separatorBuilder: (context, index) {
+                    return SizedBox(height: 10);
+                  },
+                  itemBuilder: (context, index) {
+                    return AdviceListItemWidget(
+                      heroTag: 'advice_list',
+                      advice: _adviceList.adviceList.elementAt(index),
+                      onDismissed: () {
+                        setState(() {
+                          _adviceList.adviceList.removeAt(index);
+                        });
+                      },
+                    );
+                  },
+                ),
+              ),
+            ]),
+          )
+        ]),
+      ),
     );
   }
 

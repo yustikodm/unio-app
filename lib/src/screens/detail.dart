@@ -17,6 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 // ignore: must_be_immutable
 class DetailWidget extends StatefulWidget {
   RouteArgument routeArgument;
+  Color bookmarkColor = Color(0xFFFFFFFF);
 
   DetailWidget({Key key, this.routeArgument}) : super(key: key);
 
@@ -31,6 +32,39 @@ class _DetailWidgetState extends State<DetailWidget>
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TabController _tabController;
   int _tabIndex = 0;
+
+  Future<void> _showNeedLoginAlert(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('You are not logged in!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you wanna login first?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pushNamed('/SignIn');
+              },
+            ),
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -247,18 +281,24 @@ class _DetailWidgetState extends State<DetailWidget>
                                   ),
                                   GestureDetector(
                                     onTap: () async {
-                                      var jwt = await addBookmark();
-                                      if (jwt != null) {
-                                        showOkAlertDialog(
-                                          context: context,
-                                          title: 'Add bookmark successfully.',
-                                        );
+                                      if (Global.instance.apiToken != null) {
+                                        var jwt = await addBookmark();
+                                        if (jwt != null) {
+                                          var data = json.decode(jwt);
+                                          showOkAlertDialog(
+                                            context: context,
+                                            title: data['message'],
+                                          );
+                                          setState(() {
+                                            widget.bookmarkColor = (data[
+                                                        'message'] ==
+                                                    'Unbookmarked successfully')
+                                                ? Color(0xFFFFFFFF)
+                                                : Color(0xFFC1C1C1);
+                                          });
+                                        }
                                       } else {
-                                        showOkAlertDialog(
-                                          context: context,
-                                          title:
-                                              'This item already bookmarked.',
-                                        );
+                                        _showNeedLoginAlert(context);
                                       }
                                     },
                                     child: Chip(
@@ -269,8 +309,7 @@ class _DetailWidgetState extends State<DetailWidget>
                                         children: <Widget>[
                                           Icon(
                                             Icons.bookmark,
-                                            color:
-                                                Theme.of(context).primaryColor,
+                                            color: widget.bookmarkColor,
                                             size: 16,
                                           ),
                                         ],
@@ -642,6 +681,7 @@ class _DetailWidgetState extends State<DetailWidget>
     String url = SERVER_DOMAIN + subUrl + relationId.toString();
 
     Map<String, dynamic> request = Map();
+    request['user_id'] = Global.instance.authId ?? '';
     /*request['user_id'] = Global.instance.authId;
     request['entity_type'] = '';
     request['name'] = '';*/
@@ -687,6 +727,9 @@ class _DetailWidgetState extends State<DetailWidget>
           if (jsonMap != null) {
             setState(() {
               data = jsonMap;
+              widget.bookmarkColor = data['is_checked'] != '0'
+                  ? Color(0xFFC1C1C1)
+                  : Color(0xFFFFFFFF);
             });
           }
 

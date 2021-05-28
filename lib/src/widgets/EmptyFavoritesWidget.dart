@@ -24,10 +24,13 @@ class EmptyFavoritesWidget extends StatelessWidget {
                 height: 150,
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: LinearGradient(begin: Alignment.bottomLeft, end: Alignment.topRight, colors: [
-                      Theme.of(context).focusColor,
-                      Theme.of(context).focusColor.withOpacity(0.1),
-                    ])),
+                    gradient: LinearGradient(
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.topRight,
+                        colors: [
+                          Theme.of(context).focusColor,
+                          Theme.of(context).focusColor.withOpacity(0.1),
+                        ])),
                 child: Icon(
                   UiIcons.heart,
                   color: Theme.of(context).primaryColor,
@@ -64,13 +67,16 @@ class EmptyFavoritesWidget extends StatelessWidget {
           Opacity(
             opacity: 0.4,
             child: Text(
-              'D\'ont have any item in the wish list',
+              'Please wait your wishlist is still loading.',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.display2.merge(TextStyle(fontWeight: FontWeight.w300)),
+              style: Theme.of(context)
+                  .textTheme
+                  .display2
+                  .merge(TextStyle(fontWeight: FontWeight.w300)),
             ),
           ),
           SizedBox(height: 50),
-          FlatButton(
+          /*FlatButton(
             onPressed: () {
               Navigator.of(context).pushNamed('/Tabs', arguments: 2);
             },
@@ -82,7 +88,7 @@ class EmptyFavoritesWidget extends StatelessWidget {
 //                        textAlign: TextAlign.ce,
               style: Theme.of(context).textTheme.title,
             ),
-          ),
+          ),*/
         ],
       ),
     );

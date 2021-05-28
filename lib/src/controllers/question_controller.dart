@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Unio/src/models/questionaire_score.dart';
 import 'package:Unio/src/utilities/global.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
@@ -165,9 +166,13 @@ class QuestionController extends GetxController
 
   void nextQuestion() {
     if (_questionNumber.value != _questions.length) {
-      _isAnswered = false;
-      _pageController.nextPage(
-          duration: Duration(milliseconds: 250), curve: Curves.ease);
+      if (!_isAnswered) {
+        AlertDialog(title: Text('Please choose the answer first'));
+      } else {
+        _isAnswered = false;
+        _pageController.nextPage(
+            duration: Duration(milliseconds: 250), curve: Curves.ease);
+      }
 
       // Reset the counter
       // _animationController.reset();
