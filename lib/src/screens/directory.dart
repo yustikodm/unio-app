@@ -184,6 +184,9 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
           '&state=' +
           widget.filterState +
           '&page=$page';
+
+      // '&university=' + '';
+      // '&level=' + '';
       print('========= noted: get requestMap ' + "===== url " + url);
     }
     print(url);
@@ -249,7 +252,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
           int currentPage;
           int lastPage;
-          if (widget.panjangarg > 4) {
+          if (widget.panjangarg > 6) {
             currentPage = json.decode(response.body)['meta']['current_page'];
             lastPage = json.decode(response.body)['meta']['last_page'];
           } else {
