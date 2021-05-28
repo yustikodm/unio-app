@@ -32,16 +32,15 @@ class DirectoryWidget extends StatefulWidget {
     _category = this.routeArgument.argumentsList[0] as Category;
     _keyword = this.routeArgument.argumentsList[1] as String;
     panjangarg = this.routeArgument.argumentsList.length;
-    print("panjang="+panjangarg.toString());
-    if (panjangarg>2)
-    {
-      _countryid= this.routeArgument.argumentsList[2] as String;
-      _stateid= (this.routeArgument.argumentsList[3]==null) ? "" : this.routeArgument.argumentsList[3];
-      if (panjangarg==5) {
-        _uniid= this.routeArgument.argumentsList[4] as String;
-
+    print("panjang=" + panjangarg.toString());
+    if (panjangarg > 2) {
+      _countryid = this.routeArgument.argumentsList[2] as String;
+      _stateid = (this.routeArgument.argumentsList[3] == null)
+          ? ""
+          : this.routeArgument.argumentsList[3];
+      if (panjangarg == 5) {
+        _uniid = this.routeArgument.argumentsList[4] as String;
       }
-
     }
   }
 
@@ -51,6 +50,7 @@ class DirectoryWidget extends StatefulWidget {
 
 class _DirectoryWidgetState extends State<DirectoryWidget> {
   final myController = TextEditingController();
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   ScrollController scrollController = ScrollController();
   bool hasMore = true;
@@ -113,20 +113,21 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
   void getData() async {
     String url;
-    if (widget.panjangarg>2)
-    {
-      url =
-          SERVER_DOMAIN + "search?keyword=universities" + '&country=' + widget._countryid + '&state=' + widget._stateid + '&page=$page';
-      if (widget.panjangarg==5)
-      {
+    if (widget.panjangarg > 2) {
+      url = SERVER_DOMAIN +
+          "search?keyword=universities" +
+          '&country=' +
+          widget._countryid +
+          '&state=' +
+          widget._stateid +
+          '&page=$page';
+      if (widget.panjangarg == 5) {
         url =
-            SERVER_DOMAIN + "search?keyword=university-majors/" + widget._uniid ;
+            SERVER_DOMAIN + "search?keyword=university-majors/" + widget._uniid;
       }
     } else {
-      url =
-          SERVER_DOMAIN + subUrl + '?name=' + widget._keyword + '&page=$page';
+      url = SERVER_DOMAIN + subUrl + '?name=' + widget._keyword + '&page=$page';
       print('========= noted: get requestMap ' + "===== url " + url);
-
     }
     try {
       final client = new http.Client();
@@ -142,14 +143,10 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
         print('========= noted: get response body ' + response.body.toString());
         if (response.body.isNotEmpty) {
           dynamic jsonMap;
-          if (widget.panjangarg>2)
-          {
+          if (widget.panjangarg > 2) {
             jsonMap = json.decode(response.body)['data'];
-
-          } else
-          {
+          } else {
             jsonMap = json.decode(response.body)['data']['data'];
-
           }
 
           if (jsonMap != null) {
@@ -193,12 +190,10 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
           int currentPage;
           int lastPage;
-          if (widget.panjangarg>2)
-          {
+          if (widget.panjangarg > 2) {
             currentPage = json.decode(response.body)['meta']['current_page'];
             lastPage = json.decode(response.body)['meta']['last_page'];
-          } else
-          {
+          } else {
             currentPage = json.decode(response.body)['data']['current_page'];
             lastPage = json.decode(response.body)['data']['last_page'];
           }
@@ -347,8 +342,10 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                       Stack(
                         alignment: Alignment.centerRight,
                         children: <Widget>[
-                          TextField(
-                            controller: myController,
+                          TextFormField(
+                            initialValue: widget._keyword,
+                            keyboardType: TextInputType.text,
+                            onChanged: (input) => myController.text = input,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.all(12),
                               hintText: 'Search',
