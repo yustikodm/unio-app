@@ -180,16 +180,7 @@ class _DetailWidgetState extends State<DetailWidget>
                           width: double.infinity,
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: NetworkImage(
-                                      'https://aseanop.com/wp-content/uploads/2019/08/Harvard-Online-Course.jpg'))
-                              /*image: DecorationImage(
-                              image: (detailType == 'universities')
-                                  ? NetworkImage(data['header_src'])
-                                  : NetworkImage(
-                                      data['university']['header_src']),
-                              fit: BoxFit.fill,
-                            ),*/
-                              ),
+                                  image: NetworkImage(data['header_src']))),
                         ),
                         Container(
                           width: double.infinity,

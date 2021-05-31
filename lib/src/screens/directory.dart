@@ -1,24 +1,15 @@
-// import 'package:Unio/config/app_config.dart';
 import 'package:Unio/src/utilities/global.dart';
-import 'package:Unio/src/widgets/SearchBarWidget.dart';
-import 'package:Unio/src/widgets/UtilitiesGridItemWidget.dart';
-import 'package:Unio/src/widgets/UniversitiesGridItemWidget.dart';
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import '../../config/ui_icons.dart';
 import '../models/category.dart';
 import '../models/route_argument.dart';
-import '../widgets/BrandHomeTabWidget.dart';
 import '../widgets/DrawerWidget.dart';
-import '../widgets/ProductsByBrandWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import '../models/utilities.dart';
-import 'package:Unio/main.dart';
-import '../models/university.dart';
 
 // ignore: must_be_immutable
 class DirectoryWidget extends StatefulWidget {
