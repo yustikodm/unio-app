@@ -794,16 +794,13 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                     padding: const EdgeInsets.only(left: 20.0),
                     child: SearchableDropdown.single(
                       items: countries,
-                      value: _valCountry ?? null,
                       hint: "Country",
                       searchHint: "Country",
                       onClear: () {
                         setState(() {
-                          print('test');
+                          print('clear_valState');
                           _valState = null;
-                          // print(_valState);
-                          // states.clear();
-                          // countries.clear();
+                          states.clear();
                         });
                       },
                       onChanged: (value) {
@@ -832,49 +829,26 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0),
-                    child: _valState != null
-                        ? SearchableDropdown.single(
-                            items: states,
-                            value: _valState,
-                            hint: states.isEmpty ? "-no-item-" : "State",
-                            searchHint: "State",
-                            onChanged: (value) {
-                              setState(() {
-                                _valState = value;
-                                if (_valState != null) {
-                                  var selected = stateRes.firstWhere(
-                                      (element) => element['name'] == value);
+                    child: SearchableDropdown.single(
+                      items: states,
+                      hint: "State",
+                      searchHint: "State",
+                      onChanged: (value) {
+                        setState(() {
+                          _valState = value;
+                          if (_valState != null) {
+                            var selected = stateRes.firstWhere(
+                                (element) => element['name'] == value);
 
-                                  print(value);
-                                  print(selected['id'].toString());
+                            print(value);
+                            print(selected['id'].toString());
 
-                                  widget._stateid = selected['id'].toString();
-                                }
-                              });
-                            },
-                            isExpanded: true,
-                          )
-                        : SearchableDropdown.single(
-                            items: states,
-                            value: _valState ?? null,
-                            hint: states.isEmpty ? "-no-item-" : "State",
-                            searchHint: "State",
-                            onChanged: (value) {
-                              setState(() {
-                                _valState = value;
-                                if (_valState != null) {
-                                  var selected = stateRes.firstWhere(
-                                      (element) => element['name'] == value);
-
-                                  print(value);
-                                  print(selected['id'].toString());
-
-                                  widget._stateid = selected['id'].toString();
-                                }
-                              });
-                            },
-                            isExpanded: true,
-                          ),
+                            widget._stateid = selected['id'].toString();
+                          }
+                        });
+                      },
+                      isExpanded: true,
+                    )
                   ),
                   SizedBox(
                     height: 20,

@@ -69,7 +69,7 @@ class Body extends StatelessWidget {
                         onPageChanged: _questionController.updateTheQnNum,
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, index) =>
-                            QuestionCard(question: snapshot.data[index]),
+                            QuestionCard(question: snapshot.data[index], index: index),
                       );
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
