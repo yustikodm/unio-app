@@ -1,6 +1,6 @@
 import 'package:Unio/src/utilities/global.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:searchable_dropdown/searchable_dropdown.dart';
 import '../../config/ui_icons.dart';
 import '../models/category.dart';
 import '../models/route_argument.dart';
@@ -60,8 +60,14 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
   bool isRightDrawerOpen;
 
+  DropdownSearch<String> stateDropDown;
+  DropdownSearch<String> countryDropDown;
+
   List<DropdownMenuItem> countries = [];
   List<DropdownMenuItem> states = [];
+
+  List<String> countryList = [];
+  List<String> stateList = [];
 
   var countryRes = List();
   var stateRes = List();
@@ -130,6 +136,8 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
           child: Text(countryRes[i]['name']),
           value: countryRes[i]['name'],
         ));
+
+        countryList.add(countryRes[i]['name'].toString());
       });
     }
 
@@ -161,6 +169,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
           child: Text(stateRes[i]['name']),
           value: stateRes[i]['name'],
         ));
+        stateList.add(stateRes[i]['name'].toString());
       });
     }
 
@@ -205,8 +214,6 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
   }
 
   void getData() async {
-    // page = 1;
-    widget._category.utilities.clear();
     setState(() {});
     String url;
 
@@ -357,6 +364,9 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
     );
     // print(response.body);
     setState(() {
+      // _valCountry = null;
+      countries.clear();
+      countryList.clear();
       countryRes = jsonDecode(response.body)['data'];
     });
     // print(countryRes.toString());
@@ -368,6 +378,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
           child: Text(countryRes[i]['name']),
           value: countryRes[i]['name'],
         ));
+        countryList.add(countryRes[i]['name'].toString());
       });
     }
   }
@@ -385,6 +396,9 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
     );
     // print(response.body);
     setState(() {
+      _valState = null;
+      states.clear();
+      stateList.clear();
       stateRes = jsonDecode(response.body)['data']['data'];
     });
     // print(stateRes.toString());
@@ -395,6 +409,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
           child: Text(stateRes[i]['name']),
           value: stateRes[i]['name'],
         ));
+        stateList.add(stateRes[i]['name'].toString());
       });
     }
   }
@@ -791,64 +806,64 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
               child: Column(
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: SearchableDropdown.single(
-                      items: countries,
+                    padding: const EdgeInsets.only(top: 10.0, bottom: 15.0),
+                    child: countryDropDown = DropdownSearch<String>(
+                      mode: Mode.DIALOG,
+                      showSelectedItem: true,
+                      showSearchBox: true,
+                      items: countryList,
+                      label: "Country",
                       hint: "Country",
-                      searchHint: "Country",
-                      onClear: () {
-                        setState(() {
-                          print('clear_valState');
-                          _valState = null;
-                          states.clear();
-                        });
-                      },
                       onChanged: (value) {
+                        
                         // print(value);
                         setState(() {
-                          _valCountry = value;
-                          if (_valCountry != null) {
+                          if (value != null) {
                             print("nilai=" + value.toString());
                             var selected = countryRes.firstWhere(
                                 (element) => element['name'] == value);
                             _valCountryId = selected['id'].toString();
-                            // someStuffs.firstWhereOrNull((element) => element.id == 'Cat');
-                            // print(selected);
-                            print(value);
-                            print(selected['id']);
+                            // print(value);
+                            // print(selected['id']);
+                            
+                            _valState = '';
 
+                            // print(_valState);
                             // getstate
                             getstate(selected['id'].toString());
 
                             widget._countryid = selected['id'].toString();
                           }
                         });
+                        
                       },
-                      isExpanded: true,
+                      selectedItem: _valCountry,
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: SearchableDropdown.single(
-                      items: states,
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: stateDropDown = DropdownSearch<String>(
+                      mode: Mode.DIALOG,
+                      showSelectedItem: true,
+                      showSearchBox: true,
+                      items: stateList,
+                      label: "State",
                       hint: "State",
-                      searchHint: "State",
+                      // popupItemDisabled: (String s) => s.startsWith('I'),
                       onChanged: (value) {
-                        setState(() {
-                          _valState = value;
-                          if (_valState != null) {
-                            var selected = stateRes.firstWhere(
-                                (element) => element['name'] == value);
+                        // print(value);
+                        if (_valState != null) {
+                          var selected = stateRes.firstWhere(
+                              (element) => element['name'] == value);
 
-                            print(value);
-                            print(selected['id'].toString());
+                          // print(value);
+                          // print(selected['id'].toString());
 
-                            widget._stateid = selected['id'].toString();
-                          }
-                        });
+                          widget._stateid = selected['id'].toString();
+                        }
                       },
-                      isExpanded: true,
-                    )
+                      selectedItem: _valState,
+                    ),
                   ),
                   SizedBox(
                     height: 20,
@@ -859,11 +874,11 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                       closeRightDrawer();
 
                       // search with filter
-                      // widget._category.utilities.clear();
-                      // widget._keyword = myController.text;
-                      // page = 1;
-                      // setState(() {});
-                      // getData();
+                      widget._category.utilities.clear();
+                      widget._keyword = myController.text;
+                      page = 1;
+                      setState(() {});
+                      getData();
                     },
                     child: Text('Apply'),
                   )

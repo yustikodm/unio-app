@@ -39,14 +39,18 @@ class QuestionCard extends StatelessWidget {
           ),
           SizedBox(height: kDefaultPadding / 2),
           Option(
-            index: 1,
+            id: 1,
+            index: index,
+            type: question.typeOne,
             text: question.imgOne,
-            press: () => _controller.checkAns(question.typeOne, 1),
+            press: () => _controller.checkAns(question.typeOne, 1, index),
           ),
           Option(
-            index: 2,
+            id: 2,
+            index: index,
+            type: question.typeTwo,
             text: question.imgTwo,
-            press: () => _controller.checkAns(question.typeTwo, 2),
+            press: () => _controller.checkAns(question.typeTwo, 2, index),
           ),
           Container(
             padding: EdgeInsets.only(top: 20.0),

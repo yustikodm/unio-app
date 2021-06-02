@@ -3,6 +3,9 @@ class QuestionaireScore {
   String _score;
   String get score => _score;
 
+  Map _answers = new Map();
+  Map get answers => _answers;
+
   QuestionaireScore() {
     this._hollandCode = {
       'R': 0,
@@ -14,31 +17,58 @@ class QuestionaireScore {
     };
   }
 
-  void addScore(String type) {
-    print(type);
+  void addScore(String type, int index) {
+    // print(type);
     switch (type) {
       case 'R':
-        _hollandCode['R'] += 1;
+        _answers[index] = 'R';
         break;
       case 'I':
-        _hollandCode['I'] += 1;
+        _answers[index] = 'I';
         break;
       case 'A':
-        _hollandCode['A'] += 1;
+        _answers[index] = 'A';
         break;
       case 'S':
-        _hollandCode['S'] += 1;
+        _answers[index] = 'S';
         break;
       case 'E':
-        _hollandCode['E'] += 1;
+        _answers[index] = 'E';
         break;
       case 'C':
-        _hollandCode['C'] += 1;
+        _answers[index] = 'C';
         break;
     }
   }
 
+  void countScore() {
+    _answers.forEach((key, value) {
+      switch (value) {
+        case 'R':
+          _hollandCode['R'] += 1;
+          break;
+        case 'I':
+          _hollandCode['I'] += 1;
+          break;
+        case 'A':
+          _hollandCode['A'] += 1;
+          break;
+        case 'S':
+          _hollandCode['S'] += 1;
+          break;
+        case 'E':
+          _hollandCode['E'] += 1;
+          break;
+        case 'C':
+          _hollandCode['C'] += 1;
+          break;
+      }
+    });
+  }
+
   String calculateFinalScore() {
+    countScore();
+    
     var sortedKeys = _hollandCode.keys.toList(growable: false)
       ..sort((k1, k2) => _hollandCode[k2].compareTo(_hollandCode[k1]));
     print(sortedKeys);
