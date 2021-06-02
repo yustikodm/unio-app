@@ -9,12 +9,16 @@ class Option extends StatelessWidget {
   const Option({
     Key key,
     this.text,
+    this.id,
     this.index,
     this.press,
+    this.type,
   }) : super(key: key);
   final String text;
+  final int id;
   final int index;
   final VoidCallback press;
+  final String type;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +26,13 @@ class Option extends StatelessWidget {
     return GetBuilder<QuestionController>(
         init: QuestionController(),
         builder: (qnController) {
+          print(qnController.score.answers);
+
           Color getTheRightColor() {
-            if (qnController.isAnswered) {
-              if (index == qnController.selectedAns) {
+            if (qnController.isAnswered ||
+                qnController.score.answers.containsKey(index)) {
+              qnController.isAnswered = true;
+              if (type == qnController.score.answers[index]) {
                 return kGreenColor;
               } else {
                 return kRedColor;

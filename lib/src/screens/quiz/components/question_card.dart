@@ -11,9 +11,11 @@ class QuestionCard extends StatelessWidget {
     Key key,
     // it means we have to pass this
     @required this.question,
+    @required this.index,
   }) : super(key: key);
 
   final Question question;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,8 @@ class QuestionCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(25),
       ),
-      child: Column(
+      child: ListView(
+        shrinkWrap: true,
         children: [
           Text(
             'If you like doing activities? click on the image.',
@@ -36,17 +39,34 @@ class QuestionCard extends StatelessWidget {
           ),
           SizedBox(height: kDefaultPadding / 2),
           Option(
-            index: 1,
+            id: 1,
+            index: index,
+            type: question.typeOne,
             text: question.imgOne,
-            press: () => _controller.checkAns(question.typeOne, 1),
+            press: () => _controller.checkAns(question.typeOne, 1, index),
           ),
           Option(
-            index: 2,
+            id: 2,
+            index: index,
+            type: question.typeTwo,
             text: question.imgTwo,
-            press: () => _controller.checkAns(question.typeTwo, 2),
+            press: () => _controller.checkAns(question.typeTwo, 2, index),
           ),
-          FlatButton(onPressed: _controller.prevQuestion, child: Text("Back")),
-          FlatButton(onPressed: _controller.nextQuestion, child: Text("Next")),
+          Container(
+            padding: EdgeInsets.only(top: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                index != 0
+                    ? ElevatedButton(
+                        onPressed: _controller.prevQuestion,
+                        child: Text("Back"))
+                    : SizedBox(),
+                ElevatedButton(
+                    onPressed: _controller.nextQuestion, child: Text("Next")),
+              ],
+            ),
+          ),
         ],
       ),
     );

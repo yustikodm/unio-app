@@ -42,6 +42,9 @@ class QuestionController extends GetxController
 
   bool _isAnswered = false;
   bool get isAnswered => this._isAnswered;
+  void set isAnswered(bool value) {
+    this._isAnswered = value;
+  }
 
   int _correctAns;
   int get correctAns => this._correctAns;
@@ -117,7 +120,7 @@ class QuestionController extends GetxController
     }
   }
 
-  void checkAns(String answer, int selectedIndex) {
+  void checkAns(String answer, int selectedIndex, int questionNumber) {
     // because once user press any option then it will run
     if (!_isAnswered) {}
     _isAnswered = true;
@@ -125,7 +128,8 @@ class QuestionController extends GetxController
     _selectedAns = selectedIndex;
 
     // add score by answer
-    _score.addScore(answer);
+    _score.addScore(answer, questionNumber);
+    // print(_score.answers);
 
     // _score.calculateFinalScore();
 
@@ -136,9 +140,6 @@ class QuestionController extends GetxController
     update();
 
     // Once user select an ans after 3s it will go to the next qn
-    Future.delayed(Duration(seconds: 1), () {
-      nextQuestion();
-    });
   }
 
   void prevQuestion() {
@@ -193,7 +194,6 @@ class QuestionController extends GetxController
 
   void updateTheQnNum(int index) {
     _questionNumber.value = index + 1;
-    print(_questionNumber);
   }
 
   void resetDefault() {

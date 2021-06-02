@@ -1,5 +1,6 @@
 import 'package:Unio/config/ui_icons.dart';
 import 'package:Unio/src/models/category.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 import '../models/product_color.dart';
 import '../models/route_argument.dart';
@@ -28,11 +29,19 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
   String _valDistrict;
   String _valCategory;
   String _valUniversity;
-  final List<DropdownMenuItem> countryitem = [];
-  final List<DropdownMenuItem> categoriitem = [];
-  final List<DropdownMenuItem> universityitem = [];
-  final List<DropdownMenuItem> stateitem = [];
-  final List<DropdownMenuItem> districtitem = [];
+
+  // final List<DropdownMenuItem> countryitem = [];
+  // final List<DropdownMenuItem> categoriitem = [];
+  // final List<DropdownMenuItem> universityitem = [];
+  // final List<DropdownMenuItem> stateitem = [];
+  // final List<DropdownMenuItem> districtitem = [];
+
+  final List<String> countryitem = [];
+  final List<String> categoriitem = [];
+  final List<String> universityitem = [];
+  final List<String> stateitem = [];
+  final List<String> districtitem = [];
+
   var propinsi = List();
   var state = List();
   var district = List();
@@ -67,10 +76,12 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
     // state = [{"id":1,"name":"Jawa Barat"},{"id":2,"name":"Jawa Tengah"},{"id":3,"name":"Jawa Timur"},{"id":4,"name":"DKI Jakarta"}];
     for (var i = 0; i < state.length; i++) {
       setState(() {
-        stateitem.add(DropdownMenuItem(
-          child: Text(state[i]['name']),
-          value: state[i]['name'],
-        ));
+        // stateitem.add(DropdownMenuItem(
+        //   child: Text(state[i]['name']),
+        //   value: state[i]['name'],
+        // ));
+
+        stateitem.add(state[i]['name'].toString());
       });
     }
   }
@@ -93,10 +104,12 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
     countryitem.clear();
     for (var i = 0; i < propinsi.length; i++) {
       setState(() {
-        countryitem.add(DropdownMenuItem(
-          child: Text(propinsi[i]['name']),
-          value: propinsi[i]['name'],
-        ));
+        // countryitem.add(DropdownMenuItem(
+        //   child: Text(propinsi[i]['name']),
+        //   value: propinsi[i]['name'],
+        // ));
+
+        countryitem.add(propinsi[i]['name'].toString());
       });
     }
   }
@@ -150,10 +163,12 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
     // district = [{"id":1,"name":"Surabaya"},{"id":2,"name":"Jakarta"},{"id":3,"name":"Malang"},{"id":4,"name":"Medan"},];
     for (var i = 0; i < district.length; i++) {
       setState(() {
-        districtitem.add(DropdownMenuItem(
-          child: Text(district[i]['name']),
-          value: district[i]['name'],
-        ));
+        // districtitem.add(DropdownMenuItem(
+        //   child: Text(district[i]['name']),
+        //   value: district[i]['name'],
+        // ));
+
+        districtitem.add(district[i]['name'].toString());
       });
     }
   }
@@ -189,10 +204,12 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
     universityitem.clear();
     for (var i = 0; i < universities.length; i++) {
       setState(() {
-        universityitem.add(DropdownMenuItem(
-          child: Text(universities[i]['name']),
-          value: universities[i]['name'],
-        ));
+        // universityitem.add(DropdownMenuItem(
+        //   child: Text(universities[i]['name']),
+        //   value: universities[i]['name'],
+        // ));
+
+        universityitem.add(universities[i]['name'].toString());
       });
     }
   }
@@ -216,10 +233,12 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
 
     for (var i = 0; i < category.length; i++) {
       setState(() {
-        categoriitem.add(DropdownMenuItem(
-          child: Text(category[i]['name']),
-          value: category[i]['name'],
-        ));
+        // categoriitem.add(DropdownMenuItem(
+        //   child: Text(category[i]['name']),
+        //   value: category[i]['name'],
+        // ));
+
+        categoriitem.add(category[i]['name'].toString());
       });
     }
   }
@@ -349,7 +368,7 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                     padding: const EdgeInsets.only(left: 20.0),
                     child: Row(
                       children: [
-                        Text("Country :"),
+                        // Text("Country :"),
                       ],
                     ),
                   )
@@ -357,18 +376,15 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
             (_categoryGroup == "University" ||
                     _categoryGroup == "Field of study")
                 ? Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: SearchableDropdown.single(
-                      onClear: () {
-                        setState(() {
-                          _valCountry = '';
-                          _valCountryid = null;
-                        });
-                      },
+                    padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
+                    child: DropdownSearch<String>(
+                      mode: Mode.DIALOG,
+                      showSelectedItem: true,
+                      showSearchBox: true,
                       items: countryitem,
-                      value: _valCountry,
+                      label: "Country",
                       hint: "Country",
-                      searchHint: "Country",
+                      // popupItemDisabled: (String s) => s.startsWith('I'),
                       onChanged: (value) {
                         setState(() {
                           _valCountry = value;
@@ -390,7 +406,7 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                           }
                         });
                       },
-                      isExpanded: true,
+                      selectedItem: _valCountry,
                     ),
                   )
                 : Container(),
@@ -401,7 +417,7 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                     padding: const EdgeInsets.only(left: 20.0),
                     child: Row(
                       children: [
-                        Text("State :"),
+                        // Text("State :"),
                       ],
                     ),
                   )
@@ -410,18 +426,15 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                     _categoryGroup == "Field of study" ||
                     _categoryGroup == "Vendor")
                 ? Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: SearchableDropdown.single(
-                      onClear: () {
-                        setState(() {
-                          _valState = '';
-                          _valStateid = null;
-                        });
-                      },
+                    padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
+                    child: DropdownSearch<String>(
+                      mode: Mode.DIALOG,
+                      showSelectedItem: true,
+                      showSearchBox: true,
                       items: stateitem,
-                      value: _valState,
+                      label: "State",
                       hint: "State",
-                      searchHint: "State",
+                      // popupItemDisabled: (String s) => s.startsWith('I'),
                       onChanged: (value) {
                         setState(() {
                           _valState = value;
@@ -447,7 +460,7 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                           // getuniversity(countryid, stateid)
                         });
                       },
-                      isExpanded: true,
+                      selectedItem: _valState,
                     ),
                   )
                 : Container(),
@@ -456,19 +469,22 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                     padding: const EdgeInsets.only(left: 20.0),
                     child: Row(
                       children: [
-                        Text("University :"),
+                        // Text("University :"),
                       ],
                     ),
                   )
                 : Container(),
             (_categoryGroup == "#Field of study")
                 ? Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: SearchableDropdown.single(
+                    padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
+                    child: DropdownSearch<String>(
+                      mode: Mode.DIALOG,
+                      showSelectedItem: true,
+                      showSearchBox: true,
                       items: universityitem,
-                      value: _valUniversity,
+                      label: "University",
                       hint: "University",
-                      searchHint: "University",
+                      // popupItemDisabled: (String s) => s.startsWith('I'),
                       onChanged: (value) {
                         setState(() {
                           _valUniversity = value;
@@ -481,10 +497,11 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                           print(_valUniid);
                         });
                       },
-                      isExpanded: true,
+                      selectedItem: _valUniversity,
                     ),
                   )
                 : Container(),
+            SizedBox(height: 20.0,),
             FlatButton(
               onPressed: () {
                 Navigator.of(context).pushNamed('/Directory',
