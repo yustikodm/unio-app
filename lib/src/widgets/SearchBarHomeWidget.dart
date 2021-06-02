@@ -10,6 +10,8 @@ import 'dart:io';
 import '../models/category.dart';
 import '../models/utilities.dart';
 import '../models/route_argument.dart';
+import 'package:Unio/src/screens/quiz/quiz_screen.dart';
+import 'package:get/get.dart';
 
 class SearchBarHomeWidget extends StatefulWidget {
   // final TextEditingController _controller = TextEditingController();
@@ -147,16 +149,69 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               FlatButton(
-                onPressed: () {
+                onPressed: () async {
                   if (Global.instance.apiToken == null) {
                     _showNeedLoginAlert(context);
                   } else {
-                    Navigator.of(context).pushNamed('/Advice',
-                        arguments: new RouteArgument(argumentsList: [
-                          Category('Advice', UiIcons.compass, true,
-                              Colors.redAccent, []),
-                          ''
-                        ]));
+                    Map<String, String> headers = <String, String>{
+                      HttpHeaders.contentTypeHeader: 'application/json'
+                    };
+                    var url = SERVER_DOMAIN + 'users/' + Global.instance.authId;
+                    var token = Global.instance.apiToken;
+                    headers.addAll(
+                        <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
+                    print(url);
+                    print(headers);
+
+                    final client = new http.Client();
+                    final response = await client.get(Uri.parse(url),
+                        headers: headers,
+                    );
+                    print(response.body);
+                    var hasil = jsonDecode(response.body);
+                    if (hasil['data']['biodata']['hc']==null)
+                    {
+                      print("quetionary");
+                      Get.to(() => QuizScreen());
+                    } else
+                    {
+                      print("advices");
+                      Navigator.of(context).pushNamed('/Advice',
+                          arguments: new RouteArgument(argumentsList: [
+                            Category('Advice', UiIcons.compass, true,
+                                Colors.redAccent, []),
+                            ''
+                          ]));
+
+                    }
+
+                    // Map<String, String> headers = <String, String>{
+                    //   HttpHeaders.contentTypeHeader: 'application/json'
+                    // };
+
+                    // url = SERVER_DOMAIN + 'match-with-me/' + Global.instance.authId;
+                    // token = Global.instance.apiToken;
+                    // headers.addAll(
+                    //     <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
+                    // print(url);
+                    // print(headers);
+                    //
+                    // // client = new http.Client();
+                    // final response2 = await client.get(Uri.parse(url),
+                    //   headers: headers,
+                    // );
+                    // print(response2.body);
+
+
+                    // if (response.statusCode == 200) return response.body;
+
+
+                    // Navigator.of(context).pushNamed('/Advice',
+                    //     arguments: new RouteArgument(argumentsList: [
+                    //       Category('Advice', UiIcons.compass, true,
+                    //           Colors.redAccent, []),
+                    //       ''
+                    //     ]));
                   }
                 },
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
