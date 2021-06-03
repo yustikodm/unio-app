@@ -203,6 +203,10 @@ class _SignInWidgetState extends State<SignInWidget> {
                                 Global.instance.authReligion =
                                     data['data']['biodata']['religion'];
 
+                                // add hc to global
+                                Global.instance.authHc =
+                                    data['data']['biodata']['hc'];
+
                                 storage.write(
                                     key: 'authId', value: authId ?? '1');
                                 storage.write(
@@ -259,6 +263,12 @@ class _SignInWidgetState extends State<SignInWidget> {
                                     value: data['data']['biodata']
                                             ['religion'] ??
                                         '-');
+
+                                // add hc to storage
+                                storage.write(
+                                    key: 'authHc',
+                                    value:
+                                        data['data']['biodata']['hc'] ?? '-');
 
                                 EasyLoading.dismiss();
                                 Navigator.of(context)

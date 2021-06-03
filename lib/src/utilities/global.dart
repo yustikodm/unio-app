@@ -22,6 +22,7 @@ class Global {
   var authGraduate;
   var authIdentity = '';
   var authReligion = '';
+  var authHc = '';
 }
 
 convertType(type) {

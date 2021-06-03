@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:Unio/src/models/questionaire_score.dart';
 import 'package:Unio/src/utilities/global.dart';
@@ -214,21 +215,31 @@ class QuestionController extends GetxController
   void adviceStudent() async {
     String finalScore = _score.calculateFinalScore();
     // update hc of student profile
-    final url =
-        Uri.parse('${SERVER_DOMAIN}user/set-hc/${Global.instance.authId}');
-    final token = await storage.read(key: 'apiToken');
-    final response = await http.post(url, headers: {
-      'Authorization': 'Bearer $token',
-    }, body: {
-      'hc': '$finalScore',
-    });
 
-    print(_score.score);
-    print(response);
+    // TODO: add try catch block
+    try {
+      final url =
+          Uri.parse('${SERVER_DOMAIN}user/set-hc/${Global.instance.authId}');
+      final token = await storage.read(key: 'apiToken');
+      final response = await http.post(url, headers: {
+        'Authorization': 'Bearer $token',
+      }, body: {
+        'hc': '$finalScore',
+      });
 
-    // save to local storage
-    storage.write(key: 'hc', value: _score.score);
-    print('${_score.score} added to user profile');
-    resetScore();
+      print(_score.score);
+      print(response);
+
+      // save to Global instance
+      // Global.instance.authHc = finalScore;
+
+      // save to local storage
+      await storage.write(key: 'authHc', value: _score.score);
+
+      print('${_score.score} added to user profile');
+      resetScore();
+    } on SocketException {
+      throw 'Tidak ada koneksi internet. Silahkan coba lagi.';
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:Unio/config/ui_icons.dart';
 import 'package:Unio/src/models/category.dart';
+import 'package:Unio/src/widgets/CustomDropdownSearchWidget.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
 import '../models/product_color.dart';
@@ -377,10 +378,8 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                     _categoryGroup == "Field of study")
                 ? Padding(
                     padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
-                    child: DropdownSearch<String>(
-                      mode: Mode.DIALOG,
-                      showSelectedItem: true,
-                      showSearchBox: true,
+                    child: CustomDropdownWidget(
+                      context: context,
                       items: countryitem,
                       label: "Country",
                       hint: "Country",
@@ -427,10 +426,8 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                     _categoryGroup == "Vendor")
                 ? Padding(
                     padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
-                    child: DropdownSearch<String>(
-                      mode: Mode.DIALOG,
-                      showSelectedItem: true,
-                      showSearchBox: true,
+                    child: CustomDropdownWidget(
+                      context: context,
                       items: stateitem,
                       label: "State",
                       hint: "State",
@@ -475,30 +472,25 @@ class _NewFilterWidgetState extends State<NewFilterWidget> {
                   )
                 : Container(),
             (_categoryGroup == "#Field of study")
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
-                    child: DropdownSearch<String>(
-                      mode: Mode.DIALOG,
-                      showSelectedItem: true,
-                      showSearchBox: true,
-                      items: universityitem,
-                      label: "University",
-                      hint: "University",
-                      // popupItemDisabled: (String s) => s.startsWith('I'),
-                      onChanged: (value) {
-                        setState(() {
-                          _valUniversity = value;
-                          if (_valUniversity != null) {
-                            var estateSelected = universities.firstWhere(
-                                (element) => element['name'] == value);
-                            _valUniid = estateSelected['id'].toString();
-                          }
-                          print(value);
-                          print(_valUniid);
-                        });
-                      },
-                      selectedItem: _valUniversity,
-                    ),
+                ? CustomDropdownWidget(
+                    context: context,
+                    items: universityitem,
+                    label: "University",
+                    hint: "University",
+                    // popupItemDisabled: (String s) => s.startsWith('I'),
+                    onChanged: (value) {
+                      setState(() {
+                        _valUniversity = value;
+                        if (_valUniversity != null) {
+                          var estateSelected = universities.firstWhere(
+                              (element) => element['name'] == value);
+                          _valUniid = estateSelected['id'].toString();
+                        }
+                        print(value);
+                        print(_valUniid);
+                      });
+                    },
+                    selectedItem: _valUniversity,
                   )
                 : Container(),
             SizedBox(height: 20.0,),

@@ -178,9 +178,9 @@ class _DetailWidgetState extends State<DetailWidget>
                           padding:
                               EdgeInsets.symmetric(horizontal: 5, vertical: 20),
                           width: double.infinity,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: NetworkImage(data['header_src']))),
+                          // decoration: BoxDecoration(
+                          //     image: DecorationImage(
+                          //         image: new NetworkImage(data['header_src']))),
                         ),
                         Container(
                           width: double.infinity,

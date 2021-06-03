@@ -63,7 +63,10 @@ class QuestionCard extends StatelessWidget {
                         child: Text("Back"))
                     : SizedBox(),
                 ElevatedButton(
-                    onPressed: _controller.nextQuestion, child: Text("Next")),
+                  onPressed: _controller.nextQuestion, child: Text(
+                    index == 14 ? "Finish" : "Next"
+                  )
+                ),
               ],
             ),
           ),

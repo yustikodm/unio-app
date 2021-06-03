@@ -1,4 +1,5 @@
 import 'package:Unio/src/utilities/global.dart';
+import 'package:Unio/src/widgets/CustomDropdownSearchWidget.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../../config/ui_icons.dart';
@@ -805,65 +806,56 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
             Container(
               child: Column(
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10.0, bottom: 15.0),
-                    child: countryDropDown = DropdownSearch<String>(
-                      mode: Mode.DIALOG,
-                      showSelectedItem: true,
-                      showSearchBox: true,
-                      items: countryList,
-                      label: "Country",
-                      hint: "Country",
-                      onChanged: (value) {
-                        
-                        // print(value);
-                        setState(() {
-                          if (value != null) {
-                            print("nilai=" + value.toString());
-                            var selected = countryRes.firstWhere(
-                                (element) => element['name'] == value);
-                            _valCountryId = selected['id'].toString();
-                            // print(value);
-                            // print(selected['id']);
-                            
-                            _valState = '';
-
-                            // print(_valState);
-                            // getstate
-                            getstate(selected['id'].toString());
-
-                            widget._countryid = selected['id'].toString();
-                          }
-                        });
-                        
-                      },
-                      selectedItem: _valCountry,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: stateDropDown = DropdownSearch<String>(
-                      mode: Mode.DIALOG,
-                      showSelectedItem: true,
-                      showSearchBox: true,
-                      items: stateList,
-                      label: "State",
-                      hint: "State",
-                      // popupItemDisabled: (String s) => s.startsWith('I'),
-                      onChanged: (value) {
-                        // print(value);
-                        if (_valState != null) {
-                          var selected = stateRes.firstWhere(
+                  CustomDropdownWidget(
+                    context: context,
+                    items: countryList,
+                    label: "Country",
+                    hint: "Country",
+                    onChanged: (value) {
+                      
+                      // print(value);
+                      setState(() {
+                        if (value != null) {
+                          print("nilai=" + value.toString());
+                          var selected = countryRes.firstWhere(
                               (element) => element['name'] == value);
-
+                          _valCountryId = selected['id'].toString();
                           // print(value);
-                          // print(selected['id'].toString());
+                          // print(selected['id']);
+                          
+                          _valState = '';
 
-                          widget._stateid = selected['id'].toString();
+                          // print(_valState);
+                          // getstate
+                          getstate(selected['id'].toString());
+
+                          widget._countryid = selected['id'].toString();
                         }
-                      },
-                      selectedItem: _valState,
-                    ),
+                      });
+                      
+                    },
+                    selectedItem: _valCountry,
+                  ),
+
+                  CustomDropdownWidget(
+                    context: context,
+                    items: stateList,
+                    label: "State",
+                    hint: "State",
+                    // popupItemDisabled: (String s) => s.startsWith('I'),
+                    onChanged: (value) {
+                      // print(value);
+                      if (_valState != null) {
+                        var selected = stateRes.firstWhere(
+                            (element) => element['name'] == value);
+
+                        // print(value);
+                        // print(selected['id'].toString());
+
+                        widget._stateid = selected['id'].toString();
+                      }
+                    },
+                    selectedItem: _valState,
                   ),
                   SizedBox(
                     height: 20,
