@@ -124,9 +124,12 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
                               SizedBox(
                                 width: 4,
                               ),
-                              Text(
-                                widget.favorite.parentName.toString(),
-                                style: Theme.of(context).textTheme.body1,
+                              Expanded(
+                                child: Text(
+                                  widget.favorite.parentName.toString(),
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.body1,
+                                ),
                               )
                             ],
                             crossAxisAlignment: CrossAxisAlignment.center,

@@ -46,6 +46,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
   String entity = 'match-with-me-mobile';
 
   AdviceList _adviceList;
+  AdviceList _bookmarkedList;
   bool shouldPop;
 
   List<Fos> _fosList;
@@ -161,6 +162,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
     _initialFosData = true;
 
     _adviceList = new AdviceList();
+    _bookmarkedList = new AdviceList();
     shouldPop = true;
 
     _fosList = [];
@@ -233,26 +235,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
       if (response.statusCode == 200) {
         print('========= noted: get response body ' + response.body.toString());
         if (response.body.isNotEmpty) {
-          // parse majors
-          List jsonMajors = await json.decode(response.body)['data']['majors'];
-          if (jsonMajors != null && jsonMajors.isNotEmpty) {
-            for (var i = 0; i < jsonMajors.length; i++) {
-              print('majors: $i');
-              setState(() {
-                _adviceList.adviceList.add(new Advice(
-                  jsonMajors[i]['university_id'],
-                  jsonMajors[i]['university_name'],
-                  jsonMajors[i]['major_id'],
-                  jsonMajors[i]['major_name'],
-                  jsonMajors[i]['fos'],
-                ));
-              });
-            }
-          } else {
-            _adviceList.adviceList.clear();
-          }
-
-          // matchedFos and initial cip
+          // initial matchedFos, initial cip and initial bookmarkedList
           if (_initialFosData) {
             _initialFosData = false;
             List jsonFos =
@@ -270,10 +253,55 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                   selectedCip[i] = jsonFos[i]['cip'];
                 });
               }
+
+              await getBookmarkedMajors();
             } else {
               _fosList.clear();
               selectedCip.clear();
             }
+          }
+
+          // parse majors
+          List jsonMajors = await json.decode(response.body)['data']['majors'];
+          if (jsonMajors != null && jsonMajors.isNotEmpty) {
+            for (var i = 0; i < jsonMajors.length; i++) {
+              var id = jsonMajors[i]['major_id'];
+              var check = jsonMajors[i]['is_checked'];
+              print('majors: $i id: $id, check: $check');
+
+              setState(() {
+                if (jsonMajors[i]['is_checked'] == "0") {
+                  //   var exist = _bookmarkedList.list.firstWhere(
+                  //     (element) => element.majorId == jsonMajors[i]['major_id'],
+                  //     orElse: () => null,
+                  //   );
+                  //   // IF ITEM EXISTS DONT ADD TO BOOKMARK LIST
+                  //   if (exist == null) {
+                  //     _bookmarkedList.list.add(new Advice(
+                  //       universityLogo: jsonMajors[i]['university_logo'],
+                  //       universityId: jsonMajors[i]['university_id'],
+                  //       universityName: jsonMajors[i]['university_name'],
+                  //       majorId: jsonMajors[i]['major_id'],
+                  //       majorName: jsonMajors[i]['major_name'],
+                  //       fos: jsonMajors[i]['fos'],
+                  //       isChecked: true,
+                  //     ));
+                  //   }
+                  // } else {
+                  _adviceList.list.add(new Advice(
+                    universityLogo: jsonMajors[i]['university_logo'],
+                    universityId: jsonMajors[i]['university_id'],
+                    universityName: jsonMajors[i]['university_name'],
+                    majorId: jsonMajors[i]['major_id'],
+                    majorName: jsonMajors[i]['major_name'],
+                    fos: jsonMajors[i]['fos'],
+                    isChecked: false,
+                  ));
+                }
+              });
+            }
+          } else {
+            _adviceList.list.clear();
           }
 
           if (jsonMajors.length < limit) {
@@ -304,14 +332,75 @@ class _AdviceWidgetState extends State<AdviceWidget> {
     }
   }
 
+  Future<void> getBookmarkedMajors() async {
+    var userId = await Global.instance.authId;
+    var token = await Global.instance.apiToken;
+    var userHc = await storage.read(key: 'authHc');
+
+    // var type = "majors";
+    String url = SERVER_DOMAIN + "wishlists-majors";
+
+    print(token);
+    print('========= noted: query all bookmarked item by HC = $userHc' +
+        "===== url " +
+        url);
+
+    url = url + "?user_id=$userId&hc=$userHc";
+
+    List _cip = [];
+
+    _fosList.forEach((element) {
+      _cip.add(element.cip);
+    });
+
+    print(userId);
+    print(_cip);
+
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+          HttpHeaders.contentTypeHeader: 'aplication/json',
+        },
+        body: jsonEncode({
+          "user_id": userId,
+          "cip": _cip,
+        }));
+
+    print(response.statusCode);
+    print(response.body);
+    print(response.request.headers);
+
+    if (response.statusCode == 200) {
+      List jsonMajors = await json.decode(response.body)['data']['data'];
+      if (jsonMajors != null && jsonMajors.isNotEmpty) {
+        for (var i = 0; i < jsonMajors.length; i++) {
+          print('bookmarked_majors: $i');
+          setState(() {
+            // IF ITEM EXISTS DONT ADD TO BOOKMARK LIST
+            // TODO: check res key value
+            _bookmarkedList.list.add(new Advice(
+              universityLogo: jsonMajors[i]['picture'],
+              universityId: jsonMajors[i]['detail_id'],
+              universityName: jsonMajors[i]['detail_name'],
+              majorId: jsonMajors[i]['entity_id'],
+              majorName: jsonMajors[i]['name'],
+              fos: jsonMajors[i]['cip'],
+              isChecked: true,
+            ));
+          });
+        }
+      } else {
+        _bookmarkedList.list.clear();
+      }
+    }
+  }
+
   void getCountry() async {
+    var token = await Global.instance.apiToken;
     final response = await http.get(
       Uri.parse('https://primavisiglobalindo.net/unio/public/api/countries'),
       // Send authorization headers to the backend.
-      headers: {
-        HttpHeaders.authorizationHeader:
-            "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
-      },
+      headers: {HttpHeaders.authorizationHeader: token},
     );
     // print(response.body);
     setState(() {
@@ -334,16 +423,14 @@ class _AdviceWidgetState extends State<AdviceWidget> {
     }
   }
 
-  void getstate(String countryid) async {
+  void getState(String countryid) async {
+    var token = await Global.instance.apiToken;
     final response = await http.get(
       Uri.parse(
           'https://primavisiglobalindo.net/unio/public/api/states?country_id=' +
               countryid),
       // Send authorization headers to the backend.
-      headers: {
-        HttpHeaders.authorizationHeader:
-            "VsNYL8JE4Cstf8gb9LYCobuxYWzIo71bvUkIVYXXVUO4RtvuRxGYxa3TFzsaOeHxxf4PRY7MIhBPJBly4H9bckY5Qr44msAxc0l4"
-      },
+      headers: {HttpHeaders.authorizationHeader: token},
     );
     // print(response.body);
     setState(() {
@@ -361,6 +448,75 @@ class _AdviceWidgetState extends State<AdviceWidget> {
           value: stateRes[i]['name'],
         ));
         stateList.add(stateRes[i]['name'].toString());
+      });
+    }
+  }
+
+  Future<void> addItemToBookmark(Advice entity) async {
+    var userId = await Global.instance.authId;
+    var token = await Global.instance.apiToken;
+    var type = "majors";
+    String url = SERVER_DOMAIN + "wishlists";
+
+    print(token);
+    print('========= noted: add item to bookmark ' + "===== url " + url);
+
+    print(userId);
+    print(type);
+    print(entity.majorId);
+
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+          HttpHeaders.contentTypeHeader: 'aplication/json',
+        },
+        body: jsonEncode(<String, dynamic>{
+          "user_id": userId,
+          "entity_type": type,
+          "entity_id": entity.majorId,
+        }));
+
+    print(response.statusCode);
+    print(response.body);
+
+    // return response;
+    if (response.statusCode == 200) {
+      setState(() {
+        _bookmarkedList.list.add(entity);
+      });
+    }
+  }
+
+  Future<void> removeItemToBookmark(Advice entity) async {
+    var userId = await Global.instance.authId;
+    var token = await Global.instance.apiToken;
+    var type = "majors";
+    String url = SERVER_DOMAIN + "wishlists";
+
+    print(token);
+    print('========= noted: remove item to bookmark ' + "===== url " + url);
+
+    print(userId);
+    print(type);
+    print(entity.majorId);
+
+    final response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+          HttpHeaders.contentTypeHeader: 'aplication/json',
+        },
+        body: jsonEncode(<String, dynamic>{
+          "user_id": userId,
+          "entity_type": type,
+          "entity_id": entity.majorId,
+        }));
+
+    print(response.statusCode);
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _adviceList.list.add(entity);
       });
     }
   }
@@ -527,7 +683,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                             ),
                             IconButton(
                               onPressed: () {
-                                _adviceList.adviceList.clear();
+                                _adviceList.list.clear();
                                 hasMore = true;
                                 page = 1;
                                 setState(() {});
@@ -566,23 +722,68 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     primary: false,
-                    itemCount: _adviceList.adviceList.length,
+                    itemCount: _bookmarkedList.list.length,
                     separatorBuilder: (context, index) {
                       return SizedBox(height: 10);
                     },
                     itemBuilder: (context, index) {
-                      if (_adviceList.adviceList.isNotEmpty) {
+                      if (_bookmarkedList.list.isNotEmpty) {
                         return AdviceListItemWidget(
-                          heroTag: 'advice_list',
-                          advice: _adviceList.adviceList.elementAt(index),
+                          heroTag: 'bookmark_list',
+                          advice: _bookmarkedList.list.elementAt(index),
                           onDismissed: () {
                             setState(() {
-                              _adviceList.adviceList.removeAt(index);
+                              Advice bmItem =
+                                  _bookmarkedList.list.elementAt(index);
+                              bmItem.isChecked = false;
+
+                              // _adviceList.list.add(bmItem);
+                              removeItemToBookmark(bmItem);
+
+                              _bookmarkedList.list.removeAt(index);
                             });
                           },
                         );
                       } else {
-                        return Text("There is no item found");
+                        return Text('no bookmarked item');
+                      }
+                    },
+                  ),
+                ),
+                Container(
+                  child: ListView.separated(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    primary: false,
+                    itemCount: _adviceList.list.length,
+                    separatorBuilder: (context, index) {
+                      return SizedBox(height: 10);
+                    },
+                    itemBuilder: (context, index) {
+                      if (_adviceList.list.isNotEmpty) {
+                        return AdviceListItemWidget(
+                          heroTag: 'advice_list',
+                          advice: _adviceList.list.elementAt(index),
+                          dismissibleColor: Colors.amber,
+                          dismissibleIcon: Icon(
+                            Icons.star,
+                            color: Colors.white,
+                          ),
+                          onDismissed: () {
+                            setState(() {
+                              // add bookmark
+                              Advice bmItem = _adviceList.list.elementAt(index);
+                              bmItem.isChecked = true;
+
+                              // _bookmarkedList.list.add(bmItem);
+                              addItemToBookmark(bmItem);
+
+                              _adviceList.list.removeAt(index);
+                            });
+                          },
+                        );
+                      } else {
+                        return Text('no bookmarked item');
                       }
                     },
                   ),
@@ -655,73 +856,75 @@ class _AdviceWidgetState extends State<AdviceWidget> {
             Expanded(
               child: ListView(
                 shrinkWrap: true,
+                padding: EdgeInsets.only(top: 0),
                 children: <Widget>[
-                  Text('Major Details'),
-                  ConstrainedBox(
-                    constraints: new BoxConstraints(
-                      minHeight: 100,
-                      maxHeight: 200,
-                    ),
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: searchUniversityName(),
-                        ),
-                        CustomDropdownWidget(
-                            context: context,
-                            hint: 'Country',
-                            selectedItem: _valCountry,
-                            items: countryList,
-                            onChanged: (value) {
-                              setState(() {
-                                if (value != null) {
-                                  print("nilai=" + value.toString());
-                                  var selected = countryRes.firstWhere(
-                                      (element) => element['name'] == value);
-                                  _valCountryId = selected['id'].toString();
-                                  _valState = '';
-                                  getstate(selected['id'].toString());
-                                  countryId = selected['id'];
-                                } else {
-                                  countryId = null;
-                                  stateId = null;
-                                }
-                              });
-                            }),
-                        CustomDropdownWidget(
+                  // Text('Field of Study Details'),
+                  // ConstrainedBox(
+                  //   constraints: new BoxConstraints(
+                  //     minHeight: 100,
+                  //     maxHeight: 200,
+                  //   ),
+                  //   child:
+                  Column(
+                    // shrinkWrap: true,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: searchUniversityName(),
+                      ),
+                      CustomDropdownWidget(
                           context: context,
-                          hint: 'State',
-                          selectedItem: _valState,
-                          items: stateList,
+                          hint: 'Country',
+                          selectedItem: _valCountry,
+                          items: countryList,
                           onChanged: (value) {
                             setState(() {
                               if (value != null) {
-                                var selected = stateRes.firstWhere(
+                                print("nilai=" + value.toString());
+                                var selected = countryRes.firstWhere(
                                     (element) => element['name'] == value);
-
-                                stateId = selected['id'];
+                                _valCountryId = selected['id'].toString();
+                                _valState = '';
+                                getState(selected['id'].toString());
+                                countryId = selected['id'];
                               } else {
+                                countryId = null;
                                 stateId = null;
                               }
                             });
-                          },
-                        ),
-                        CustomDropdownWidget(
-                          context: context,
-                          hint: 'Level',
-                          selectedItem: levelDegree,
-                          items: level,
-                          onChanged: (value) {
-                            setState(() {
-                              levelDegree = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
+                          }),
+                      CustomDropdownWidget(
+                        context: context,
+                        hint: 'State',
+                        selectedItem: _valState,
+                        items: stateList,
+                        onChanged: (value) {
+                          setState(() {
+                            if (value != null) {
+                              var selected = stateRes.firstWhere(
+                                  (element) => element['name'] == value);
+
+                              stateId = selected['id'];
+                            } else {
+                              stateId = null;
+                            }
+                          });
+                        },
+                      ),
+                      CustomDropdownWidget(
+                        context: context,
+                        hint: 'Level',
+                        selectedItem: levelDegree,
+                        items: level,
+                        onChanged: (value) {
+                          setState(() {
+                            levelDegree = value;
+                          });
+                        },
+                      ),
+                    ],
                   ),
+                  // ),
                   (_fosList.isNotEmpty) ? _checkBoxes() : SizedBox(),
                   SizedBox(
                     height: 20,
@@ -732,7 +935,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                       closeRightDrawer();
 
                       // search with filter
-                      _adviceList.adviceList.clear();
+                      _adviceList.list.clear();
                       page = 1;
                       hasMore = true;
                       setState(() {});
@@ -818,7 +1021,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
           Text('Categories'),
           ConstrainedBox(
             constraints: BoxConstraints(
-              maxHeight: 120,
+              maxHeight: 250,
               minHeight: 100,
             ),
             child: ListView(shrinkWrap: true, children: <Widget>[
@@ -826,6 +1029,95 @@ class _AdviceWidgetState extends State<AdviceWidget> {
             ]),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _listTileItem({@required item, @required tag}) {
+    return InkWell(
+      splashColor: Theme.of(context).accentColor,
+      focusColor: Theme.of(context).accentColor,
+      highlightColor: Theme.of(context).primaryColor,
+      onTap: () {
+        print(item.majorId);
+        Navigator.of(context).pushNamed('/Detail',
+            arguments: RouteArgument(param1: item.majorId, param2: 'majors'));
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor.withOpacity(0.9),
+          boxShadow: [
+            BoxShadow(
+                color: Theme.of(context).focusColor.withOpacity(0.1),
+                blurRadius: 5,
+                offset: Offset(0, 2)),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Hero(
+              tag: tag + item.id,
+              child: Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  image: DecorationImage(
+                      image: NetworkImage(item.universityLogo),
+                      fit: BoxFit.cover),
+                ),
+              ),
+            ),
+            SizedBox(width: 15),
+            Flexible(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          item.majorName,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          style: Theme.of(context).textTheme.subhead,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            // The title of the utilitie
+                            (item.isChecked)
+                                ? Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                    size: item.universityName == '-' ? 1 : 18,
+                                  )
+                                : SizedBox(),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            Expanded(
+                              child: Text(
+                                item.universityName.toString(),
+                                style: Theme.of(context).textTheme.body1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Text('FOS', style: Theme.of(context).textTheme.body2),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
