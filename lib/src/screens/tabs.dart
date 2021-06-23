@@ -1,8 +1,10 @@
 import 'package:Unio/main.dart';
 import 'package:Unio/src/models/route_argument.dart';
+import 'package:Unio/src/screens/quiz/quiz_screen.dart';
 import 'package:Unio/src/widgets/FavoriteFilterWidget.dart';
 import 'package:Unio/src/widgets/FilterWidget.dart';
 import 'package:Unio/src/widgets/NewFilterWidget.dart';
+import 'package:get/get.dart';
 
 import '../../config/ui_icons.dart';
 import '../screens/account.dart';
@@ -88,35 +90,19 @@ class _TabsWidgetState extends State<TabsWidget> {
       widget.currentTab = tabItem;
       widget.selectedTab = tabItem;
       switch (tabItem) {
+        // case 0:
+        //   if (Global.instance.apiToken != null) {
+        //     widget.currentTitle = 'Notifications';
+        //     widget.currentPage = NotificationsWidget();
+        //   } else {
+        //     _showNeedLoginAlert(context);
+        //   }
+        //   break;
         case 0:
-          if (Global.instance.apiToken != null) {
-            widget.currentTitle = 'Notifications';
-            widget.currentPage = NotificationsWidget();
-          } else {
-            _showNeedLoginAlert(context);
-          }
-          break;
-        case 3:
-          if (Global.instance.apiToken != null) {
-            widget.currentTitle = 'Cart';
-            widget.currentPage = CartWidget();
-          } else {
-            _showNeedLoginAlert(context);
-          }
-          break;
-        case 2:
           widget.currentTitle = 'Home';
           widget.currentPage = HomeWidget();
           break;
         case 1:
-          if (Global.instance.apiToken != null) {
-            widget.currentTitle = 'Messages';
-            widget.currentPage = MessagesWidget();
-          } else {
-            _showNeedLoginAlert(context);
-          }
-          break;
-        case 4:
           if (Global.instance.apiToken != null) {
             widget.currentTitle = 'Favorites';
             if (widget.routeArgument == null) {
@@ -130,19 +116,35 @@ class _TabsWidgetState extends State<TabsWidget> {
             _showNeedLoginAlert(context);
           }
           break;
-        case 5:
+        case 2:
           if (Global.instance.apiToken != null) {
-            widget.selectedTab = 3;
-            widget.currentTitle = 'Chat';
-            widget.currentPage = ChatWidget();
+            widget.currentTitle = 'Cart';
+            widget.currentPage = CartWidget();
           } else {
             _showNeedLoginAlert(context);
           }
           break;
-        case 6:
-          widget.currentTitle = 'Profile';
-          widget.currentPage = AccountWidget();
-          break;
+        // case 1:
+        //   if (Global.instance.apiToken != null) {
+        //     widget.currentTitle = 'Messages';
+        //     widget.currentPage = MessagesWidget();
+        //   } else {
+        //     _showNeedLoginAlert(context);
+        //   }
+        //   break;
+        // case 5:
+        //   if (Global.instance.apiToken != null) {
+        //     widget.selectedTab = 3;
+        //     widget.currentTitle = 'Chat';
+        //     widget.currentPage = ChatWidget();
+        //   } else {
+        //     _showNeedLoginAlert(context);
+        //   }
+        //   break;
+        // case 6:
+        //   widget.currentTitle = 'Profile';
+        //   widget.currentPage = AccountWidget();
+        //   break;
       }
     });
   }
@@ -168,21 +170,7 @@ class _TabsWidgetState extends State<TabsWidget> {
           style: Theme.of(context).textTheme.display1,
         ),
         actions: <Widget>[
-          Container(
-              width: 30,
-              height: 30,
-              margin: EdgeInsets.only(top: 12.5, bottom: 12.5, right: 20),
-              child: InkWell(
-                  borderRadius: BorderRadius.circular(300),
-                  onTap: () {
-                    Navigator.of(context).pushNamed('/Tabs', arguments: 1);
-                  },
-                  child: IconButton(
-                    icon: Icon(UiIcons.shopping_cart),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed('/Tabs', arguments: 3);
-                    },
-                  ))),
+          SizedBox()
         ],
       ),
       body: widget.currentPage,
@@ -202,14 +190,6 @@ class _TabsWidgetState extends State<TabsWidget> {
         },
         // this will be set when a new tab is tapped
         items: [
-          BottomNavigationBarItem(
-            icon: Icon(UiIcons.bell),
-            title: new Container(height: 0.0),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(UiIcons.chat),
-            title: new Container(height: 0.0),
-          ),
           BottomNavigationBarItem(
               title: new Container(height: 5.0),
               icon: Container(
@@ -235,11 +215,11 @@ class _TabsWidgetState extends State<TabsWidget> {
                     color: Theme.of(context).primaryColor),
               )),
           BottomNavigationBarItem(
-            icon: Icon(UiIcons.shopping_cart),
+            icon: new Icon(UiIcons.heart),
             title: new Container(height: 0.0),
           ),
           BottomNavigationBarItem(
-            icon: new Icon(UiIcons.heart),
+            icon: Icon(UiIcons.shopping_cart),
             title: new Container(height: 0.0),
           ),
         ],

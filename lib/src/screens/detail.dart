@@ -75,6 +75,7 @@ class _DetailWidgetState extends State<DetailWidget>
     _tabController.addListener(_handleTabSelection);
 
     print('lala');
+    print(detailType);
     super.initState();
   }
 
@@ -178,9 +179,20 @@ class _DetailWidgetState extends State<DetailWidget>
                           padding:
                               EdgeInsets.symmetric(horizontal: 5, vertical: 20),
                           width: double.infinity,
-                          // decoration: BoxDecoration(
-                          //     image: DecorationImage(
-                          //         image: new NetworkImage(data['header_src']))),
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: // new NetworkImage(data['header_src']),
+                                      detailType == 'universities'
+                                          ? new NetworkImage(data[
+                                                      'header_src'] !=
+                                                  null
+                                              ? data['header_src']
+                                              : "http://dev.unio.id/frontend/placeholder_university_header.jpg")
+                                          : new NetworkImage(data['university']
+                                                      ['header_src'] !=
+                                                  null
+                                              ? data['university']['header_src']
+                                              : "http://dev.unio.id/frontend/placeholder_university_header.jpg"))),
                         ),
                         Container(
                           width: double.infinity,

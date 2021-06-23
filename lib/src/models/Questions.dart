@@ -1,18 +1,28 @@
 class Question {
   final String typeOne;
   final String imgOne;
+  final String nameOne;
   final String typeTwo;
   final String imgTwo;
+  final String nameTwo;
 
-  Question({this.typeOne, this.imgOne, this.typeTwo, this.imgTwo});
+  Question(
+      {this.typeOne,
+      this.imgOne,
+      this.nameOne,
+      this.typeTwo,
+      this.imgTwo,
+      this.nameTwo});
 
   factory Question.fromJson(Map<String, dynamic> json) {
     // Map<String, dynamic> data = json['data'];
     return Question(
       typeOne: json['quest_one_type'],
       imgOne: json['quest_one_img_src'],
+      nameOne: json['quest_one_img_name'],
       typeTwo: json['quest_two_type'],
       imgTwo: json['quest_two_img_src'],
+      nameTwo: json['quest_two_img_name'],
     );
   }
 }

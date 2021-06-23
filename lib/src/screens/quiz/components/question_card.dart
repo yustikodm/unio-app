@@ -31,7 +31,7 @@ class QuestionCard extends StatelessWidget {
         shrinkWrap: true,
         children: [
           Text(
-            'If you like doing activities? click on the image.',
+            'Which activities do you prefer?',
             style: Theme.of(context)
                 .textTheme
                 .headline6
@@ -42,14 +42,16 @@ class QuestionCard extends StatelessWidget {
             id: 1,
             index: index,
             type: question.typeOne,
-            text: question.imgOne,
+            title: question.nameOne,
+            image: question.imgOne,
             press: () => _controller.checkAns(question.typeOne, 1, index),
           ),
           Option(
             id: 2,
             index: index,
             type: question.typeTwo,
-            text: question.imgTwo,
+            title: question.nameTwo,
+            image: question.imgTwo,
             press: () => _controller.checkAns(question.typeTwo, 2, index),
           ),
           Container(
@@ -63,10 +65,10 @@ class QuestionCard extends StatelessWidget {
                         child: Text("Back"))
                     : SizedBox(),
                 ElevatedButton(
-                  onPressed: _controller.nextQuestion, child: Text(
-                    index == 14 ? "Finish" : "Next"
-                  )
-                ),
+                    onPressed: () {
+                      _controller.nextQuestion(context);
+                    },
+                    child: Text(index == 14 ? "Finish" : "Next")),
               ],
             ),
           ),

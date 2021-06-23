@@ -128,19 +128,19 @@ class DrawerWidget extends StatelessWidget {
               style: Theme.of(context).textTheme.subhead,
             ),
           ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed('/Tabs', arguments: 0);
-            },
-            leading: Icon(
-              UiIcons.bell,
-              color: Theme.of(context).focusColor.withOpacity(1),
-            ),
-            title: Text(
-              "Notifications",
-              style: Theme.of(context).textTheme.subhead,
-            ),
-          ),
+          // ListTile(
+          //   onTap: () {
+          //     Navigator.of(context).pushNamed('/Tabs', arguments: 0);
+          //   },
+          //   leading: Icon(
+          //     UiIcons.bell,
+          //     color: Theme.of(context).focusColor.withOpacity(1),
+          //   ),
+          //   title: Text(
+          //     "Notifications",
+          //     style: Theme.of(context).textTheme.subhead,
+          //   ),
+          // ),
           ListTile(
             onTap: () {
               Navigator.of(context).pushNamed('/Tabs', arguments: 4);
@@ -171,23 +171,23 @@ class DrawerWidget extends StatelessWidget {
               style: Theme.of(context).textTheme.subhead,
             ),
           ),
-          ListTile(
-            onTap: () {
-              showOkAlertDialog(
-                context: context,
-                title: 'This feature is under development.',
-              );
-              //Navigator.of(context).pushNamed('/Categories');
-            },
-            leading: Icon(
-              UiIcons.folder_1,
-              color: Theme.of(context).focusColor.withOpacity(1),
-            ),
-            title: Text(
-              "Categories",
-              style: Theme.of(context).textTheme.subhead,
-            ),
-          ),
+          // ListTile(
+          //   onTap: () {
+          //     showOkAlertDialog(
+          //       context: context,
+          //       title: 'This feature is under development.',
+          //     );
+          //     //Navigator.of(context).pushNamed('/Categories');
+          //   },
+          //   leading: Icon(
+          //     UiIcons.folder_1,
+          //     color: Theme.of(context).focusColor.withOpacity(1),
+          //   ),
+          //   title: Text(
+          //     "Categories",
+          //     style: Theme.of(context).textTheme.subhead,
+          //   ),
+          // ),
           ListTile(
             dense: true,
             title: Text(
@@ -212,19 +212,19 @@ class DrawerWidget extends StatelessWidget {
               style: Theme.of(context).textTheme.subhead,
             ),
           ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed('/Languages');
-            },
-            leading: Icon(
-              UiIcons.planet_earth,
-              color: Theme.of(context).focusColor.withOpacity(1),
-            ),
-            title: Text(
-              "Languages",
-              style: Theme.of(context).textTheme.subhead,
-            ),
-          ),
+          // ListTile(
+          //   onTap: () {
+          //     Navigator.of(context).pushNamed('/Languages');
+          //   },
+          //   leading: Icon(
+          //     UiIcons.planet_earth,
+          //     color: Theme.of(context).focusColor.withOpacity(1),
+          //   ),
+          //   title: Text(
+          //     "Languages",
+          //     style: Theme.of(context).textTheme.subhead,
+          //   ),
+          // ),
           ListTile(
             onTap: () {
               Global.instance.apiToken != null
