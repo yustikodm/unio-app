@@ -82,8 +82,8 @@ class User {
   String initials() {
     List<String> name = this.name.split(' ');
 
-    return ((name[0]?.isNotEmpty == true ? name[0][0] : "") +
-            (name[1]?.isNotEmpty == true ? name[1][0] : ""))
+    return ((name[0] != null ? name[0][0] : "") +
+            (name.length > 1 ? (name[1] != null ? name[1][0] : "") : ""))
         .toUpperCase();
   }
 

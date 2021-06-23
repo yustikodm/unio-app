@@ -43,7 +43,7 @@ class ScoreScreen extends StatelessWidget {
               FlatButton(
                 padding: EdgeInsets.symmetric(vertical: 12, horizontal: 70),
                 onPressed: () {
-                  _qnController.adviceStudent();
+                  // _qnController.adviceStudent();
                   Navigator.of(context).pushNamed('/Advice',
                       arguments: new RouteArgument(argumentsList: [
                         Category('Advice', UiIcons.compass, true,

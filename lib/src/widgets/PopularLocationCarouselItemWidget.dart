@@ -89,7 +89,7 @@ class _PopularLocationCarouselItemWidgetState
                     fit: BoxFit.cover,
                     // image: AssetImage(utilitie.image),
                     image: (this.widget.heroTag == "home_flash_sales")
-                        ? AssetImage(widget.university.logo)
+                        ? NetworkImage(widget.university.logo)
                         : NetworkImage(
                             "https://i.ibb.co/RgwbsQy/icon-campus.jpg"),
                   ),

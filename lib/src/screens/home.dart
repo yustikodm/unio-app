@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:Unio/src/models/university.dart';
+import 'package:Unio/src/utilities/global.dart';
+import 'package:Unio/src/widgets/CircularLoadingWidget.dart';
 
 import '../../config/ui_icons.dart';
 import '../models/category.dart';
@@ -9,6 +13,7 @@ import '../widgets/HomeSliderWidget.dart';
 import 'package:flutter/material.dart';
 import '../widgets/PopularLocationCarouselWidget.dart';
 import '../widgets/SearchBarHomeWidget.dart';
+import 'package:http/http.dart' as http;
 
 class HomeWidget extends StatefulWidget {
   @override
@@ -20,13 +25,19 @@ class _HomeWidgetState extends State<HomeWidget>
   List<Utilitie> _utilitiesOfCategoryList;
   List<Utilitie> _utilitiesfBrandList;
   CategoriesList _categoriesList = new CategoriesList();
-  UniversityList _universityList = new UniversityList();
+  // UniversityList _universityList = new UniversityList();
+
+  List<University> _universityList;
 
   Animation animationOpacity;
   AnimationController animationController;
 
   @override
   void initState() {
+    _universityList = [];
+
+    fetchData();
+
     animationController =
         AnimationController(duration: Duration(milliseconds: 200), vsync: this);
     CurvedAnimation curve =
@@ -72,6 +83,39 @@ class _HomeWidgetState extends State<HomeWidget>
     super.initState();
   }
 
+  void fetchData() async {
+    // var type = "majors";
+    String url = SERVER_DOMAIN + "frontend-home";
+
+    print('========= noted: query all item ' + url);
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      print('========= noted: get response body ' + response.body.toString());
+      if (response.body.isNotEmpty) {
+        List universities =
+            await json.decode(response.body)['data']['university'];
+        if (universities != null && universities.isNotEmpty) {
+          for (var i = 0; i < universities.length; i++) {
+            print('university $i');
+            setState(() {
+              _universityList.add(new University(
+                  universities[i]['id'],
+                  universities[i]['name'],
+                  universities[i]['description'],
+                  universities[i]['website'],
+                  universities[i]['logo_src'],
+                  universities[i]['header_src'] != null
+                      ? universities[i]['header_src']
+                      : "http://dev.unio.id/frontend/placeholder_university_header.jpg"));
+            });
+          }
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -110,9 +154,10 @@ class _HomeWidgetState extends State<HomeWidget>
                 ),
               ],
             )),
-        PopularLocationCarouselWidget(
-            heroTag: 'home_flash_sales',
-            universityList: _universityList.popularListHome),
+        (_universityList.isNotEmpty)
+            ? PopularLocationCarouselWidget(
+                heroTag: 'home_flash_sales', universityList: _universityList)
+            : CircularProgressIndicator(),
         /*Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Column(

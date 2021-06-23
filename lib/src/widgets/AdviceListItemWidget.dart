@@ -11,8 +11,16 @@ class AdviceListItemWidget extends StatefulWidget {
   String heroTag;
   Advice advice;
   VoidCallback onDismissed;
+  Color dismissibleColor;
+  Widget dismissibleIcon;
 
-  AdviceListItemWidget({Key key, this.heroTag, this.advice, this.onDismissed})
+  AdviceListItemWidget(
+      {Key key,
+      this.heroTag,
+      this.advice,
+      this.onDismissed,
+      this.dismissibleColor,
+      this.dismissibleIcon})
       : super(key: key);
 
   @override
@@ -25,15 +33,19 @@ class _AdviceListItemWidgetState extends State<AdviceListItemWidget> {
     return Dismissible(
       key: Key(this.widget.advice.hashCode.toString()),
       background: Container(
-        color: Colors.red,
+        color: widget.dismissibleColor == null
+            ? Colors.red
+            : widget.dismissibleColor,
         child: Align(
           alignment: Alignment.centerRight,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Icon(
-              UiIcons.trash,
-              color: Colors.white,
-            ),
+            child: (widget.dismissibleIcon == null)
+                ? Icon(
+                    UiIcons.trash,
+                    color: Colors.white,
+                  )
+                : widget.dismissibleIcon,
           ),
         ),
       ),
@@ -44,9 +56,9 @@ class _AdviceListItemWidgetState extends State<AdviceListItemWidget> {
         });
 
         // Then show a snackbar.
-        Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text(
-                "The ${widget.advice.majorName} favorite is removed from wish list")));
+        // Scaffold.of(context).showSnackBar(SnackBar(
+        //     content: Text(
+        //         "The ${widget.advice.majorName} favorite is removed from wish list")));
       },
       child: InkWell(
         splashColor: Theme.of(context).accentColor,
@@ -78,11 +90,11 @@ class _AdviceListItemWidgetState extends State<AdviceListItemWidget> {
                   height: 60,
                   width: 60,
                   decoration: BoxDecoration(
-                      /*borderRadius: BorderRadius.all(Radius.circular(5)),
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
                     image: DecorationImage(
-                        image: NetworkImage(widget.favorite.image),
-                        fit: BoxFit.cover),*/
-                      ),
+                        image: NetworkImage(widget.advice.universityLogo),
+                        fit: BoxFit.cover),
+                  ),
                 ),
               ),
               SizedBox(width: 15),
@@ -103,20 +115,25 @@ class _AdviceListItemWidgetState extends State<AdviceListItemWidget> {
                           Row(
                             children: <Widget>[
                               // The title of the utilitie
-                              Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                                size: widget.advice.universityName == '-'
-                                    ? 1
-                                    : 18,
-                              ),
+                              (widget.advice.isChecked)
+                                  ? Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                      size: widget.advice.universityName == '-'
+                                          ? 1
+                                          : 18,
+                                    )
+                                  : SizedBox(),
                               SizedBox(
                                 width: 4,
                               ),
-                              Text(
-                                widget.advice.universityName.toString(),
-                                style: Theme.of(context).textTheme.body1,
-                              )
+                              Expanded(
+                                child: Text(
+                                  widget.advice.universityName.toString(),
+                                  style: Theme.of(context).textTheme.body1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                             ],
                             crossAxisAlignment: CrossAxisAlignment.center,
                           ),

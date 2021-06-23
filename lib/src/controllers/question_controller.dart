@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:Unio/config/ui_icons.dart';
 import 'package:Unio/src/models/questionaire_score.dart';
+import 'package:Unio/src/models/route_argument.dart';
 import 'package:Unio/src/utilities/global.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:get/state_manager.dart';
 import 'package:Unio/src/models/Questions.dart';
 import 'package:Unio/src/screens/score/score_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:Unio/src/models/category.dart';
 
 // We use get package for our state management
 
@@ -26,15 +29,6 @@ class QuestionController extends GetxController
   PageController _pageController;
   PageController get pageController => this._pageController;
 
-  // List<Question> _questions = sample_data
-  //     .map(
-  //       (question) => Question(
-  //           id: question['id'],
-  //           question: question['question'],
-  //           options: question['options'],
-  //           answer: question['answer_index']),
-  //     )
-  //     .toList();
   List<Question> _questions;
   List<Question> get questions => this._questions;
 
@@ -63,19 +57,6 @@ class QuestionController extends GetxController
   // called immediately after the widget is allocated memory
   @override
   void onInit() {
-    // Our animation duration is 60 s
-    // so our plan is to fill the progress bar within 60s
-    // _animationController =
-    //     AnimationController(duration: Duration(seconds: 60), vsync: this);
-    // _animation = Tween<double>(begin: 0, end: 1).animate(_animationController)
-    //   ..addListener(() {
-    //     // update like setState
-    //     update();
-    //   });
-
-    // start our animation
-    // Once 60s is completed go to the next qn
-    // _animationController.forward().whenComplete(nextQuestion);
     _pageController = new PageController();
     _score = new QuestionaireScore();
     fetchQuestion();
@@ -107,7 +88,7 @@ class QuestionController extends GetxController
       var res = json.decode(response.body);
       var data = res['data'];
 
-      // print(data);
+      print(data);
 
       _questions =
           List<Question>.from(data.map((model) => Question.fromJson(model)));
@@ -130,17 +111,7 @@ class QuestionController extends GetxController
 
     // add score by answer
     _score.addScore(answer, questionNumber);
-    // print(_score.answers);
-
-    // _score.calculateFinalScore();
-
-    // if (_correctAns == _selectedAns) _numOfCorrectAns++;
-
-    // It will stop the counter
-    // _animationController.stop();
     update();
-
-    // Once user select an ans after 3s it will go to the next qn
   }
 
   void prevQuestion() {
@@ -148,25 +119,10 @@ class QuestionController extends GetxController
       _isAnswered = true;
       _pageController.previousPage(
           duration: Duration(milliseconds: 250), curve: Curves.ease);
-
-      // Reset the counter
-      // _animationController.reset();
-
-      // Then start it again
-      // Once timer is finish go to the next qn
-      // _animationController.forward().whenComplete(nextQuestion);
-      // update();
-    } else {
-      /*updateTheQnNum(0);
-
-      resetDefault();
-
-      // Get package provide us simple way to naviigate another page
-      Get.to(() => ScoreScreen());*/
     }
   }
 
-  void nextQuestion() {
+  void nextQuestion(BuildContext context) {
     if (_questionNumber.value != _questions.length) {
       if (!_isAnswered) {
         AlertDialog(title: Text('Please choose the answer first'));
@@ -175,21 +131,13 @@ class QuestionController extends GetxController
         _pageController.nextPage(
             duration: Duration(milliseconds: 250), curve: Curves.ease);
       }
-
-      // Reset the counter
-      // _animationController.reset();
-
-      // Then start it again
-      // Once timer is finish go to the next qn
-      // _animationController.forward().whenComplete(nextQuestion);
-      // update();
     } else {
       updateTheQnNum(0);
 
-      resetDefault();
+      adviceStudent(context);
 
       // Get package provide us simple way to naviigate another page
-      Get.to(() => ScoreScreen());
+      // Get.to(() => AdviceWidget());
     }
   }
 
@@ -204,6 +152,7 @@ class QuestionController extends GetxController
     _selectedAns = null;
     _pageController.dispose();
     _pageController = new PageController();
+    _score = new QuestionaireScore();
     update();
   }
 
@@ -212,7 +161,7 @@ class QuestionController extends GetxController
     update();
   }
 
-  void adviceStudent() async {
+  void adviceStudent(context) async {
     String finalScore = _score.calculateFinalScore();
     // update hc of student profile
 
@@ -238,6 +187,12 @@ class QuestionController extends GetxController
 
       print('${_score.score} added to user profile');
       resetScore();
+
+      Navigator.of(context).pushReplacementNamed('/Advice',
+          arguments: new RouteArgument(argumentsList: [
+            Category('Advice', UiIcons.compass, true, Colors.redAccent, []),
+            ''
+          ]));
     } on SocketException {
       throw 'Tidak ada koneksi internet. Silahkan coba lagi.';
     }
