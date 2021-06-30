@@ -32,6 +32,9 @@ class QuestionController extends GetxController
   List<Question> _questions;
   List<Question> get questions => this._questions;
 
+  dynamic _extraQuestions;
+  dynamic get extraQuestions => this._extraQuestions;
+
   QuestionaireScore _score;
   QuestionaireScore get score => this._score;
 
@@ -40,6 +43,9 @@ class QuestionController extends GetxController
   void set isAnswered(bool value) {
     this._isAnswered = value;
   }
+
+  bool _hasExtra = false;
+  bool get hasExtra => this._hasExtra;
 
   int _correctAns;
   int get correctAns => this._correctAns;
@@ -86,13 +92,18 @@ class QuestionController extends GetxController
       // then parse the JSON.
       // print(response.body);
       var res = json.decode(response.body);
-      var data = res['data'];
+      var data = res['data']['basic_question'];
+      var extra = res['data']['extra_question'];
 
       print(data);
 
       _questions =
           List<Question>.from(data.map((model) => Question.fromJson(model)));
-      print(_questions);
+      // print(_questions);
+
+      _extraQuestions = extra;
+
+      print(_extraQuestions);
 
       return _questions;
     } else {
@@ -132,7 +143,7 @@ class QuestionController extends GetxController
             duration: Duration(milliseconds: 250), curve: Curves.ease);
       }
     } else {
-      updateTheQnNum(0);
+      // updateTheQnNum(0);
 
       adviceStudent(context);
 
@@ -158,43 +169,104 @@ class QuestionController extends GetxController
 
   void resetScore() {
     _score = new QuestionaireScore();
+    _hasExtra = true;
+    // _oldHc = null;
+    // _extraHc = null;
     update();
   }
 
+  // List _oldHc;
+  // List get oldHc => this._oldHc;
+
+  // List _extraHc;
+  // List get extraHc => this._extraHc;
+
+  // void answerExtra(answer) {
+  //   var tempIndex;
+  //   var hc = '';
+
+  //   // var answer = {
+  //   //   1: 'I',
+  //   //   2: 'A',
+  //   // };
+
+  //   for (int i = 0; i < _oldHc.length; i++) {
+  //     if (!_extraHc.contains(_oldHc[i])) {
+  //       print(_oldHc[i]);
+  //       tempIndex = i;
+  //     }
+  //   }
+
+  //   if (tempIndex != null) {
+  //     // ANSWER RETURN 2 HC
+  //     if (tempIndex == 0) hc = hc + _oldHc[tempIndex];
+
+  //     hc = hc + answer[1] + answer[2];
+
+  //     if (tempIndex == 2) hc = hc + _oldHc[tempIndex];
+  //   } else {
+  //     // ANSWER RETURN 3 HC
+  //     hc = answer[1] + answer[2] + answer[3];
+  //   }
+  // }
+
+  // void getExtra() {
+  //   _hasExtra = true;
+  //   update();
+  // }
+
   void adviceStudent(context) async {
-    String finalScore = _score.calculateFinalScore();
+    dynamic finalScore = _score.calculateFinalScore();
+    String score = finalScore['score'];
     // update hc of student profile
 
-    // TODO: add try catch block
-    try {
-      final url =
-          Uri.parse('${SERVER_DOMAIN}user/set-hc/${Global.instance.authId}');
-      final token = await storage.read(key: 'apiToken');
-      final response = await http.post(url, headers: {
-        'Authorization': 'Bearer $token',
-      }, body: {
-        'hc': '$finalScore',
-      });
+    if (finalScore['has_extra']) {
+      _hasExtra = true;
+      // _oldHc = finalScore['old_hc'];
+      // _extraHc = finalScore['extra_hc'];
 
-      print(_score.score);
-      print(response);
+      update();
 
-      // save to Global instance
-      // Global.instance.authHc = finalScore;
-
-      // save to local storage
-      await storage.write(key: 'authHc', value: _score.score);
-
-      print('${_score.score} added to user profile');
-      resetScore();
-
-      Navigator.of(context).pushReplacementNamed('/Advice',
+      Navigator.of(context).pushReplacementNamed('/ExtraQuestion',
           arguments: new RouteArgument(argumentsList: [
-            Category('Advice', UiIcons.compass, true, Colors.redAccent, []),
-            ''
+            finalScore['old_hc'],
+            finalScore['extra_hc'],
+            _extraQuestions,
           ]));
-    } on SocketException {
-      throw 'Tidak ada koneksi internet. Silahkan coba lagi.';
+
+      resetScore();
+    } else {
+      try {
+        final url =
+            Uri.parse('${SERVER_DOMAIN}user/set-hc/${Global.instance.authId}');
+        final token = await storage.read(key: 'apiToken');
+        final response = await http.post(url, headers: {
+          'Authorization': 'Bearer $token',
+        }, body: {
+          'hc': score,
+        });
+
+        print(_score.score);
+        print(response);
+
+        // save to Global instance
+        // Global.instance.authHc = finalScore;
+
+        // save to local storage
+        Global.instance.authHc = score;
+        await storage.write(key: 'authHc', value: score);
+
+        print('${_score.score} added to user profile');
+        resetScore();
+
+        Navigator.of(context).pushReplacementNamed('/Advice',
+            arguments: new RouteArgument(argumentsList: [
+              Category('Advice', UiIcons.compass, true, Colors.redAccent, []),
+              ''
+            ]));
+      } on SocketException {
+        throw 'Tidak ada koneksi internet. Silahkan coba lagi.';
+      }
     }
   }
 }

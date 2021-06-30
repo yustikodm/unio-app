@@ -5,19 +5,21 @@ class Advice {
   int universityId;
   String universityName;
   String universityLogo;
+  String level;
   int majorId;
   String majorName;
   String fos;
   bool isChecked;
 
   Advice(
-    {@required this.universityId,
-     @required this.universityName,
-     @required this.universityLogo,
-     @required this.majorId,
-     @required this.majorName,
-     @required this.fos,
-     @required this.isChecked});
+      {@required this.universityId,
+      @required this.universityName,
+      @required this.universityLogo,
+      @required this.level,
+      @required this.majorId,
+      @required this.majorName,
+      @required this.fos,
+      @required this.isChecked});
 }
 
 class AdviceList {

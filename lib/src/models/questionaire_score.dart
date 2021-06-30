@@ -1,10 +1,16 @@
 class QuestionaireScore {
   Map _hollandCode;
-  String _score;
-  String get score => _score;
+  dynamic _score;
+  dynamic get score => _score;
 
   Map _answers = new Map();
   Map get answers => _answers;
+
+  bool _hasExtra = false;
+  bool get hasExtra => _hasExtra;
+
+  List<dynamic> _extraQuestions;
+  List<dynamic> get extraQuestions => _extraQuestions;
 
   QuestionaireScore() {
     this._hollandCode = {
@@ -18,7 +24,7 @@ class QuestionaireScore {
   }
 
   void addScore(String type, int index) {
-    // print(type);
+    print(type);
     switch (type) {
       case 'R':
         _answers[index] = 'R';
@@ -66,24 +72,63 @@ class QuestionaireScore {
     });
   }
 
-  String calculateFinalScore() {
+  dynamic calculateFinalScore() {
     countScore();
-    
+
     var sortedKeys = _hollandCode.keys.toList(growable: false)
       ..sort((k1, k2) => _hollandCode[k2].compareTo(_hollandCode[k1]));
     print(sortedKeys);
 
     Map sortedMap = new Map.fromIterable(sortedKeys,
         key: (k) => k, value: (k) => _hollandCode[k]);
-
-    String str = "";
-
-    sortedMap.keys.forEach((char) {
-      str += char;
-    });
-
-    _score = str.substring(0, 3);
     print(sortedMap);
+
+    // ONLY WORKS IF DATA IS SORTED FROM HIGH TO LOW
+    // List code = sortedMap.keys.toList();
+    List hcTemp = [];
+    List scoreTemp = [];
+    var hcMap = {};
+
+    for (var i = 0; i < 3; i++) {
+      var hc = sortedKeys[i];
+      var score = sortedMap[hc];
+      
+      hcMap[i] = sortedKeys[i];
+
+      if (scoreTemp.isEmpty) {
+        hcTemp.add(hc);
+        scoreTemp.add(score);
+        print(i);
+      } else {
+        if (scoreTemp.length < 2) {
+          if (scoreTemp[0] != score) {
+            hcTemp.clear();
+            scoreTemp.clear();
+
+            hcTemp.add(hc);
+            scoreTemp.add(score);
+          } else {
+            hcTemp.add(hc);
+            scoreTemp.add(score);
+          }
+        }
+      }
+    }
+
+    if (hcTemp.length > 1) {
+      _score = {
+        'has_extra': true,
+        'score': sortedKeys[0] + sortedKeys[1] + sortedKeys[2],
+        'old_hc': [sortedKeys[0], sortedKeys[1], sortedKeys[2]],
+        'extra_hc': hcTemp,
+      };
+    } else {
+      _score = {
+        'has_extra': false,
+        'score': sortedKeys[0] + sortedKeys[1] + sortedKeys[2],
+      };
+    }
+
     return _score;
   }
 }

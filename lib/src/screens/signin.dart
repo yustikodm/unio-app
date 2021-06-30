@@ -272,7 +272,7 @@ class _SignInWidgetState extends State<SignInWidget> {
 
                                 EasyLoading.dismiss();
                                 Navigator.of(context)
-                                    .pushNamed('/Tabs', arguments: 2);
+                                    .pushNamed('/Tabs', arguments: 0);
                               }
                             } else {
                               EasyLoading.dismiss();

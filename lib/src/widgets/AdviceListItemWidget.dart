@@ -1,5 +1,6 @@
 import 'package:Unio/src/models/advice.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../config/ui_icons.dart';
 import '../models/route_argument.dart';
@@ -114,18 +115,33 @@ class _AdviceListItemWidgetState extends State<AdviceListItemWidget> {
                           ),
                           Row(
                             children: <Widget>[
-                              // The title of the utilitie
-                              (widget.advice.isChecked)
-                                  ? Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                      size: widget.advice.universityName == '-'
-                                          ? 1
-                                          : 18,
-                                    )
-                                  : SizedBox(),
+                              FaIcon(
+                                FontAwesomeIcons.graduationCap,
+                                size: 12.0,
+                                color: Color(0xFF5D9EDE),
+                              ),
                               SizedBox(
-                                width: 4,
+                                width: 5,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  widget.advice.level.toString(),
+                                  style: Theme.of(context).textTheme.body1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                          ),
+                          Row(
+                            children: <Widget>[
+                              FaIcon(
+                                FontAwesomeIcons.university,
+                                size: 12.0,
+                                color: Color(0xFF5D9EDE),
+                              ),
+                              SizedBox(
+                                width: 5,
                               ),
                               Expanded(
                                 child: Text(
@@ -141,7 +157,14 @@ class _AdviceListItemWidgetState extends State<AdviceListItemWidget> {
                       ),
                     ),
                     SizedBox(width: 8),
-                    Text('FOS', style: Theme.of(context).textTheme.body2),
+                    (widget.advice.isChecked)
+                        ? Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                            size: widget.advice.universityName == '-' ? 1 : 18,
+                          )
+                        : SizedBox(),
+                    // Text('FOS', style: Theme.of(context).textTheme.body2),
                   ],
                 ),
               )

@@ -4,6 +4,8 @@ import 'package:Unio/src/screens/quiz/quiz_screen.dart';
 import 'package:Unio/src/widgets/FavoriteFilterWidget.dart';
 import 'package:Unio/src/widgets/FilterWidget.dart';
 import 'package:Unio/src/widgets/NewFilterWidget.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 import '../../config/ui_icons.dart';
@@ -21,8 +23,8 @@ import 'package:Unio/src/utilities/global.dart';
 // ignore: must_be_immutable
 class TabsWidget extends StatefulWidget {
   RouteArgument routeArgument;
-  int currentTab = 2;
-  int selectedTab = 2;
+  int currentTab = 0;
+  int selectedTab = 0;
   String currentTitle = 'Home';
   Widget currentPage = HomeWidget();
 
@@ -98,32 +100,32 @@ class _TabsWidgetState extends State<TabsWidget> {
         //     _showNeedLoginAlert(context);
         //   }
         //   break;
-        case 0:
-          widget.currentTitle = 'Home';
-          widget.currentPage = HomeWidget();
-          break;
-        case 1:
-          if (Global.instance.apiToken != null) {
-            widget.currentTitle = 'Favorites';
-            if (widget.routeArgument == null) {
-              widget.currentPage = FavoritesWidget();
-            } else {
-              widget.currentPage = FavoritesWidget(
-                routeArgument: widget.routeArgument,
-              );
-            }
-          } else {
-            _showNeedLoginAlert(context);
-          }
-          break;
-        case 2:
-          if (Global.instance.apiToken != null) {
-            widget.currentTitle = 'Cart';
-            widget.currentPage = CartWidget();
-          } else {
-            _showNeedLoginAlert(context);
-          }
-          break;
+        // case 0:
+        //   widget.currentTitle = 'Home';
+        //   widget.currentPage = HomeWidget();
+        //   break;
+        // case 1:
+        //   if (Global.instance.apiToken != null) {
+        //     widget.currentTitle = 'Favorites';
+        //     if (widget.routeArgument == null) {
+        //       widget.currentPage = FavoritesWidget();
+        //     } else {
+        //       widget.currentPage = FavoritesWidget(
+        //         routeArgument: widget.routeArgument,
+        //       );
+        //     }
+        //   } else {
+        //     _showNeedLoginAlert(context);
+        //   }
+        //   break;
+        // case 2:
+        //   if (Global.instance.apiToken != null) {
+        //     widget.currentTitle = 'Cart';
+        //     widget.currentPage = CartWidget();
+        //   } else {
+        //     _showNeedLoginAlert(context);
+        //   }
+        //   break;
         // case 1:
         //   if (Global.instance.apiToken != null) {
         //     widget.currentTitle = 'Messages';
@@ -170,60 +172,39 @@ class _TabsWidgetState extends State<TabsWidget> {
           style: Theme.of(context).textTheme.display1,
         ),
         actions: <Widget>[
-          SizedBox()
-        ],
-      ),
-      body: widget.currentPage,
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).accentColor,
-        selectedFontSize: 0,
-        unselectedFontSize: 0,
-        iconSize: 22,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        selectedIconTheme: IconThemeData(size: 25),
-        unselectedItemColor: Theme.of(context).hintColor.withOpacity(1),
-        currentIndex: widget.selectedTab,
-        onTap: (int i) {
-          this._selectTab(i);
-        },
-        // this will be set when a new tab is tapped
-        items: [
-          BottomNavigationBarItem(
-              title: new Container(height: 5.0),
-              icon: Container(
-                width: 45,
-                height: 45,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).accentColor.withOpacity(0.8),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(50),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Theme.of(context).accentColor.withOpacity(0.4),
-                        blurRadius: 40,
-                        offset: Offset(0, 15)),
-                    BoxShadow(
-                        color: Theme.of(context).accentColor.withOpacity(0.4),
-                        blurRadius: 13,
-                        offset: Offset(0, 3))
-                  ],
-                ),
-                child: new Icon(UiIcons.home,
-                    color: Theme.of(context).primaryColor),
-              )),
-          BottomNavigationBarItem(
-            icon: new Icon(UiIcons.heart),
-            title: new Container(height: 0.0),
+          IconButton(
+            icon: Icon(
+              FontAwesomeIcons.solidHeart,
+              color: Theme.of(context).hintColor,
+              size: 18,
+            ),
+            tooltip: 'My Bookmark',
+            onPressed: () {
+              (Global.instance.apiToken != null)
+                  ? Navigator.of(context).pushNamed('/Bookmark')
+                  : showOkAlertDialog(
+                      context: context,
+                      title: 'This feature is under development.',
+                    );
+            },
           ),
-          BottomNavigationBarItem(
-            icon: Icon(UiIcons.shopping_cart),
-            title: new Container(height: 0.0),
+          IconButton(
+            icon: Icon(
+              FontAwesomeIcons.shoppingCart,
+              color: Theme.of(context).hintColor,
+              size: 18,
+            ),
+            tooltip: 'My Cart',
+            onPressed: () {
+              showOkAlertDialog(
+                context: context,
+                title: 'This feature is under development.',
+              );
+            },
           ),
         ],
       ),
+      body: HomeWidget(),
     );
   }
 }

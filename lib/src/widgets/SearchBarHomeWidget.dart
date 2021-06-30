@@ -153,28 +153,29 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
                   if (Global.instance.apiToken == null) {
                     _showNeedLoginAlert(context);
                   } else {
-                    Map<String, String> headers = <String, String>{
-                      HttpHeaders.contentTypeHeader: 'application/json'
-                    };
-                    var url = SERVER_DOMAIN + 'users/' + Global.instance.authId;
-                    var token = Global.instance.apiToken;
-                    headers.addAll(
-                        <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
-                    print(url);
-                    print(headers);
 
-                    final client = new http.Client();
-                    final response = await client.get(Uri.parse(url),
-                        headers: headers,
-                    );
-                    print(response.body);
-                    var hasil = jsonDecode(response.body);
-                    if (hasil['data']['biodata']['hc']==null)
-                    {
-                      print("quetionary");
+                    // Map<String, String> headers = <String, String>{
+                    //   HttpHeaders.contentTypeHeader: 'application/json'
+                    // };
+                    // var url = SERVER_DOMAIN + 'users/' + Global.instance.authId;
+                    // var token = Global.instance.apiToken;
+                    // headers.addAll(
+                    //     <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
+                    // print(url);
+                    // print(headers);
+
+                    // final client = new http.Client();
+                    // final response = await client.get(Uri.parse(url),
+                    //     headers: headers,
+                    // );
+                    // print(response.body);
+                    // var hasil = jsonDecode(response.body);
+
+                    if (Global.instance.authHc == '') {
+                      print(Global.instance.authHc);
+                      print("questionary");
                       Get.to(() => QuizScreen());
-                    } else
-                    {
+                    } else {
                       print("advices");
                       Navigator.of(context).pushNamed('/Advice',
                           arguments: new RouteArgument(argumentsList: [
@@ -182,7 +183,6 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
                                 Colors.redAccent, []),
                             ''
                           ]));
-
                     }
 
                     // Map<String, String> headers = <String, String>{
@@ -202,9 +202,7 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
                     // );
                     // print(response2.body);
 
-
                     // if (response.statusCode == 200) return response.body;
-
 
                     // Navigator.of(context).pushNamed('/Advice',
                     //     arguments: new RouteArgument(argumentsList: [

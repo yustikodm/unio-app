@@ -22,7 +22,6 @@ class _CategoriesIconsContainertState
   Widget build(BuildContext context) {
     return Container(
       child: Wrap(
-          alignment: WrapAlignment.spaceBetween,
           children: _buildSuggestions(categoriesList.list, context)),
     );
   }
@@ -37,13 +36,6 @@ _buildSuggestions(List<Category> list, BuildContext context) {
         child: CategoryIconWidget(
           category: item,
           onPressed: (id) {
-            /*if (int.parse(id) == 8) {
-              print('advice');
-            } else {
-              // Navigator.of(context).pushNamed('/Categorie', arguments: new RouteArgument(id: item.id, argumentsList: [item]));
-              Navigator.of(context).pushNamed('/Directory',
-                  arguments: new RouteArgument(argumentsList: [item, '']));
-            }*/
             // Navigator.of(context).pushNamed('/Categorie', arguments: new RouteArgument(id: item.id, argumentsList: [item]));
             Navigator.of(context).pushNamed('/Directory',
                 arguments: new RouteArgument(argumentsList: [item, '']));

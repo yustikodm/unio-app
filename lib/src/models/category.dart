@@ -1,3 +1,5 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import '../../config/ui_icons.dart';
 import 'package:flutter/material.dart';
 import '../models/utilities.dart';
@@ -33,18 +35,21 @@ class CategoriesList {
 
   CategoriesList() {
     this._list = [
-      new Category('University', UiIcons.bar_chart, true, Colors.cyan, []),
-      new Category('Field of study', UiIcons.laptop, false, Colors.orange, []),
+      new Category('University', FontAwesomeIcons.university, true, Colors.cyan, []),
+      new Category('Field of study', FontAwesomeIcons.puzzlePiece, false, Colors.orange, []),
       new Category(
-          'Vendor', UiIcons.shopping_cart, false, Colors.greenAccent, []),
+          'Vendor', FontAwesomeIcons.store, false, Colors.greenAccent, []),
       new Category(
-          'Places to Live', UiIcons.bedroom, false, Colors.blueAccent, []),
+          'Places to Live', FontAwesomeIcons.building, false, Colors.blueAccent, []),
       new Category(
-          'Scholarship', UiIcons.id_card, false, Colors.pinkAccent, []),
+          'Scholarship', FontAwesomeIcons.graduationCap, false, Colors.pinkAccent, []),
       new Category(
-          'Article', UiIcons.books, false, Colors.deepPurpleAccent, []),
-      new Category('Ranking', UiIcons.trophy, false, Colors.brown, []),
-      new Category('Advice', UiIcons.compass, true, Colors.redAccent, []),
+          'Article', FontAwesomeIcons.newspaper, false, Colors.deepPurpleAccent, []),
+      new Category('Ranking', FontAwesomeIcons.trophy, false, Colors.brown, []),
+      new Category('Advice', FontAwesomeIcons.solidCompass, true, Colors.redAccent, []),
+      new Category('Questionnaire', FontAwesomeIcons.userEdit, true, Colors.redAccent, []),
+      // new Category('Bookmark', FontAwesomeIcons.solidHeart, true, Colors.redAccent, []),
+      // new Category('Cart', FontAwesomeIcons.shoppingCart, true, Colors.redAccent, []),
     ];
   }
 

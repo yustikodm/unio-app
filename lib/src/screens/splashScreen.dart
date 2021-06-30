@@ -37,6 +37,7 @@ class _SplashState extends State<Splash> {
     Global.instance.authBirthPlace = await storage.read(key: 'authBirthPlace');
     Global.instance.authBirthDate = DateTime.parse(date);
     Global.instance.authIdentity = await storage.read(key: 'authIdentity');
+    Global.instance.authHc = await storage.read(key: 'authHc');
   }
 
   @override
@@ -45,7 +46,7 @@ class _SplashState extends State<Splash> {
       seconds: 8,
       navigateAfterSeconds: new OnBoardingWidget(),
       logo: SvgPicture.asset(
-        'assets/icons/uniologoputih.svg', 
+        'assets/icons/uniologoputih.svg',
         color: Colors.white,
         width: 40.0,
         height: 40.0,

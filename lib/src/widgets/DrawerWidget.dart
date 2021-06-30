@@ -1,5 +1,6 @@
 import 'package:Unio/src/screens/quiz/quiz_screen.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 import '../../config/ui_icons.dart';
@@ -115,19 +116,19 @@ class DrawerWidget extends StatelessWidget {
                         ),
             ),
           ),
-          ListTile(
-            onTap: () {
-              Navigator.of(context).pushNamed('/Tabs', arguments: 2);
-            },
-            leading: Icon(
-              UiIcons.home,
-              color: Theme.of(context).focusColor.withOpacity(1),
-            ),
-            title: Text(
-              "Home",
-              style: Theme.of(context).textTheme.subhead,
-            ),
-          ),
+          // ListTile(
+          //   onTap: () {
+          //     Navigator.of(context).pushNamed('/Tabs', arguments: 0);
+          //   },
+          //   leading: Icon(
+          //     UiIcons.home,
+          //     color: Theme.of(context).focusColor.withOpacity(1),
+          //   ),
+          //   title: Text(
+          //     "Home",
+          //     style: Theme.of(context).textTheme.subhead,
+          //   ),
+          // ),
           // ListTile(
           //   onTap: () {
           //     Navigator.of(context).pushNamed('/Tabs', arguments: 0);
@@ -143,10 +144,10 @@ class DrawerWidget extends StatelessWidget {
           // ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pushNamed('/Tabs', arguments: 4);
+              Navigator.of(context).pushNamed('/Bookmark');
             },
             leading: Icon(
-              UiIcons.heart,
+              FontAwesomeIcons.solidHeart,
               color: Theme.of(context).focusColor.withOpacity(1),
             ),
             title: Text(
@@ -163,7 +164,7 @@ class DrawerWidget extends StatelessWidget {
               }
             },
             leading: Icon(
-              UiIcons.user,
+              FontAwesomeIcons.userEdit,
               color: Theme.of(context).focusColor.withOpacity(1),
             ),
             title: Text(
@@ -204,7 +205,7 @@ class DrawerWidget extends StatelessWidget {
               Navigator.of(context).pushNamed('/Setting');
             },
             leading: Icon(
-              UiIcons.settings_1,
+              FontAwesomeIcons.cog,
               color: Theme.of(context).focusColor.withOpacity(1),
             ),
             title: Text(

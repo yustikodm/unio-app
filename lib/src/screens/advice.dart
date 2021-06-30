@@ -284,13 +284,14 @@ class _AdviceWidgetState extends State<AdviceWidget> {
               print('majors: $i id: $id, check: $check');
 
               setState(() {
-                if (jsonMajors[i]['is_checked'] == "0") {
+                if (jsonMajors[i]['is_checked'] == "0" && jsonMajors[i]['level'] != null) {
                   _adviceList.list.add(new Advice(
                     universityLogo: jsonMajors[i]['university_logo'],
                     universityId: jsonMajors[i]['university_id'],
                     universityName: jsonMajors[i]['university_name'],
                     majorId: jsonMajors[i]['major_id'],
                     majorName: jsonMajors[i]['major_name'],
+                    level: jsonMajors[i]['level'],
                     fos: jsonMajors[i]['fos'],
                     isChecked: false,
                   ));
@@ -383,6 +384,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
               universityName: jsonMajors[i]['detail_name'],
               majorId: jsonMajors[i]['entity_id'],
               majorName: jsonMajors[i]['name'],
+              level: jsonMajors[i]['level'],
               fos: jsonMajors[i]['cip'],
               isChecked: true,
             ));

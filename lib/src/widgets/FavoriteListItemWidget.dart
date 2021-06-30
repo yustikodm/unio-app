@@ -1,5 +1,6 @@
 import 'package:Unio/src/models/favorites.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../config/ui_icons.dart';
 import '../models/favorites.dart';
@@ -46,29 +47,19 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
         });
 
         // Then show a snackbar.
-        Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text(
-                "The ${widget.favorite.name} favorite is removed from wish list")));
+        // Scaffold.of(context).showSnackBar(SnackBar(
+        //     content: Text(
+        //         "The ${widget.favorite.name} favorite is removed from wish list")));
       },
       child: InkWell(
         splashColor: Theme.of(context).accentColor,
         focusColor: Theme.of(context).accentColor,
         highlightColor: Theme.of(context).primaryColor,
         onTap: () {
-          print(widget.favorite.entityId);
-          print(widget.favorite.entityType);
-          if (widget.favorite.entityType == 'universities' ||
-              widget.favorite.entityType == 'majors') {
-            Navigator.of(context).pushNamed('/Detail',
-                arguments: RouteArgument(
-                    param1: widget.favorite.entityId,
-                    param2: widget.favorite.entityType));
-          } else {
-            showOkAlertDialog(
-              context: context,
-              title: 'This feature is under development.',
-            );
-          }
+          Navigator.of(context).pushNamed('/Detail',
+              arguments: RouteArgument(
+                  param1: widget.favorite.entityId,
+                  param2: widget.favorite.entityType));
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -92,7 +83,11 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                     image: DecorationImage(
-                        image: NetworkImage(widget.favorite.image),
+                        image: (widget.favorite.image == null)
+                            ? AssetImage(
+                                'img/icon_campus.jpg',
+                              )
+                            : NetworkImage(widget.favorite.image),
                         fit: BoxFit.cover),
                   ),
                 ),
@@ -138,8 +133,9 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
                       ),
                     ),
                     SizedBox(width: 8),
-                    Text(convertType(widget.favorite.entityType.toString()),
-                        style: Theme.of(context).textTheme.body2),
+                    _trailing(widget.favorite.entityType),
+                    // Text(convertType(widget.favorite.entityType.toString()),
+                    //     style: Theme.of(context).textTheme.body2),
                   ],
                 ),
               )
@@ -148,5 +144,37 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
         ),
       ),
     );
+  }
+
+  Widget _trailing(entity) {
+    switch (entity) {
+      case 'universities':
+        return IconButton(
+          onPressed: (){},
+          icon: Icon(FontAwesomeIcons.university), 
+          tooltip: 'University',);
+        break;
+      case 'majors':
+        return IconButton(
+          onPressed: (){},
+          icon: Icon(FontAwesomeIcons.puzzlePiece), 
+          tooltip: 'Field of Study',);
+        break;
+      case 'vendors':
+        return IconButton(
+          onPressed: (){},
+          icon: Icon(FontAwesomeIcons.store), 
+          tooltip: 'Vendor',);
+        break;
+      case 'place_lives':
+        return IconButton(
+          onPressed: (){},
+          icon: Icon(FontAwesomeIcons.building), 
+          tooltip: 'Places to Live',);
+        break;
+      default:
+        return Icon(Icons.info);
+        break;
+    }
   }
 }

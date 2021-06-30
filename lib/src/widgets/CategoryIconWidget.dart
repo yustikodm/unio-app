@@ -1,7 +1,9 @@
 import 'package:Unio/config/ui_icons.dart';
 import 'package:Unio/src/models/route_argument.dart';
+import 'package:Unio/src/screens/quiz/quiz_screen.dart';
 import 'package:Unio/src/utilities/global.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:get/get.dart';
 
 import '../models/category.dart';
 import 'package:flutter/material.dart';
@@ -66,27 +68,58 @@ class _CategoryIconWidgetState extends State<CategoryIconWidget>
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       onPressed: () {
         setState(() {
-          print(Global.instance.apiToken);
-          if (widget.category.name != 'Ranking' &&
-              widget.category.name != 'Advice') {
-            // widget.category.name == 'University' || widget.category.name == 'Field of study'
-            widget.onPressed(widget.category.id);
-          } else if (widget.category.name == 'Advice') {
-            if (Global.instance.apiToken == null) {
-              _showNeedLoginAlert();
-            } else {
-              Navigator.of(context).pushNamed('/Advice',
-                  arguments: new RouteArgument(argumentsList: [
-                    Category(
-                        'Advice', UiIcons.compass, true, Colors.redAccent, []),
-                    ''
-                  ]));
-            }
-          } else {
-            showOkAlertDialog(
-              context: context,
-              title: 'This feature is under development.',
-            );
+          // print(Global.instance.apiToken);
+
+          switch (widget.category.name) {
+            case 'Ranking':
+              // widget.onPressed(widget.category.id);
+              showOkAlertDialog(
+                context: context,
+                title: 'This feature is under development.',
+              );
+              break;
+
+            case 'Advice':
+              if (Global.instance.apiToken == null) {
+                _showNeedLoginAlert();
+              } else {
+                if (Global.instance.authHc == '') {
+                  print("quetionary");
+                  Get.to(() => QuizScreen());
+                } else {
+                  print("advices");
+                  Navigator.of(context).pushNamed('/Advice',
+                      arguments: new RouteArgument(argumentsList: [
+                        Category('Advice', UiIcons.compass, true,
+                            Colors.redAccent, []),
+                        ''
+                      ]));
+                }
+              }
+              break;
+
+            case 'Questionnaire':
+              if (Global.instance.apiToken != null) {
+                Get.to(() => QuizScreen());
+              } else {
+                _showNeedLoginAlert();
+              }
+              break;
+
+            case 'Bookmark':
+              Navigator.pushNamed(context, '/Bookmark');
+              break;
+
+            case 'Cart':
+              showOkAlertDialog(
+                context: context,
+                title: 'This feature is under development.',
+              );
+              break;
+
+            default:
+              widget.onPressed(widget.category.id);
+              break;
           }
         });
       },
@@ -95,6 +128,7 @@ class _CategoryIconWidgetState extends State<CategoryIconWidget>
           Icon(
             widget.category.icon,
             size: 25,
+            color: Color(0xFF007BFF),
           ),
           SizedBox(
             height: 6,

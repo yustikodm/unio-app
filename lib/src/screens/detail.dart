@@ -1,11 +1,15 @@
 import 'dart:convert';
+import 'dart:math' as math;
 import 'dart:io';
 
+// import 'package:Unio/config/app_config.dart';
 import 'package:Unio/src/models/product_color.dart';
 import 'package:Unio/src/models/route_argument.dart';
 import 'package:Unio/src/widgets/CircularLoadingWidget.dart';
 import 'package:Unio/src/widgets/ReviewsListWidget.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../config/ui_icons.dart';
 import 'package:Unio/src/utilities/global.dart';
@@ -32,6 +36,8 @@ class _DetailWidgetState extends State<DetailWidget>
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TabController _tabController;
   int _tabIndex = 0;
+  bool readMore = false;
+  bool isBookmarked = false;
 
   Future<void> _showNeedLoginAlert(BuildContext context) async {
     return showDialog<void>(
@@ -79,7 +85,7 @@ class _DetailWidgetState extends State<DetailWidget>
     super.initState();
   }
 
-  Future<String> addBookmark() async {
+  Future<void> addBookmark() async {
     Map<String, String> headers = <String, String>{
       HttpHeaders.contentTypeHeader: 'application/json'
     };
@@ -100,15 +106,45 @@ class _DetailWidgetState extends State<DetailWidget>
         }));
     print(response.body);
 
-    if (response.statusCode == 200) return response.body;
-    return null;
+    var data = json.decode(response.body);
+
+    if (!data['success'])
+      return Future(() {
+        // var data = json.decode(response.body);
+        showOkAlertDialog(
+          context: context,
+          title: 'Error: ' + data['message'],
+        );
+        setState(() {
+          isBookmarked = !isBookmarked;
+        });
+      });
+
+    if (response.statusCode != 200)
+      return Future(() {
+        // var data = json.decode(response.body);
+        showOkAlertDialog(
+          context: context,
+          title: "There is an error",
+        );
+        setState(() {
+          isBookmarked = !isBookmarked;
+        });
+      });
   }
 
   void _launchURL(url) async {
     await canLaunch(url) ? await launch(url) : throw 'Could not launch url';
   }
 
-  void _launchMap(uri) async {
+  void _launchEmail(url) async {
+    await canLaunch(url) ? await launch(url) : throw 'Could not launch url';
+  }
+
+  void _launchMap(q) async {
+    String uri = q.replaceAll(" ", "%20");
+    // print(uri);
+
     await canLaunch('http://maps.google.com/?q=' + uri)
         ? await launch('http://maps.google.com/?q=' + uri)
         : throw 'Could not launch http://maps.google.com/?q=' + uri;
@@ -128,7 +164,8 @@ class _DetailWidgetState extends State<DetailWidget>
         ? CircularLoadingWidget(
             height: double.infinity,
           )
-        : Scaffold(
+        : SafeArea(
+            child: Scaffold(
             key: _scaffoldKey,
             drawer: DrawerWidget(),
             bottomNavigationBar: BottomAppBar(
@@ -176,24 +213,14 @@ class _DetailWidgetState extends State<DetailWidget>
                       fit: StackFit.expand,
                       children: <Widget>[
                         Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 5, vertical: 20),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 20),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: // new NetworkImage(data['header_src']),
-                                      detailType == 'universities'
-                                          ? new NetworkImage(data[
-                                                      'header_src'] !=
-                                                  null
-                                              ? data['header_src']
-                                              : "http://dev.unio.id/frontend/placeholder_university_header.jpg")
-                                          : new NetworkImage(data['university']
-                                                      ['header_src'] !=
-                                                  null
-                                              ? data['university']['header_src']
-                                              : "http://dev.unio.id/frontend/placeholder_university_header.jpg"))),
-                        ),
+                                image: headerImg(detailType),
+                              ),
+                            )),
                         Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
@@ -217,132 +244,149 @@ class _DetailWidgetState extends State<DetailWidget>
                     ),
                   ),
                 ),
-                bottom: TabBar(
-                    controller: _tabController,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    labelPadding: EdgeInsets.symmetric(horizontal: 10),
-                    unselectedLabelColor:
-                        Theme.of(context).focusColor.withOpacity(1),
-                    labelColor: Theme.of(context).primaryColor,
-                    indicator: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Theme.of(context).focusColor.withOpacity(0.6)),
-                    tabs: [
-                      Tab(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            //border: Border.all(color: Theme.of(context).focusColor.withOpacity(0.6), width: 1)
-                          ),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text("Detail"),
-                          ),
-                        ),
-                      ),
-                      Tab(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            //border: Border.all(color: Theme.of(context).focusColor.withOpacity(0.2), width: 1)
-                          ),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text("Review"),
-                          ),
-                        ),
-                      ),
-                    ]),
               ),
-              SliverList(
-                delegate: SliverChildListDelegate([
-                  Offstage(
-                    offstage: 0 != _tabIndex,
-                    child: Column(
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+              SliverStickyHeader(
+                header: Container(
+                  color: Color(0xffFAFAFA),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 22, left: 20, right: 20),
+                        child: Row(
+                          //crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 22, left: 20, right: 20),
-                              child: Row(
-                                //crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Expanded(
-                                    child: Text(
-                                      data['name'] != null ? data['name'] : '',
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      style:
-                                          Theme.of(context).textTheme.display2,
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      if (Global.instance.apiToken != null) {
-                                        var jwt = await addBookmark();
-                                        if (jwt != null) {
-                                          var data = json.decode(jwt);
-                                          showOkAlertDialog(
-                                            context: context,
-                                            title: data['message'],
-                                          );
-                                          setState(() {
-                                            widget.bookmarkColor = (data[
-                                                        'message'] ==
-                                                    'Unbookmarked successfully')
-                                                ? Color(0xFFFFFFFF)
-                                                : Color(0xFFC1C1C1);
-                                          });
-                                        }
-                                      } else {
-                                        _showNeedLoginAlert(context);
-                                      }
-                                    },
-                                    child: Chip(
-                                      padding: EdgeInsets.all(0),
-                                      label: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.bookmark,
-                                            color: widget.bookmarkColor,
-                                            size: 16,
+                            Expanded(
+                              child: Text(
+                                data['name'] != null
+                                    ? data['name']
+                                    : data['title'],
+                                // overflow: TextOverflow.ellipsis,
+                                // maxLines: 2,
+                                style: Theme.of(context).textTheme.display2,
+                              ),
+                            ),
+                            Wrap(
+                              spacing: 10,
+                              children: [
+                                (detailType != 'articles')
+                                    ? GestureDetector(
+                                        onTap: () async {
+                                          if (Global.instance.apiToken !=
+                                              null) {
+                                            addBookmark();
+                                            setState(() {
+                                              isBookmarked = !isBookmarked;
+                                            });
+
+                                          } else {
+                                            _showNeedLoginAlert(context);
+                                          }
+                                        },
+                                        child: Chip(
+                                          elevation: 2,
+                                          shadowColor:
+                                              Colors.grey.withOpacity(0.5),
+                                          padding: EdgeInsets.all(0),
+                                          label: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              Icon(
+                                                (isBookmarked)
+                                                    ? FontAwesomeIcons
+                                                        .solidHeart
+                                                    : FontAwesomeIcons.heart,
+                                                color: Color(0xFFDC3545),
+                                                size: 16,
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                      backgroundColor: Theme.of(context)
-                                          .accentColor
-                                          .withOpacity(0.9),
-                                      shape: StadiumBorder(),
-                                    ),
-                                  ),
-                                  SizedBox(width: 4),
+                                          backgroundColor: Colors.white,
+                                          shape: StadiumBorder(),
+                                        ),
+                                      )
+                                    : SizedBox(),
+                                (detailType != 'articles')
+                                    ? GestureDetector(
+                                        onTap: () async {
+                                          setState(() {
+                                            if (detailType == 'majors') {
+                                              Navigator.of(context).pushNamed(
+                                                  '/Detail',
+                                                  arguments: RouteArgument(
+                                                      param1: data['university']
+                                                          ['id'],
+                                                      param2: 'universities'));
+                                            } else {
+                                              _launchURL(data['website']);
+                                            }
+                                          });
+                                        },
+                                        child: Chip(
+                                          elevation: 2,
+                                          shadowColor:
+                                              Colors.grey.withOpacity(0.5),
+                                          padding: EdgeInsets.all(0),
+                                          label: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              Transform(
+                                                alignment: Alignment.center,
+                                                transform:
+                                                    Matrix4.rotationY(math.pi),
+                                                child: Icon(
+                                                  (detailType == 'majors')
+                                                      ? Icons.reply
+                                                      : Icons.language,
+                                                  color: Theme.of(context)
+                                                      .accentColor
+                                                      .withOpacity(0.9),
+                                                  size: 16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          backgroundColor: Colors.white,
+                                          shape: StadiumBorder(),
+                                        ),
+                                      )
+                                    : SizedBox(),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      (data['is_sponsored'] != null)
+                          ? Container(
+                              // width: MediaQuery.of(context).size.width * 0.3,
+                              // height: MediaQuery.of(context).size.height * 0.15,
+                              margin: const EdgeInsets.only(
+                                  left: 15.0, right: 15.0),
+                              // padding: const EdgeInsets.all(15.0),
+
+                              child: Column(
+                                children: [
                                   Chip(
                                     padding: EdgeInsets.all(0),
-                                    label: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                    label: Wrap(
+                                      spacing: 10,
+                                      // mainAxisAlignment:
+                                      //     MainAxisAlignment.start,
                                       children: <Widget>[
-                                        Text('5.0',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .body2
-                                                .merge(TextStyle(
-                                                    color: Theme.of(context)
-                                                        .primaryColor))),
-                                        SizedBox(width: 4),
                                         Icon(
-                                          Icons.star_border,
-                                          color: Theme.of(context).primaryColor,
+                                          FontAwesomeIcons.handshake,
+                                          color: Colors.white,
                                           size: 16,
                                         ),
+                                        Text('UNIO Partner',
+                                            style:
+                                                TextStyle(color: Colors.white))
                                       ],
                                     ),
                                     backgroundColor: Theme.of(context)
@@ -352,310 +396,549 @@ class _DetailWidgetState extends State<DetailWidget>
                                   ),
                                 ],
                               ),
+                            )
+                          : SizedBox(),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 0, left: 20, right: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              children: [
+                                Column(
+                                  children: [
+                                    (detailType == 'majors')
+                                        ? Text(
+                                            (data['level'] != null)
+                                                ? 'Level : ' + data['level']
+                                                : '',
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .body2)
+                                        : SizedBox(),
+                                  ],
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 0, left: 20, right: 20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(
-                                    children: [
-                                      Column(
-                                        children: [
-                                          detailType != 'universities'
-                                              ? Text(
-                                                  data['level'] != null
-                                                      ? 'Level : ' +
-                                                          data['level']
-                                                      : '',
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    Column(
+                      children: <Widget>[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            (data['university'] != null)
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                1,
+                                        // height: MediaQuery.of(context).size.height * 0.15,
+                                        margin: const EdgeInsets.all(15.0),
+                                        padding: const EdgeInsets.all(15.0),
+                                        decoration: BoxDecoration(
+                                          // border:
+                                          //     Border.all(color: Colors.blueAccent)
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: Offset(0,
+                                                  3), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            // Text(widget.utilitie.description.split("#")[0],maxLines: 5,),
+                                            Text(
+                                              data['university']['name'],
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16.0,
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.room,
+                                                  size: 18.0,
+                                                ),
+                                                Text(
+                                                  data['university']['country']
+                                                      ['name'],
+                                                  style: TextStyle(
+                                                    // fontWeight: FontWeight.bold,
+                                                    fontSize: 14.0,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pushNamed(
+                                                    '/Detail',
+                                                    arguments: RouteArgument(
+                                                        param1:
+                                                            data['university']
+                                                                ['id'],
+                                                        param2:
+                                                            'universities'));
+                                              },
+                                              child: Text('Visit'),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                : SizedBox(),
+
+                            // DESCRIPTION
+                            (detailType != 'majors' &&
+                                    detailType != 'articles' &&
+                                    data['description'] != null)
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                1,
+                                        // height: MediaQuery.of(context).size.height * 0.15,
+                                        margin: const EdgeInsets.all(15.0),
+                                        padding: const EdgeInsets.all(15.0),
+                                        decoration: BoxDecoration(
+                                          // border:
+                                          //     Border.all(color: Colors.blueAccent)
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: Offset(0,
+                                                  3), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            // Text(widget.utilitie.description.split("#")[0],maxLines: 5,),
+                                            Text(
+                                              'Description:',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16.0,
+                                              ),
+                                            ),
+                                            (readMore)
+                                                ? Text(
+                                                    data['description']
+                                                            .trim() ??
+                                                        'There is no description',
+                                                  )
+                                                : Text(
+                                                    data['description']
+                                                            .trim() ??
+                                                        'There is no description',
+                                                    maxLines: 3,
+                                                  ),
+                                            (readMore)
+                                                ? SizedBox()
+                                                : Text(
+                                                    '...',
+                                                    textAlign: TextAlign.left,
+                                                  ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  readMore = !readMore;
+                                                });
+                                              },
+                                              child: (readMore)
+                                                  ? Text('Show Less')
+                                                  : Text('Read More'),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                : SizedBox(),
+
+                            // DESCRIPTION
+                            (detailType == 'articles' &&
+                                    data['description'] != null)
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                1,
+                                        // height: MediaQuery.of(context).size.height * 0.15,
+                                        margin: const EdgeInsets.all(15.0),
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            // Text(widget.utilitie.description.split("#")[0],maxLines: 5,),
+
+                                            Text(
+                                              data['description'].trim() ??
+                                                  'There is no description',
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                : SizedBox(),
+
+                            // INFORMATION
+                            (detailType != 'majors' && detailType != 'articles')
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                1,
+                                        // height: MediaQuery.of(context).size.height * 0.15,
+                                        margin: const EdgeInsets.all(15.0),
+                                        padding: const EdgeInsets.all(15.0),
+                                        decoration: BoxDecoration(
+                                          // border:
+                                          //     Border.all(color: Colors.blueAccent)
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: Offset(0,
+                                                  3), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Information:',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16.0,
+                                              ),
+                                            ),
+                                            (data['country'] != null)
+                                                ? ListTile(
+                                                    leading: Icon(Icons.public),
+                                                    title: Text('Country'),
+                                                    subtitle: Text(
+                                                      data['country']['name'],
+                                                      // overflow:
+                                                      //     TextOverflow.ellipsis,
+                                                    ),
+                                                  )
+                                                : SizedBox(),
+                                            (data['website'] != null)
+                                                ? ListTile(
+                                                    onTap: () {
+                                                      _launchURL(
+                                                          data['website']);
+                                                    },
+                                                    leading: Icon(Icons
+                                                        .language_outlined),
+                                                    title: Text('Website'),
+                                                    subtitle: Text(
+                                                      data['website'],
+                                                    ),
+                                                  )
+                                                : SizedBox(),
+                                            (data['email'] != null)
+                                                ? ListTile(
+                                                    onTap: () {
+                                                      _launchURL(data['email']);
+                                                    },
+                                                    leading: Icon(Icons.email),
+                                                    title: Text('Email:'),
+                                                    subtitle: Text(
+                                                      data['email'],
+                                                    ),
+                                                  )
+                                                : SizedBox(),
+                                            (data['phone'] != null)
+                                                ? ListTile(
+                                                    leading: Icon(Icons.phone),
+                                                    title: Text('Phone:'),
+                                                    subtitle: Text(
+                                                      data['phone'],
+                                                    ),
+                                                  )
+                                                : SizedBox(),
+                                            (data['address'] != null)
+                                                ? ListTile(
+                                                    onTap: () {
+                                                      _launchMap(
+                                                          data['address']);
+                                                    },
+                                                    leading: FaIcon(
+                                                        FontAwesomeIcons
+                                                            .mapMarked),
+                                                    title: Text('Address:'),
+                                                    subtitle: Text(
+                                                      data['address'],
+                                                    ),
+                                                  )
+                                                : SizedBox(),
+                                            (data['year'] != null)
+                                                ? ListTile(
+                                                    leading: FaIcon(
+                                                        FontAwesomeIcons
+                                                            .graduationCap),
+                                                    title: Text('Year:'),
+                                                    subtitle: Text(
+                                                      data['year'].toString(),
+                                                    ),
+                                                  )
+                                                : SizedBox(),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                : SizedBox(),
+
+                            (detailType == 'universities' &&
+                                    data['rank'].isNotEmpty)
+                                ? Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 1,
+                                    // height: MediaQuery.of(context).size.height * 0.15,
+                                    margin: const EdgeInsets.all(15.0),
+                                    padding: const EdgeInsets.all(15.0),
+                                    decoration: BoxDecoration(
+                                      // border:
+                                      //     Border.all(color: Colors.blueAccent)
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          spreadRadius: 5,
+                                          blurRadius: 7,
+                                          offset: Offset(0,
+                                              3), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          'Rankings:',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16.0,
+                                          ),
+                                        ),
+                                        ...rankingList(data['rank'])
+                                      ],
+                                    ),
+                                  )
+                                : SizedBox(),
+
+                            // ADDRESS MAP
+                            (detailType == 'universities')
+                                ? Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                1,
+                                        // height: MediaQuery.of(context).size.height * 0.15,
+                                        margin: const EdgeInsets.all(15.0),
+                                        padding: const EdgeInsets.all(15.0),
+                                        decoration: BoxDecoration(
+                                          // border:
+                                          //     Border.all(color: Colors.blueAccent)
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 5,
+                                              blurRadius: 7,
+                                              offset: Offset(0,
+                                                  3), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Main Campus Location:',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16.0,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                Icon(Icons.room),
+                                                Expanded(
+                                                    child: Text(
+                                                  detailType == 'universities'
+                                                      ? data['address']
+                                                      : data['university']
+                                                          ['address'],
                                                   overflow:
                                                       TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .body2)
-                                              : SizedBox(),
-                                          GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                if (detailType ==
-                                                    'universities') {
-                                                  _launchURL(data['website']);
-                                                } else {
-                                                  _launchURL(data['university']
-                                                      ['website']);
-                                                }
-                                              });
-                                            },
-                                            child: Text(
-                                                detailType == 'universities'
-                                                    ? data['website']
-                                                    : data['university']
-                                                        ['website'],
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .body2),
-                                          ),
-                                        ],
+                                                )),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            SizedBox(
+                                              height: 180,
+                                              width: double.maxFinite,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    if (detailType !=
+                                                        'universities') {
+                                                      _launchMap(
+                                                          data['university']
+                                                              ['name']);
+                                                    } else {
+                                                      _launchMap(data['name']);
+                                                    }
+                                                  });
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              6.0),
+                                                      image: DecorationImage(
+                                                        image: AssetImage(
+                                                            'img/gps.png'),
+                                                        fit: BoxFit.cover,
+                                                      )),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
-                                  ),
-                                  /*Text("Indonesia, Jakarta",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: Theme.of(context).textTheme.body2),*/
-                                ],
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                  child: ListTile(
-                                    dense: true,
-                                    contentPadding:
-                                        EdgeInsets.symmetric(vertical: 0),
-                                    leading: Icon(
-                                      UiIcons.file_2,
-                                      color: Theme.of(context).hintColor,
-                                    ),
-                                    title: Text(
-                                      'Description',
-                                      style:
-                                          Theme.of(context).textTheme.display1,
-                                    ),
-                                  ),
-                                ),
-                                // Padding(
-                                //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                                //   child: Text(widget.utilitie.description.split("#")[0]),
-                                // ),
-                                new Container(
-                                  width: MediaQuery.of(context).size.width * 1,
-                                  // height: MediaQuery.of(context).size.height * 0.15,
-                                  margin: const EdgeInsets.all(15.0),
-                                  padding: const EdgeInsets.all(15.0),
-                                  decoration: BoxDecoration(
-                                      border:
-                                          Border.all(color: Colors.blueAccent)),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      // Text(widget.utilitie.description.split("#")[0],maxLines: 5,),
-                                      Text(
-                                        data['description'] ??
-                                            'There is no description',
-                                        maxLines: 5,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 0),
-                                  child: Text(detailType == 'universities'
-                                      ? data['address']
-                                      : data['university']['address']),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                  child: ListTile(
-                                    dense: true,
-                                    contentPadding:
-                                        EdgeInsets.symmetric(vertical: 0),
-                                    leading: Icon(
-                                      UiIcons.file_2,
-                                      color: Theme.of(context).hintColor,
-                                    ),
-                                    title: Text(
-                                      'Facility',
-                                      style:
-                                          Theme.of(context).textTheme.display1,
-                                    ),
-                                  ),
-                                ),
-                                // Padding(
-                                //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                                //   child: Text("-"),
-                                // ),
-                                new Container(
-                                  width: MediaQuery.of(context).size.width * 1,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.15,
-                                  margin: const EdgeInsets.all(15.0),
-                                  padding: const EdgeInsets.all(15.0),
-                                  decoration: BoxDecoration(
-                                      border:
-                                          Border.all(color: Colors.blueAccent)),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.credit_card,
-                                              ),
-                                              Text("Accept Credit Card"),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.local_parking,
-                                              ),
-                                              Text("Parking"),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.pets,
-                                              ),
-                                              Text("Pet Friendly"),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.wifi,
-                                              ),
-                                              Text("Wireless Internet"),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.laptop_chromebook_sharp,
-                                              ),
-                                              Text("Offering a deal"),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.payment,
-                                              ),
-                                              Text("Apple Pay"),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 8),
-                              child: SizedBox(
-                                height: 180,
-                                width: double.maxFinite,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      if (detailType != 'universities') {
-                                        _launchMap(data['university']['name']);
-                                      } else {
-                                        _launchMap(data['name']);
-                                      }
-                                    });
-                                  },
-                                  child: Container(
+                                  )
+                                : SizedBox(),
+
+                            (detailType == 'universities' &&
+                                    data['campus_locations'].isNotEmpty)
+                                ? Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 1,
+                                    // height: MediaQuery.of(context).size.height * 0.15,
+                                    margin: const EdgeInsets.all(15.0),
+                                    padding: const EdgeInsets.all(15.0),
                                     decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(6.0),
-                                        image: DecorationImage(
-                                          image: AssetImage('img/gps.png'),
-                                          fit: BoxFit.cover,
-                                        )),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            /*Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 8),
-                              child: ListTile(
-                                dense: true,
-                                contentPadding:
-                                    EdgeInsets.symmetric(vertical: 0),
-                                leading: Icon(
-                                  UiIcons.box,
-                                  color: Theme.of(context).hintColor,
-                                ),
-                                title: Text(
-                                  'Related',
-                                  style: Theme.of(context).textTheme.display1,
-                                ),
-                              ),
-                            ),*/
-                            /*PopularLocationCarouselWidget(
-                                heroTag: 'product_related_products',
-                                utilitiesList: widget._productsList.popularList),*/
+                                      // border:
+                                      //     Border.all(color: Colors.blueAccent)
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          spreadRadius: 5,
+                                          blurRadius: 7,
+                                          offset: Offset(0,
+                                              3), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          'Campus Locations:',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16.0,
+                                          ),
+                                        ),
+                                        ...campusesList(
+                                            data['campus_locations'])
+                                      ],
+                                    ),
+                                  )
+                                : SizedBox(),
                           ],
                         )
                         /*UtilitieHomeTabWidget(utilitie: widget._utilitie),*/
                       ],
                     ),
-                  ),
-                  Offstage(
-                    offstage: 1 != _tabIndex,
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                          child: ListTile(
-                            dense: true,
-                            contentPadding: EdgeInsets.symmetric(vertical: 0),
-                            leading: Icon(
-                              UiIcons.chat_1,
-                              color: Theme.of(context).hintColor,
-                            ),
-                            title: Text(
-                              'Reviews',
-                              overflow: TextOverflow.fade,
-                              softWrap: false,
-                              style: Theme.of(context).textTheme.display1,
-                            ),
-                          ),
-                        ),
-                        ReviewsListWidget()
-                      ],
-                    ),
-                  )
-                ]),
+                  ]),
+                ),
               )
             ]),
-          );
+          ));
   }
 
   getData(int relationId, String type) async {
@@ -667,7 +950,7 @@ class _DetailWidgetState extends State<DetailWidget>
       case 'majors':
         subUrl = 'university-majors/';
         break;
-      case 'place_lives':
+      case 'place-to-lives':
         subUrl = 'place-to-lives/';
         break;
       case 'services':
@@ -675,6 +958,12 @@ class _DetailWidgetState extends State<DetailWidget>
         break;
       case 'vendors':
         subUrl = 'vendors/';
+        break;
+      case 'scholarships':
+        subUrl = 'university-scholarships/';
+        break;
+      case 'articles':
+        subUrl = 'articles/';
         break;
       default:
         subUrl = 'universities/';
@@ -732,8 +1021,10 @@ class _DetailWidgetState extends State<DetailWidget>
             setState(() {
               data = jsonMap;
               widget.bookmarkColor = data['is_checked'] != '0'
-                  ? Color(0xFFC1C1C1)
+                  ? Color(0xFFDC3545)
                   : Color(0xFFFFFFFF);
+
+              isBookmarked = data['is_checked'] != '0' ? true : false;
             });
           }
 
@@ -744,7 +1035,7 @@ class _DetailWidgetState extends State<DetailWidget>
         }
 
         print('lala2');
-        print(data['university']['website']);
+        // print(data['university']['website']);
       } else {
         String error = json.decode(response.body)['error'];
         throw (error == '') ? 'Gagal memproses data' : error;
@@ -752,6 +1043,76 @@ class _DetailWidgetState extends State<DetailWidget>
     } on SocketException {
       throw 'Tidak ada koneksi internet. Silahkan coba lagi.';
     }
+  }
+
+  NetworkImage headerImg(type) {
+    // print(type);
+    // print(data);
+    switch (type) {
+      case 'universities':
+        return new NetworkImage(data['header_src'] != null
+            ? data['header_src']
+            : "http://dev.unio.id/frontend/placeholder_university_header.jpg");
+      // break;
+      case 'majors':
+        return new NetworkImage(data['university']['header_src'] != null
+            ? data['university']['header_src']
+            : "http://dev.unio.id/frontend/placeholder_university_header.jpg");
+      // break;
+      case 'vendors':
+        return new NetworkImage(data['logo_src'] != null
+            ? data['logo_src']
+            : "http://dev.unio.id/frontend/placeholder_university_header.jpg");
+      // break;
+      case 'place-to-lives':
+        return new NetworkImage(data['header_src'] != null
+            ? data['header_src']
+            : "http://dev.unio.id/frontend/placeholder_university_header.jpg");
+      // break;
+      case 'articles':
+        return new NetworkImage(data['picture'] != null
+            ? data['picture']
+            : "http://dev.unio.id/frontend/placeholder_university_header.jpg");
+      default:
+        return new NetworkImage(
+            'http://dev.unio.id/frontend/placeholder_university_header.jpg');
+    }
+  }
+
+  List<Widget> rankingList(data) {
+    List<Widget> _w = [];
+
+    for (var i = 0; i < data.length; i++) {
+      _w.add(ListTile(
+        leading: FaIcon(
+          FontAwesomeIcons.trophy,
+          color: Color(0xFFF2C76E),
+        ),
+        title: Text('#' + data[i]['rank']),
+        subtitle: Text(data[i]['name']),
+      ));
+    }
+
+    return _w;
+  }
+
+  List<Widget> campusesList(data) {
+    List<Widget> _w = [];
+
+    for (var i = 0; i < data.length; i++) {
+      _w.add(ListTile(
+        // onTap: () {
+        //   _launchURL(data[i]['map_link']);
+        // },
+        leading: FaIcon(
+          FontAwesomeIcons.university,
+          color: Color(0xFF5D9EDE),
+        ),
+        title: Text(data[i]['address']),
+      ));
+    }
+
+    return _w;
   }
 }
 

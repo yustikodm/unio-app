@@ -1,4 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../config/ui_icons.dart';
 import '../models/user.dart';
@@ -80,17 +81,13 @@ class _AccountWidgetState extends State<AccountWidget> {
                   child: FlatButton(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     onPressed: () {
-                      showOkAlertDialog(
-                        context: context,
-                        title: 'This feature is under development.',
-                      );
-                      //Navigator.of(context).pushNamed('/Tabs', arguments: 0);
+                      Navigator.of(context).pushNamed('/Questionnaire');
                     },
                     child: Column(
                       children: <Widget>[
-                        Icon(UiIcons.credit_card),
+                        Icon(FontAwesomeIcons.userEdit),
                         Text(
-                          'Point',
+                          'Questionnaire',
                           style: Theme.of(context).textTheme.body1,
                         )
                       ],
@@ -101,11 +98,11 @@ class _AccountWidgetState extends State<AccountWidget> {
                   child: FlatButton(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/Tabs', arguments: 4);
+                      Navigator.of(context).pushNamed('/Bookmark');
                     },
                     child: Column(
                       children: <Widget>[
-                        Icon(UiIcons.heart),
+                        Icon(FontAwesomeIcons.solidHeart),
                         Text(
                           'Bookmark',
                           style: Theme.of(context).textTheme.body1,
@@ -122,13 +119,13 @@ class _AccountWidgetState extends State<AccountWidget> {
                         context: context,
                         title: 'This feature is under development.',
                       );
-                      //Navigator.of(context).pushNamed('/Tabs', arguments: 3);
+                      //Navigator.of(context).pushNamed('/Tabs', arguments: 0);
                     },
                     child: Column(
                       children: <Widget>[
-                        Icon(UiIcons.chat_1),
+                        Icon(FontAwesomeIcons.shoppingCart),
                         Text(
-                          'Messages',
+                          'Cart',
                           style: Theme.of(context).textTheme.body1,
                         )
                       ],
@@ -295,63 +292,63 @@ class _AccountWidgetState extends State<AccountWidget> {
                     blurRadius: 10)
               ],
             ),
-            child: ListView(
-              shrinkWrap: true,
-              primary: false,
-              children: <Widget>[
-                ListTile(
-                  leading: Icon(UiIcons.settings_1),
-                  title: Text(
-                    'Account Settings',
-                    style: Theme.of(context).textTheme.body2,
-                  ),
-                ),
-                ListTile(
-                  onTap: () {
-                    Navigator.of(context).pushNamed('/Languages');
-                  },
-                  dense: true,
-                  title: Row(
-                    children: <Widget>[
-                      Icon(
-                        UiIcons.planet_earth,
-                        size: 22,
-                        color: Theme.of(context).focusColor,
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        'Languages',
-                        style: Theme.of(context).textTheme.body1,
-                      ),
-                    ],
-                  ),
-                  trailing: Text(
-                    'English',
-                    style: TextStyle(color: Theme.of(context).focusColor),
-                  ),
-                ),
-                ListTile(
-                  onTap: () {
-                    Navigator.of(context).pushNamed('/Help');
-                  },
-                  dense: true,
-                  title: Row(
-                    children: <Widget>[
-                      Icon(
-                        UiIcons.information,
-                        size: 22,
-                        color: Theme.of(context).focusColor,
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        'Help & Support',
-                        style: Theme.of(context).textTheme.body1,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            // child: ListView(
+            //   shrinkWrap: true,
+            //   primary: false,
+            //   children: <Widget>[
+            //     ListTile(
+            //       leading: Icon(UiIcons.settings_1),
+            //       title: Text(
+            //         'Account Settings',
+            //         style: Theme.of(context).textTheme.body2,
+            //       ),
+            //     ),
+            //     ListTile(
+            //       onTap: () {
+            //         Navigator.of(context).pushNamed('/Languages');
+            //       },
+            //       dense: true,
+            //       title: Row(
+            //         children: <Widget>[
+            //           Icon(
+            //             UiIcons.planet_earth,
+            //             size: 22,
+            //             color: Theme.of(context).focusColor,
+            //           ),
+            //           SizedBox(width: 10),
+            //           Text(
+            //             'Languages',
+            //             style: Theme.of(context).textTheme.body1,
+            //           ),
+            //         ],
+            //       ),
+            //       trailing: Text(
+            //         'English',
+            //         style: TextStyle(color: Theme.of(context).focusColor),
+            //       ),
+            //     ),
+            //     ListTile(
+            //       onTap: () {
+            //         Navigator.of(context).pushNamed('/Help');
+            //       },
+            //       dense: true,
+            //       title: Row(
+            //         children: <Widget>[
+            //           Icon(
+            //             UiIcons.information,
+            //             size: 22,
+            //             color: Theme.of(context).focusColor,
+            //           ),
+            //           SizedBox(width: 10),
+            //           Text(
+            //             'Help & Support',
+            //             style: Theme.of(context).textTheme.body1,
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ],
+            // ),
           ),
         ],
       ),

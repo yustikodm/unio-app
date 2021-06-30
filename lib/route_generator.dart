@@ -1,8 +1,12 @@
 import 'package:Unio/src/screens/account.dart';
 import 'package:Unio/src/screens/advice.dart';
+import 'package:Unio/src/screens/compare/compare.dart';
 import 'package:Unio/src/screens/detail.dart';
 import 'package:Unio/src/screens/directory.dart';
+import 'package:Unio/src/screens/favorites.dart';
 import 'package:Unio/src/screens/on_boarding.dart';
+import 'package:Unio/src/screens/quiz/components/extra_question.dart';
+import 'package:Unio/src/screens/quiz/quiz_screen.dart';
 import 'package:flutter/material.dart';
 import 'src/models/route_argument.dart';
 import 'src/screens/Categorie.dart';
@@ -70,6 +74,20 @@ class RouteGenerator {
             builder: (_) => DirectoryWidget(
                   routeArgument: args as RouteArgument,
                 ));
+
+      case '/Questionnaire':
+        return MaterialPageRoute(builder: (_) => QuizScreen());
+
+      case '/Bookmark':
+        return MaterialPageRoute(builder: (_) => FavoritesWidget());
+
+      case '/Compare':
+        return MaterialPageRoute(builder: (_) => CompareScreen());
+
+      case '/ExtraQuestion':
+        return MaterialPageRoute(builder: (_) => ExtraQuestionScreen(
+          routeArgument: args as RouteArgument,
+        ));
 
       default:
         // If there is no such named route in the switch statement, e.g. /third

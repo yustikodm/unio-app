@@ -1,11 +1,9 @@
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import '../../config/app_config.dart' as config;
 import '../../config/ui_icons.dart';
 import 'package:flutter/material.dart';
 
-class EmptyFavoritesWidget extends StatelessWidget {
-  const EmptyFavoritesWidget({
+class LoadingFavoritesWidget extends StatelessWidget {
+  const LoadingFavoritesWidget({
     Key key,
   }) : super(key: key);
 
@@ -34,7 +32,7 @@ class EmptyFavoritesWidget extends StatelessWidget {
                           Theme.of(context).focusColor.withOpacity(0.1),
                         ])),
                 child: Icon(
-                  FontAwesomeIcons.trash,
+                  UiIcons.heart,
                   color: Theme.of(context).primaryColor,
                   size: 70,
                 ),
@@ -69,7 +67,7 @@ class EmptyFavoritesWidget extends StatelessWidget {
           Opacity(
             opacity: 0.4,
             child: Text(
-              'Your wishlist is empty.',
+              'Please wait your wishlist is still loading.',
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
