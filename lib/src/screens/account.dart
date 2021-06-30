@@ -1,3 +1,4 @@
+import 'package:Unio/src/utilities/global.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -35,10 +36,12 @@ class _AccountWidgetState extends State<AccountWidget> {
                         textAlign: TextAlign.left,
                         style: Theme.of(context).textTheme.display2,
                       ),
-                      Text(
-                        _user.email,
-                        style: Theme.of(context).textTheme.caption,
-                      )
+                      (Global.instance.apiToken != null)
+                          ? Text(
+                              _user.email,
+                              style: Theme.of(context).textTheme.caption,
+                            )
+                          : SizedBox(),
                     ],
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
@@ -51,9 +54,9 @@ class _AccountWidgetState extends State<AccountWidget> {
                       onTap: () {
                         Navigator.of(context).pushNamed('/Tabs', arguments: 1);
                       },
-                      child: (_user.avatar == '-' || !_user.hasPicture())
+                      child: (!_user.hasPicture(Global.instance.authPicture))
                           ? CircleAvatar(
-                              child: Text(_user.initials()),
+                              child: Icon(FontAwesomeIcons.user),
                             )
                           : CircleAvatar(
                               backgroundColor: Theme.of(context).accentColor,
@@ -81,11 +84,18 @@ class _AccountWidgetState extends State<AccountWidget> {
                   child: FlatButton(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/Questionnaire');
+                      if (Global.instance.apiToken != null) {
+                        Navigator.of(context).pushNamed('/Questionnaire');
+                      } else {
+                        _showNeedLoginAlert(context);
+                      }
                     },
                     child: Column(
                       children: <Widget>[
-                        Icon(FontAwesomeIcons.userEdit),
+                        Icon(
+                          FontAwesomeIcons.userEdit,
+                          color: Theme.of(context).focusColor,
+                        ),
                         Text(
                           'Questionnaire',
                           style: Theme.of(context).textTheme.body1,
@@ -98,11 +108,18 @@ class _AccountWidgetState extends State<AccountWidget> {
                   child: FlatButton(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/Bookmark');
+                      if (Global.instance.apiToken != null) {
+                        Navigator.of(context).pushNamed('/Bookmark');
+                      } else {
+                        _showNeedLoginAlert(context);
+                      }
                     },
                     child: Column(
                       children: <Widget>[
-                        Icon(FontAwesomeIcons.solidHeart),
+                        Icon(
+                          FontAwesomeIcons.solidHeart,
+                          color: Theme.of(context).focusColor,
+                        ),
                         Text(
                           'Bookmark',
                           style: Theme.of(context).textTheme.body1,
@@ -123,7 +140,10 @@ class _AccountWidgetState extends State<AccountWidget> {
                     },
                     child: Column(
                       children: <Widget>[
-                        Icon(FontAwesomeIcons.shoppingCart),
+                        Icon(
+                          FontAwesomeIcons.shoppingCart,
+                          color: Theme.of(context).focusColor,
+                        ),
                         Text(
                           'Cart',
                           style: Theme.of(context).textTheme.body1,
@@ -147,139 +167,174 @@ class _AccountWidgetState extends State<AccountWidget> {
                     blurRadius: 10)
               ],
             ),
-            child: ListView(
-              shrinkWrap: true,
-              primary: false,
-              children: <Widget>[
-                ListTile(
-                  leading: Icon(UiIcons.user_1),
-                  title: Text(
-                    'Profile Settings',
-                    style: Theme.of(context).textTheme.body2,
-                  ),
-                  trailing: ButtonTheme(
-                    padding: EdgeInsets.all(0),
-                    minWidth: 50.0,
-                    height: 25.0,
-                    child: ProfileSettingsDialog(
-                      user: this._user,
-                      onChanged: () {
-                        setState(() {});
-                      },
-                    ),
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  dense: true,
-                  title: Text(
-                    'Full name',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                  trailing: Text(
-                    _user.name,
-                    style: TextStyle(color: Theme.of(context).focusColor),
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  dense: true,
-                  title: Text(
-                    'Email',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                  trailing: Text(
-                    _user.email,
-                    style: TextStyle(color: Theme.of(context).focusColor),
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  dense: true,
-                  title: Text(
-                    'Gender',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                  trailing: Text(
-                    _user.gender,
-                    style: TextStyle(color: Theme.of(context).focusColor),
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  dense: true,
-                  title: Text(
-                    'Birth Date & Place',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                  trailing: Text(
-                    _user.birthPlace + ', ' + _user.getDateOfBirth(),
-                    style: TextStyle(color: Theme.of(context).focusColor),
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  dense: true,
-                  title: Text(
-                    'Address',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                  trailing: Text(
-                    _user.address,
-                    style: TextStyle(color: Theme.of(context).focusColor),
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  dense: true,
-                  title: Text(
-                    'Phone Number',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                  trailing: Text(
-                    _user.phone,
-                    style: TextStyle(color: Theme.of(context).focusColor),
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  dense: true,
-                  title: Text(
-                    'School Origin',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                  trailing: Text(
-                    _user.school,
-                    style: TextStyle(color: Theme.of(context).focusColor),
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  dense: true,
-                  title: Text(
-                    'Graduation Year',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                  trailing: Text(
-                    _user.graduate.toString(),
-                    style: TextStyle(color: Theme.of(context).focusColor),
-                  ),
-                ),
-                ListTile(
-                  onTap: () {},
-                  dense: true,
-                  title: Text(
-                    'Identity Number',
-                    style: Theme.of(context).textTheme.body1,
-                  ),
-                  trailing: Text(
-                    _user.identity,
-                    style: TextStyle(color: Theme.of(context).focusColor),
-                  ),
-                ),
-              ],
-            ),
+            child: (Global.instance.apiToken != null)
+                ? ListView(
+                    shrinkWrap: true,
+                    primary: false,
+                    children: <Widget>[
+                      ListTile(
+                        leading: Icon(UiIcons.user_1),
+                        title: Text(
+                          'Profile Settings',
+                          style: Theme.of(context).textTheme.body2,
+                        ),
+                        trailing: ButtonTheme(
+                          padding: EdgeInsets.all(0),
+                          minWidth: 50.0,
+                          height: 25.0,
+                          child: ProfileSettingsDialog(
+                            user: this._user,
+                            onChanged: () {
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        dense: true,
+                        title: Text(
+                          'Full name',
+                          style: Theme.of(context).textTheme.body1,
+                        ),
+                        trailing: Text(
+                          _user.name,
+                          style: TextStyle(color: Theme.of(context).focusColor),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        dense: true,
+                        title: Text(
+                          'Email',
+                          style: Theme.of(context).textTheme.body1,
+                        ),
+                        trailing: Text(
+                          _user.email,
+                          style: TextStyle(color: Theme.of(context).focusColor),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        dense: true,
+                        title: Text(
+                          'Gender',
+                          style: Theme.of(context).textTheme.body1,
+                        ),
+                        trailing: Text(
+                          _user.gender,
+                          style: TextStyle(color: Theme.of(context).focusColor),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        dense: true,
+                        title: Text(
+                          'Birth Date',
+                          style: Theme.of(context).textTheme.body1,
+                        ),
+                        trailing: Text(
+                          _user.getDateOfBirth(),
+                          style: TextStyle(color: Theme.of(context).focusColor),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        dense: true,
+                        title: Text(
+                          'Birth Place',
+                          style: Theme.of(context).textTheme.body1,
+                        ),
+                        trailing: Text(
+                          _user.birthPlace,
+                          style: TextStyle(color: Theme.of(context).focusColor),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        dense: true,
+                        title: Text(
+                          'Address',
+                          style: Theme.of(context).textTheme.body1,
+                        ),
+                        trailing: Text(
+                          _user.address,
+                          style: TextStyle(color: Theme.of(context).focusColor),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        dense: true,
+                        title: Text(
+                          'Phone Number',
+                          style: Theme.of(context).textTheme.body1,
+                        ),
+                        trailing: Text(
+                          _user.phone,
+                          style: TextStyle(color: Theme.of(context).focusColor),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        dense: true,
+                        title: Text(
+                          'School Origin',
+                          style: Theme.of(context).textTheme.body1,
+                        ),
+                        trailing: Text(
+                          _user.school,
+                          style: TextStyle(color: Theme.of(context).focusColor),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        dense: true,
+                        title: Text(
+                          'Graduation Year',
+                          style: Theme.of(context).textTheme.body1,
+                        ),
+                        trailing: Text(
+                          _user.graduate.toString(),
+                          style: TextStyle(color: Theme.of(context).focusColor),
+                        ),
+                      ),
+
+                      // ListTile(
+                      //   onTap: () {},
+                      //   dense: true,
+                      //   title: Text(
+                      //     'Identity Number',
+                      //     style: Theme.of(context).textTheme.body1,
+                      //   ),
+                      //   trailing: Text(
+                      //     _user.identity ?? '-',
+                      //     style: TextStyle(color: Theme.of(context).focusColor),
+                      //   ),
+                      // ),
+                    ],
+                  )
+                : SizedBox(),
           ),
+          (Global.instance.apiToken == null)
+              ? Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Theme.of(context).hintColor.withOpacity(0.15),
+                          offset: Offset(0, 3),
+                          blurRadius: 10)
+                    ],
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _showNeedLoginAlert(context);
+                    },
+                    child: Text('Login'),
+                  ),
+                )
+              : SizedBox(),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             decoration: BoxDecoration(
@@ -352,6 +407,39 @@ class _AccountWidgetState extends State<AccountWidget> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _showNeedLoginAlert(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('You are not logged in!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you wanna login first?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).popAndPushNamed('/SignIn');
+              },
+            ),
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

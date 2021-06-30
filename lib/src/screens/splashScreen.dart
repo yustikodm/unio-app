@@ -35,7 +35,7 @@ class _SplashState extends State<Splash> {
     Global.instance.authSchool = await storage.read(key: 'authSchool');
     Global.instance.authGraduate = await storage.read(key: 'authGraduate');
     Global.instance.authBirthPlace = await storage.read(key: 'authBirthPlace');
-    Global.instance.authBirthDate = DateTime.parse(date);
+    Global.instance.authBirthDate = date != null ? DateTime.parse(date) : null;
     Global.instance.authIdentity = await storage.read(key: 'authIdentity');
     Global.instance.authHc = await storage.read(key: 'authHc');
   }

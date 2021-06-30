@@ -271,8 +271,9 @@ class _SignInWidgetState extends State<SignInWidget> {
                                         data['data']['biodata']['hc'] ?? '-');
 
                                 EasyLoading.dismiss();
+
                                 Navigator.of(context)
-                                    .pushNamed('/Tabs', arguments: 0);
+                                    .pushReplacementNamed('/Tabs');
                               }
                             } else {
                               EasyLoading.dismiss();
@@ -293,12 +294,12 @@ class _SignInWidgetState extends State<SignInWidget> {
                           shape: StadiumBorder(),
                         ),
                         SizedBox(height: 50),
-                        Text(
-                          'Or using social media',
-                          style: Theme.of(context).textTheme.body1,
-                        ),
+                        // Text(
+                        //   'Or using social media',
+                        //   style: Theme.of(context).textTheme.body1,
+                        // ),
                         SizedBox(height: 20),
-                        new SocialMediaWidget()
+                        // new SocialMediaWidget()
                       ],
                     ),
                   ),

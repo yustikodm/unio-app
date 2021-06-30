@@ -19,15 +19,15 @@ class SocialMediaWidget extends StatelessWidget {
           ),
         ),
         SizedBox(width: 10),
-        SizedBox(
-          width: 45,
-          height: 45,
-          child: InkWell(
-            onTap: () {},
-            child: Image.asset('img/twitter.png'),
-          ),
-        ),
-        SizedBox(width: 10),
+        // SizedBox(
+        //   width: 45,
+        //   height: 45,
+        //   child: InkWell(
+        //     onTap: () {},
+        //     child: Image.asset('img/twitter.png'),
+        //   ),
+        // ),
+        // SizedBox(width: 10),
         SizedBox(
           width: 45,
           height: 45,
@@ -37,14 +37,14 @@ class SocialMediaWidget extends StatelessWidget {
           ),
         ),
         SizedBox(width: 10),
-        SizedBox(
-          width: 45,
-          height: 45,
-          child: InkWell(
-            onTap: () {},
-            child: Image.asset('img/linkedin.png'),
-          ),
-        )
+        // SizedBox(
+        //   width: 45,
+        //   height: 45,
+        //   child: InkWell(
+        //     onTap: () {},
+        //     child: Image.asset('img/linkedin.png'),
+        //   ),
+        // )
       ],
     );
   }

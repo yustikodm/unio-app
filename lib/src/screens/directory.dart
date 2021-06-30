@@ -238,7 +238,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
   void getData() async {
     setState(() {});
     String url;
-    var userId = Global.instance.authId;
+    var userId = Global.instance.authId != null ? Global.instance.authId : '';
 
     if (widget._countryid == 'null' || widget._countryid == null) {
       // ignore: unnecessary_statements
@@ -256,6 +256,8 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
     print(widget.filterCountry);
     print(widget.filterState);
+
+    print(subUrl);
 
     if (widget.panjangarg > 7) {
       url = SERVER_DOMAIN +
@@ -1072,22 +1074,27 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                                     ),
                                   ),
                             title: Wrap(
-                              spacing: (directoryList[index]['is_sponsored'] != null) ? 5 : 0,
-                              crossAxisAlignment: WrapCrossAlignment.end,
-                              children: [
-                              (directoryList[index]['is_sponsored'] != null)
-                                  ? Icon(FontAwesomeIcons.ad,
-                                      color: Colors.yellow)
-                                  : SizedBox(),
-                              Text(
-                                title,
-                                style: Theme.of(context).textTheme.body2,
-                              ),
-                            ]),
+                                spacing: (directoryList[index]
+                                            ['is_sponsored'] !=
+                                        null)
+                                    ? 5
+                                    : 0,
+                                crossAxisAlignment: WrapCrossAlignment.end,
+                                children: [
+                                  (directoryList[index]['is_sponsored'] != null)
+                                      ? Icon(FontAwesomeIcons.ad,
+                                          color: Colors.yellow)
+                                      : SizedBox(),
+                                  Text(
+                                    title,
+                                    style: Theme.of(context).textTheme.body2,
+                                  ),
+                                ]),
                             subtitle: Wrap(children: [
                               subtitle != null ? subtitle : SizedBox(),
-                              (directoryList[index]['is_sponsored'] != null) ?
-                                Text('In Partnership with UNIO') : SizedBox(),
+                              (directoryList[index]['is_sponsored'] != null)
+                                  ? Text('In Partnership with UNIO')
+                                  : SizedBox(),
                             ]),
                             trailing: trailing,
                           ),

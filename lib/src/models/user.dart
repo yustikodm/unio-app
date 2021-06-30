@@ -42,41 +42,54 @@ class User {
       this.userState);
 
   User getCurrentUser() {
-    if (Global.instance.apiToken == null) {
-      return User.advanced(
-          'Guest User',
-          'guest@mail.com',
-          'Male',
-          DateTime(2000, 01, 01),
-          'Surabaya',
-          'img/user2.jpg',
-          '4600 Isaacs Creek Road Golden, IL 62339',
-          '08781223334',
-          'SMA Negeri 1 Surabaya',
-          '2018',
-          '992991992991',
-          'Islam',
-          UserState.available);
-    } else {
-      return User.advanced(
-          Global.instance.authName ?? '-',
-          Global.instance.authEmail ?? '-',
-          Global.instance.authGender ?? '-',
-          Global.instance.authBirthDate ?? '-',
-          Global.instance.authBirthPlace ?? '-',
-          Global.instance.authPicture ?? '-',
-          Global.instance.authAddress ?? '-',
-          Global.instance.authPhone ?? '-',
-          Global.instance.authSchool ?? '-',
-          Global.instance.authGraduate ?? '-',
-          Global.instance.authIdentity ?? '-',
-          Global.instance.authReligion ?? '-',
-          UserState.available);
-    }
+    // if (Global.instance.apiToken == null) {
+    //   return User.advanced('Guest User', '-', '-', DateTime(2000, 01, 01), '-',
+    //       'img/user2.jpg', '-', '-', '-', '-', '-', '-', UserState.available);
+    // } else {
+    return User.advanced(
+        Global.instance.authName ?? 'Guest User',
+        Global.instance.authEmail ?? '-',
+        Global.instance.authGender ?? '-',
+        Global.instance.authBirthDate,
+        Global.instance.authBirthPlace ?? '-',
+        Global.instance.authPicture ?? '-',
+        Global.instance.authAddress ?? '-',
+        Global.instance.authPhone ?? '-',
+        Global.instance.authSchool ?? '-',
+        Global.instance.authGraduate ?? '-',
+        Global.instance.authIdentity ?? '-',
+        Global.instance.authReligion ?? '-',
+        UserState.available);
+    // }
   }
 
-  getDateOfBirth() {
-    return DateFormat('dd-MM-yyyy').format(this.dateOfBirth);
+  void logoutUser() async {
+    await storage.deleteAll();
+
+    Global.instance.authId = null;
+    Global.instance.authName = 'Guest User';
+    Global.instance.apiToken = null;
+    Global.instance.authEmail = null;
+    Global.instance.authGender = null;
+    Global.instance.authBirthDate = null;
+    Global.instance.authBirthPlace = null;
+    Global.instance.authPicture = null;
+    Global.instance.authAddress = null;
+    Global.instance.authPhone = null;
+    Global.instance.authSchool = null;
+    Global.instance.authGraduate = null;
+    Global.instance.authIdentity = null;
+    Global.instance.authReligion = null;
+
+    print(storage.readAll());
+
+    new User.init().getCurrentUser();
+  }
+
+  String getDateOfBirth() {
+    return this.dateOfBirth != null
+        ? DateFormat('dd-MM-yyyy').format(this.dateOfBirth)
+        : '-';
   }
 
   String initials() {
@@ -87,9 +100,13 @@ class User {
         .toUpperCase();
   }
 
-  bool hasPicture() {
-    final url_avatar = 'https://ui-avatars.com/api/';
-    final uri = Uri.parse(url_avatar);
+  bool hasPicture(url) {
+    // final url_avatar = 'https://ui-avatars.com/api/';
+    if (url == null) {
+      return false;
+    }
+    
+    final uri = Uri.parse(url);
     if (uri.host == 'ui-avatars.com') {
       return false;
     } else {

@@ -31,11 +31,32 @@ class DrawerWidget extends StatelessWidget {
             FlatButton(
               child: Text('Yes'),
               onPressed: () {
+                // storage.deleteAll();
+                // Global.instance.apiToken = null;
+                // Global.instance.authName = 'Guest';
+                // Global.instance.authEmail = null;
+                // _user.logoutUser();
+
                 storage.deleteAll();
+
+                Global.instance.authId = null;
+                Global.instance.authName = 'Guest User';
                 Global.instance.apiToken = null;
-                Global.instance.authName = 'Guest';
-                Global.instance.authEmail = 'guest@mail.com';
-                Navigator.of(context).pushNamed('/Tabs', arguments: 2);
+                Global.instance.authEmail = null;
+                Global.instance.authGender = null;
+                Global.instance.authBirthDate = null;
+                Global.instance.authBirthPlace = null;
+                Global.instance.authPicture = null;
+                Global.instance.authAddress = null;
+                Global.instance.authPhone = null;
+                Global.instance.authSchool = null;
+                Global.instance.authGraduate = null;
+                Global.instance.authIdentity = null;
+                Global.instance.authReligion = null;
+
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed('/Tabs');
               },
             ),
             FlatButton(
@@ -68,7 +89,7 @@ class DrawerWidget extends StatelessWidget {
             FlatButton(
               child: Text('Yes'),
               onPressed: () {
-                Navigator.of(context).pushNamed('/SignIn');
+                Navigator.of(context).popAndPushNamed('/SignIn');
               },
             ),
             FlatButton(
@@ -97,17 +118,21 @@ class DrawerWidget extends StatelessWidget {
                 color: Theme.of(context).hintColor.withOpacity(0.1),
               ),
               accountName: Text(
-                _user.name,
+                (Global.instance.authName != null)
+                    ? Global.instance.authName
+                    : 'Guest User',
                 style: Theme.of(context).textTheme.title,
               ),
-              accountEmail: Text(
-                _user.email,
-                style: Theme.of(context).textTheme.caption,
-              ),
+              accountEmail: (Global.instance.apiToken != null)
+                  ? Text(
+                      Global.instance.authEmail,
+                      style: Theme.of(context).textTheme.caption,
+                    )
+                  : null,
               currentAccountPicture:
-                  (_user.avatar == '-' || !_user.hasPicture())
+                  (!_user.hasPicture(Global.instance.authPicture))
                       ? CircleAvatar(
-                          child: Text(''),
+                          child: Icon(FontAwesomeIcons.user),
                           //child: Text(_user.initials()),
                         )
                       : CircleAvatar(
@@ -144,7 +169,9 @@ class DrawerWidget extends StatelessWidget {
           // ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pushNamed('/Bookmark');
+              (Global.instance.apiToken != null)
+                  ? Navigator.of(context).pushNamed('/Bookmark')
+                  : _showNeedLoginAlert(context);
             },
             leading: Icon(
               FontAwesomeIcons.solidHeart,
