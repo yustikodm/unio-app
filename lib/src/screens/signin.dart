@@ -271,8 +271,11 @@ class _SignInWidgetState extends State<SignInWidget> {
                                         data['data']['biodata']['hc'] ?? '-');
 
                                 EasyLoading.dismiss();
+
+                                Navigator.of(context).popUntil(
+                                    (route) => !route.navigator.canPop());
                                 Navigator.of(context)
-                                    .pushNamed('/Tabs', arguments: 0);
+                                    .pushReplacementNamed('/Tabs');
                               }
                             } else {
                               EasyLoading.dismiss();

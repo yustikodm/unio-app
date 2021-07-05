@@ -238,7 +238,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
   void getData() async {
     setState(() {});
     String url;
-    var userId = Global.instance.authId;
+    var userId = Global.instance.authId != null ? Global.instance.authId : '';
 
     if (widget._countryid == 'null' || widget._countryid == null) {
       // ignore: unnecessary_statements
@@ -256,6 +256,8 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
     print(widget.filterCountry);
     print(widget.filterState);
+
+    print(subUrl);
 
     if (widget.panjangarg > 7) {
       url = SERVER_DOMAIN +
@@ -303,11 +305,11 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
         print('========= noted: get response body ' + response.body.toString());
         if (response.body.isNotEmpty) {
           dynamic jsonMap;
-          if (widget.panjangarg > 2) {
-            jsonMap = json.decode(response.body)['data']['data'];
-          } else {
-            jsonMap = json.decode(response.body)['data'];
-          }
+          // if (widget.panjangarg > 2) {
+          //   jsonMap = json.decode(response.body)['data']['data'];
+          // } else {
+          jsonMap = json.decode(response.body)['data'];
+          // }
 
           if (jsonMap != null) {
             // print(jsonMap[0]['is_checked']);
@@ -687,19 +689,21 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                                       borderSide: BorderSide.none),
                                 ),
                               ),
-                              Positioned(
-                                right: 30.0,
-                                child: IconButton(
-                                  onPressed: () {
-                                    openRightDrawer();
-                                  },
-                                  icon: Icon(UiIcons.filter,
-                                      size: 20,
-                                      color: Theme.of(context)
-                                          .hintColor
-                                          .withOpacity(0.5)),
-                                ),
-                              ),
+                              (entity == 'universities' || entity == 'majors')
+                                  ? Positioned(
+                                      right: 30.0,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          openRightDrawer();
+                                        },
+                                        icon: Icon(UiIcons.filter,
+                                            size: 20,
+                                            color: Theme.of(context)
+                                                .hintColor
+                                                .withOpacity(0.5)),
+                                      ),
+                                    )
+                                  : SizedBox(),
                               IconButton(
                                 onPressed: () {
                                   /*Navigator.of(context).pushNamed('/Directory',
@@ -812,6 +816,11 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                                         item['isBookmarked'] =
                                             !item['isBookmarked'];
                                       });
+                                      showOkAlertDialog(
+                                          context: context,
+                                          title: item['isBookmarked']
+                                              ? 'Successfully Bookmarked'
+                                              : 'Successfully Unbookmarked');
                                     } else {
                                       _showNeedLoginAlert(context);
                                     }
@@ -901,6 +910,11 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                                         item['isBookmarked'] =
                                             !item['isBookmarked'];
                                       });
+                                      showOkAlertDialog(
+                                          context: context,
+                                          title: item['isBookmarked']
+                                              ? 'Successfully Bookmarked'
+                                              : 'Successfully Unbookmarked');
                                     } else {
                                       _showNeedLoginAlert(context);
                                     }
@@ -929,6 +943,11 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                                         item['isBookmarked'] =
                                             !item['isBookmarked'];
                                       });
+                                      showOkAlertDialog(
+                                          context: context,
+                                          title: item['isBookmarked']
+                                              ? 'Successfully Bookmarked'
+                                              : 'Successfully Unbookmarked');
                                     } else {
                                       _showNeedLoginAlert(context);
                                     }
@@ -974,6 +993,11 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                                         item['isBookmarked'] =
                                             !item['isBookmarked'];
                                       });
+                                      showOkAlertDialog(
+                                          context: context,
+                                          title: item['isBookmarked']
+                                              ? 'Successfully Bookmarked'
+                                              : 'Successfully Unbookmarked');
                                     } else {
                                       _showNeedLoginAlert(context);
                                     }
@@ -1027,10 +1051,21 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
                           Navigator.of(context).pushNamed('/Detail',
                               arguments: RouteArgument(
-                                  param1: directoryList[index]['id'],
+                                  param1: [directoryList[index]['id'], entity],
                                   // param1:
                                   // widget._category.utilities[index].available,
-                                  param2: entity));
+                                  param2: () {
+                                    // if (Global.instance.apiToken != null) {
+                                    //   addBookmark(
+                                    //       item['id'], 'universities', item);
+                                    setState(() {
+                                      item['isBookmarked'] =
+                                          !item['isBookmarked'];
+                                    });
+                                    // } else {
+                                    //   _showNeedLoginAlert(context);
+                                    // }
+                                  }));
                         },
                         child: Container(
                           padding:
@@ -1072,22 +1107,27 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                                     ),
                                   ),
                             title: Wrap(
-                              spacing: (directoryList[index]['is_sponsored'] != null) ? 5 : 0,
-                              crossAxisAlignment: WrapCrossAlignment.end,
-                              children: [
-                              (directoryList[index]['is_sponsored'] != null)
-                                  ? Icon(FontAwesomeIcons.ad,
-                                      color: Colors.yellow)
-                                  : SizedBox(),
-                              Text(
-                                title,
-                                style: Theme.of(context).textTheme.body2,
-                              ),
-                            ]),
+                                spacing: (directoryList[index]
+                                            ['is_sponsored'] !=
+                                        null)
+                                    ? 5
+                                    : 0,
+                                crossAxisAlignment: WrapCrossAlignment.end,
+                                children: [
+                                  (directoryList[index]['is_sponsored'] != null)
+                                      ? Icon(FontAwesomeIcons.ad,
+                                          color: Colors.yellow)
+                                      : SizedBox(),
+                                  Text(
+                                    title,
+                                    style: Theme.of(context).textTheme.body2,
+                                  ),
+                                ]),
                             subtitle: Wrap(children: [
                               subtitle != null ? subtitle : SizedBox(),
-                              (directoryList[index]['is_sponsored'] != null) ?
-                                Text('In Partnership with UNIO') : SizedBox(),
+                              (directoryList[index]['is_sponsored'] != null)
+                                  ? Text('In Partnership with UNIO')
+                                  : SizedBox(),
                             ]),
                             trailing: trailing,
                           ),

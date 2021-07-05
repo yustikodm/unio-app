@@ -182,10 +182,7 @@ class _TabsWidgetState extends State<TabsWidget> {
             onPressed: () {
               (Global.instance.apiToken != null)
                   ? Navigator.of(context).pushNamed('/Bookmark')
-                  : showOkAlertDialog(
-                      context: context,
-                      title: 'This feature is under development.',
-                    );
+                  : _showNeedLoginAlert(context);
             },
           ),
           IconButton(

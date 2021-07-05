@@ -96,7 +96,7 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 35, vertical: 8),
                       onPressed: () {
-                        Navigator.of(context).pushNamed('/Tabs', arguments: 0);
+                        Navigator.of(context).pushReplacementNamed('/Tabs', arguments: 0);
                       },
                       child: Text(
                         'Skip',
