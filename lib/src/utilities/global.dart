@@ -23,6 +23,8 @@ class Global {
   var authIdentity = '';
   var authReligion = '';
   var authHc = '';
+  var authCountryId;
+  var authLevelId;
 }
 
 convertType(type) {

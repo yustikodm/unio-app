@@ -190,7 +190,6 @@ class _DetailWidgetState extends State<DetailWidget>
             ),
             body: CustomScrollView(slivers: <Widget>[
               SliverAppBar(
-                floating: true,
                 automaticallyImplyLeading: false,
                 leading: new IconButton(
                   icon: new Icon(UiIcons.return_icon,

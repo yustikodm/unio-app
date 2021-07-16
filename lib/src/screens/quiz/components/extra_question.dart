@@ -81,13 +81,26 @@ class _ExtraQuestionScreenState extends State<ExtraQuestionScreen> {
                       style: Theme.of(context).textTheme.display1,
                     )),
                 ..._extras(),
-                ElevatedButton(
-                    onPressed: () {
-                      if (order > options.length)
-                        // print(order);
-                        answerExtra();
-                    },
-                    child: Text('Done'))
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {
+                            resetOrder();
+                          },
+                          child: Text('Reset')),
+                      ElevatedButton(
+                          onPressed: () {
+                            if (order > options.length)
+                              // print(order);
+                              answerExtra();
+                          },
+                          child: Text('Done'))
+                    ],
+                  ),
+                )
               ],
             ),
           ))),
@@ -108,12 +121,7 @@ class _ExtraQuestionScreenState extends State<ExtraQuestionScreen> {
                 }
               });
             } else {
-              setState(() {
-                for (var i = 0; i < options.length; i++) {
-                  options[i]['order'] = 0;
-                }
-                order = 1;
-              });
+              resetOrder();
             }
           },
           child: Padding(
@@ -175,6 +183,15 @@ class _ExtraQuestionScreenState extends State<ExtraQuestionScreen> {
     }
 
     return _w;
+  }
+
+  void resetOrder() {
+    setState(() {
+      for (var i = 0; i < options.length; i++) {
+        options[i]['order'] = 0;
+      }
+      order = 1;
+    });
   }
 
   void answerExtra() async {

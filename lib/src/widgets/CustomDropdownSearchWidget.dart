@@ -25,7 +25,7 @@ class CustomDropdownWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.only(top: 10.0, bottom: 15.0),
+        padding: const EdgeInsets.only(top: 10.0, bottom: 0.0),
         child: Container(
           height: 55.0,
           decoration: BoxDecoration(

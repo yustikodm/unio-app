@@ -53,9 +53,11 @@ class DirectoryWidget extends StatefulWidget {
 
 class _DirectoryWidgetState extends State<DirectoryWidget> {
   final myController = TextEditingController();
+  final univeristyNameSearchController = TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   ScrollController scrollController = ScrollController();
+
   bool hasMore = true;
   int page = 1;
   String subUrl = '';
@@ -66,6 +68,8 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
   double b_xOffset;
   double b_yOffset;
+
+  bool loadingData;
 
   bool isRightDrawerOpen;
   bool isBottomDrawerOpen;
@@ -82,6 +86,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
   List<String> countryList = [];
   List<String> stateList = [];
+  List<String> level = [];
 
   var countryRes = List();
   var stateRes = List();
@@ -91,11 +96,21 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
   String _valState;
 
+  String levelDegree;
+  var levelRes;
+
+  String universityName;
+
+  bool levelDefault = false;
+  bool countryDefault = false;
+
+  bool showCountryDefault = false;
+  bool showLevelDefault = false;
+
   @override
   void initState() {
     setParam();
     getData();
-
     getCountry();
 
     r_xOffset = 500;
@@ -116,7 +131,8 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
             hasMore.toString() +
             '======' +
             page.toString());
-        if (hasMore) {
+        if (hasMore && !loadingData) {
+          page = page + 1;
           getData();
         }
       }
@@ -126,15 +142,36 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
     // print(widget.filterState);
     // print(widget.filterStateValue);
 
-    if (widget._countryid != null) {
-      setInitialValCountry(widget._countryid);
+    univeristyNameSearchController
+        .addListener(handleUniversityNameSearchController);
+  }
+
+  Future getLevel() async {
+    final response = await http.get(
+        Uri.parse(
+            'https://primavisiglobalindo.net/unio/public/api/level_major'),
+        // Send authorization headers to the backend.
+        headers: {
+          // HttpHeaders.authorizationHeader: 'Bearer $token',
+          HttpHeaders.contentTypeHeader: 'aplication/json',
+        });
+    print(response.body);
+
+    levelRes = jsonDecode(response.body)['data'];
+
+    for (var i = 0; i < levelRes.length; i++) {
+      setState(() {
+        level.add(levelRes[i]['name'].toString());
+      });
     }
 
-    if (widget._countryid != null && widget._stateid != null) {
-      // print('pass');
-      setInitialValState(widget._countryid, widget._stateid);
-      // getstate(widget._stateid);
+    if (Global.instance.authLevelId != null) {
+      var selected = await levelRes.firstWhere(
+          (element) => element['id'] == Global.instance.authLevelId);
+      levelDegree = selected['name'];
     }
+
+    print("level=" + levelDegree.toString());
   }
 
   void setInitialValCountry(String countryid) async {
@@ -163,6 +200,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
     var selected = await data
         .firstWhere((element) => element['id'] == int.parse(countryid));
     _valCountry = selected['name'];
+    _valCountryId = selected['id'].toString();
     print(_valCountry);
   }
 
@@ -199,6 +237,12 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
     print('_valState : $_valState');
   }
 
+  void handleUniversityNameSearchController() {
+    setState(() {
+      universityName = univeristyNameSearchController.text;
+    });
+  }
+
   void setParam() {
     directoryList.clear();
     // widget._category.utilities.clear();
@@ -233,6 +277,24 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
         entity = 'universities';
         break;
     }
+
+    if (widget._countryid != null) {
+      setInitialValCountry(widget._countryid);
+    } else {
+      print('countryid=' + Global.instance.authCountryId.toString());
+      if (Global.instance.authCountryId != null) {
+        widget._countryid = Global.instance.authCountryId.toString();
+        setInitialValCountry(widget._countryid);
+
+        showCountryDefault = true;
+      }
+    }
+
+    if (widget._countryid != null && widget._stateid != null) {
+      // print('pass');
+      setInitialValState(widget._countryid, widget._stateid);
+      // getstate(widget._stateid);
+    }
   }
 
   void getData() async {
@@ -259,6 +321,11 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
     print(subUrl);
 
+    if (entity == 'majors' && levelRes == null) {
+      await getLevel();
+      showLevelDefault = true;
+    }
+
     if (widget.panjangarg > 7) {
       url = SERVER_DOMAIN +
                   "search?keyword=universities" +
@@ -281,17 +348,20 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
           widget._keyword +
           '&country=' +
           widget.filterCountry +
+          '&level=' +
+          (levelDegree == null ? "" : levelDegree) +
+          '&university=' +
+          (universityName == null ? "" : universityName) +
           '&state=' +
           widget.filterState +
           '&page=$page';
 
-      // '&university=' + '';
-      // '&level=' + '';
       print('========= noted: get requestMap ' + "===== url " + url);
     }
     print(url);
     print('lala');
     try {
+      loadingData = true;
       final client = new http.Client();
       final response = await client
           .get(
@@ -328,47 +398,10 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                   ? jsonMap[i]['isBookmarked'] = false
                   : jsonMap[i]['isBookmarked'] = true;
 
-              // if (jsonMap[i]['is_checked'] == null) {
-              //   print(jsonMap[i]['is_checked']);
-              //   jsonMap[i]['isBookmarked'] = false;
-              //   print(jsonMap[i]['isBookmarked']);
-              // } else {
-              //   print(jsonMap[i]['is_checked']);
-              //   jsonMap[i]['isBookmarked'] = true;
-              // }
-
               // add isCompared bool
               jsonMap[i]['isCompared'] = false;
 
               directoryList.add(jsonMap[i]);
-
-              // widget._category.utilities.add(new Utilitie(
-              //     jsonMap[i][(widget._category.name == 'Article')
-              //             ? 'title'
-              //             : 'name']
-              //         .toString(),
-              //     jsonMap[i]['header_src'].toString(),
-              //     (jsonUniv != null)
-              //         ? jsonUniv['logo_src'].toString()
-              //         : jsonMap[i][(widget._category.name == 'Vendor')
-              //                 ? 'logo'
-              //                 : ((widget._category.name == 'Article' ||
-              //                         widget._category.name == 'Places to Live')
-              //                     ? 'picture'
-              //                     : 'logo_src')]
-              //             .toString(), //seharusnya type
-              //     (jsonUniv != null)
-              //         ? jsonUniv['name'].toString()
-              //         : jsonMap[i]['description'].toString(),
-              //     jsonMap[i]['website'].toString(),
-              //     jsonMap[i][
-              //         'id'], //seharusnya available gak ada response param ini, jadi value default
-              //     (jsonUniv != null)
-              //         ? 1
-              //         : 0, //seharusnya price, tapi buat ngcek, ada univ name ato gak
-              //     0, //rate
-              //     0 //discount
-              //     ));
             }
           }
 
@@ -400,6 +433,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
         String error = json.decode(response.body)['error'];
         throw (error == '') ? 'Gagal memproses data' : error;
       }
+      loadingData = false;
     } on SocketException {
       throw 'Tidak ada koneksi internet. Silahkan coba lagi.';
     }
@@ -542,6 +576,68 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
       });
   }
 
+  Future<void> updateProfile({String field}) async {
+    Map<String, String> headers = <String, String>{
+      HttpHeaders.contentTypeHeader: 'application/json'
+    };
+    var url = SERVER_DOMAIN + 'users/' + Global.instance.authId;
+    var token = Global.instance.apiToken;
+    headers.addAll(
+        <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
+    print(url);
+    print(headers);
+
+    final client = new http.Client();
+
+    if (field == 'country_id') {
+      var _selectedCountryId = widget._countryid;
+      final response = await client.put(Uri.parse(url),
+          headers: headers,
+          body: jsonEncode({'country_id': _selectedCountryId}));
+      print(response.body);
+
+      // var msg = jsonDecode(response.body)['message'];
+
+      if (response.statusCode == 200) {
+        Global.instance.authCountryId = int.parse(_selectedCountryId);
+
+        // print(Global.instance.authCountryId);
+
+        storage.write(
+            key: 'authCountryId', value: _selectedCountryId.toString());
+
+        showOkAlertDialog(
+            context: context,
+            title: "User's search preference updated succesfuully");
+      } else {
+        showOkAlertDialog(context: context, title: 'Update not successful');
+      }
+    } else if (field == 'level_id') {
+      var selected =
+          levelRes.firstWhere((element) => element['name'] == levelDegree);
+      int _selectedLevelId = selected['id'];
+      final response = await client.put(Uri.parse(url),
+          headers: headers, body: jsonEncode({'level_id': _selectedLevelId}));
+      print(response.body);
+
+      var msg = jsonDecode(response.body)['message'];
+
+      if (response.statusCode == 200) {
+        Global.instance.authLevelId = _selectedLevelId;
+
+        // print(Global.instance.authCountryId);
+
+        storage.write(key: 'authLevelId', value: _selectedLevelId.toString());
+
+        showOkAlertDialog(
+            context: context,
+            title: "User's search preference updated succesfuully");
+      } else {
+        showOkAlertDialog(context: context, title: 'Update not successful');
+      }
+    } else {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -553,8 +649,8 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
         children: [
           CustomScrollView(controller: scrollController, slivers: <Widget>[
             SliverAppBar(
-              snap: true,
-              floating: true,
+              // snap: true,
+              // floating: true,
               automaticallyImplyLeading: false,
               leading: new IconButton(
                 icon: new Icon(UiIcons.return_icon,
@@ -1311,80 +1407,228 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
             Divider(
               color: Theme.of(context).hintColor,
             ),
-            Container(
-              child: Column(
-                children: <Widget>[
-                  CustomDropdownWidget(
-                    context: context,
-                    items: countryList,
-                    label: "Country",
-                    hint: "Country",
-                    onChanged: (value) {
-                      // print(value);
-                      setState(() {
-                        if (value != null) {
-                          print("nilai=" + value.toString());
-                          var selected = countryRes.firstWhere(
-                              (element) => element['name'] == value);
-                          _valCountryId = selected['id'].toString();
+            Expanded(
+              child: ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.only(top: 0),
+                children: [
+                  Column(
+                    children: <Widget>[
+                      Visibility(
+                          visible: (entity == 'majors') ? true : false,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10.0),
+                            child: searchUniversityName(),
+                          )),
+                      SizedBox(
+                        height: 10,
+                      ),
+
+                      CustomDropdownWidget(
+                        context: context,
+                        items: countryList,
+                        label: "Country",
+                        hint: "Country",
+                        onChanged: (value) {
                           // print(value);
-                          // print(selected['id']);
+                          setState(() {
+                            if (value != null) {
+                              print("nilai=" + value.toString());
+                              var selected = countryRes.firstWhere(
+                                  (element) => element['name'] == value);
+                              _valCountryId = selected['id'].toString();
+                              // print(value);
+                              // print(selected['id']);
 
-                          _valState = '';
+                              _valState = '';
 
-                          // print(_valState);
-                          // getstate
-                          getstate(selected['id'].toString());
+                              // print(_valState);
+                              // getstate
+                              getstate(selected['id'].toString());
 
-                          widget._countryid = selected['id'].toString();
-                        }
-                      });
-                    },
-                    selectedItem: _valCountry,
+                              widget._countryid = selected['id'].toString();
+
+                              showCountryDefault = true;
+                            } else {
+                              showCountryDefault = false;
+                            }
+                            countryDefault = false;
+                          });
+                        },
+                        selectedItem: _valCountry,
+                      ),
+                      Visibility(
+                        visible: (Global.instance.apiToken != null &&
+                                showCountryDefault)
+                            ? true
+                            : false,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Make Country as default'),
+                              Checkbox(
+                                  value: countryDefault,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      countryDefault = value;
+                                      if (countryDefault) {
+                                        updateProfile(field: 'country_id');
+                                      }
+                                    });
+                                  })
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      // CustomDropdownWidget(
+                      //   context: context,
+                      //   items: stateList,
+                      //   label: "State",
+                      //   hint: "State",
+                      //   // popupItemDisabled: (String s) => s.startsWith('I'),
+                      //   onChanged: (value) {
+                      //     // print(value);
+                      //     if (_valState != null) {
+                      //       var selected = stateRes
+                      //           .firstWhere((element) => element['name'] == value);
+
+                      //       // print(value);
+                      //       // print(selected['id'].toString());
+
+                      //       widget._stateid = selected['id'].toString();
+                      //     }
+                      //   },
+                      //   selectedItem: _valState,
+                      // ),
+                      Visibility(
+                          visible: (entity == 'majors') ? true : false,
+                          child: CustomDropdownWidget(
+                            context: context,
+                            hint: 'Level',
+                            selectedItem: levelDegree,
+                            items: level,
+                            onChanged: (value) {
+                              setState(() {
+                                levelDegree = value;
+                                if (value == null) {
+                                  showLevelDefault = false;
+                                } else {
+                                  showLevelDefault = true;
+                                }
+                                levelDefault = false;
+                              });
+                            },
+                          )),
+                      Visibility(
+                        visible: (Global.instance.apiToken != null && entity == 'majors' && showLevelDefault)
+                            ? true
+                            : false,
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: 10.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Make Level as default'),
+                              Checkbox(
+                                  value: levelDefault,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      levelDefault = value;
+                                      if (levelDefault) {
+                                        updateProfile(field: 'level_id');
+                                      }
+                                    });
+                                  })
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          // close window
+                          closeRightDrawer();
+
+                          // search with filter
+                          directoryList.clear();
+                          // widget._category.utilities.clear();
+                          widget._keyword = myController.text;
+                          page = 1;
+                          setState(() {});
+                          getData();
+                        },
+                        child: Text('Apply'),
+                      )
+                    ],
                   ),
-                  // CustomDropdownWidget(
-                  //   context: context,
-                  //   items: stateList,
-                  //   label: "State",
-                  //   hint: "State",
-                  //   // popupItemDisabled: (String s) => s.startsWith('I'),
-                  //   onChanged: (value) {
-                  //     // print(value);
-                  //     if (_valState != null) {
-                  //       var selected = stateRes
-                  //           .firstWhere((element) => element['name'] == value);
-
-                  //       // print(value);
-                  //       // print(selected['id'].toString());
-
-                  //       widget._stateid = selected['id'].toString();
-                  //     }
-                  //   },
-                  //   selectedItem: _valState,
-                  // ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // close window
-                      closeRightDrawer();
-
-                      // search with filter
-                      directoryList.clear();
-                      // widget._category.utilities.clear();
-                      widget._keyword = myController.text;
-                      page = 1;
-                      setState(() {});
-                      getData();
-                    },
-                    child: Text('Apply'),
-                  )
                 ],
               ),
-            ),
+            )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget searchUniversityName() {
+    return Container(
+      padding: const EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+              color: Theme.of(context).hintColor.withOpacity(0.10),
+              offset: Offset(0, 4),
+              blurRadius: 10)
+        ],
+      ),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 10,
+            child: TextFormField(
+              // initialValue: widget._keyword,
+              keyboardType: TextInputType.text,
+              controller: univeristyNameSearchController,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(12),
+                hintText: 'University Name',
+                hintStyle: TextStyle(
+                    color: Theme.of(context).focusColor.withOpacity(0.8)),
+                border: UnderlineInputBorder(borderSide: BorderSide.none),
+                enabledBorder:
+                    UnderlineInputBorder(borderSide: BorderSide.none),
+                focusedBorder:
+                    UnderlineInputBorder(borderSide: BorderSide.none),
+              ),
+            ),
+          ),
+          (univeristyNameSearchController.text.isNotEmpty)
+              ? Expanded(
+                  flex: 2,
+                  child: IconButton(
+                    padding: EdgeInsets.only(left: 0.0),
+                    onPressed: () {
+                      setState(() {
+                        univeristyNameSearchController.clear();
+                      });
+                    },
+                    icon: Icon(UiIcons.trash_1,
+                        size: 20,
+                        color: Theme.of(context).hintColor.withOpacity(0.5)),
+                  ))
+              : SizedBox(),
+        ],
       ),
     );
   }

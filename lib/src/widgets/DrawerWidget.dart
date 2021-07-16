@@ -37,22 +37,24 @@ class DrawerWidget extends StatelessWidget {
                 // Global.instance.authEmail = null;
                 // _user.logoutUser();
 
-                storage.deleteAll();
+                // storage.deleteAll();
 
-                Global.instance.authId = null;
-                Global.instance.authName = 'Guest User';
-                Global.instance.apiToken = null;
-                Global.instance.authEmail = null;
-                Global.instance.authGender = null;
-                Global.instance.authBirthDate = null;
-                Global.instance.authBirthPlace = null;
-                Global.instance.authPicture = null;
-                Global.instance.authAddress = null;
-                Global.instance.authPhone = null;
-                Global.instance.authSchool = null;
-                Global.instance.authGraduate = null;
-                Global.instance.authIdentity = null;
-                Global.instance.authReligion = null;
+                // Global.instance.authId = null;
+                // Global.instance.authName = 'Guest User';
+                // Global.instance.apiToken = null;
+                // Global.instance.authEmail = null;
+                // Global.instance.authGender = null;
+                // Global.instance.authBirthDate = null;
+                // Global.instance.authBirthPlace = null;
+                // Global.instance.authPicture = null;
+                // Global.instance.authAddress = null;
+                // Global.instance.authPhone = null;
+                // Global.instance.authSchool = null;
+                // Global.instance.authGraduate = null;
+                // Global.instance.authIdentity = null;
+                // Global.instance.authReligion = null;
+
+                _user.logoutUser();
 
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();

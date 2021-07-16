@@ -1,11 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:Unio/src/utilities/global.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../config/ui_icons.dart';
 import '../models/user.dart';
 import '../widgets/ProfileSettingsDialog.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class AccountWidget extends StatefulWidget {
   @override
@@ -14,6 +19,85 @@ class AccountWidget extends StatefulWidget {
 
 class _AccountWidgetState extends State<AccountWidget> {
   User _user = new User.init().getCurrentUser();
+
+  dynamic countryRes;
+  List<String> countryList = [];
+  String _selectedCountryName;
+  int _selectedCountryId;
+
+  dynamic levelRes;
+  List<String> levelList = [];
+  String _selectedLevelName;
+  int _selectedLevelId;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (Global.instance.authCountryId == null) {
+      _selectedCountryId = -1;
+      _selectedCountryName = 'Any Country';
+    } else {
+      _selectedCountryId = Global.instance.authCountryId;
+    }
+
+    if (Global.instance.authLevelId == null) {
+      _selectedLevelId = -1;
+      _selectedLevelName = 'Any Degree';
+    } else {
+      _selectedLevelId = Global.instance.authLevelId;
+    }
+
+    getCountry();
+    getLevel();
+  }
+
+  void getCountry() async {
+    http.get(
+        Uri.parse('https://primavisiglobalindo.net/unio/public/api/countries'),
+        // Send authorization headers to the backend.
+        headers: {
+          // HttpHeaders.authorizationHeader: 'Bearer $token',
+          HttpHeaders.contentTypeHeader: 'aplication/json',
+        }).then((response) {
+      print(response.body);
+
+      countryRes = jsonDecode(response.body)['data'];
+
+      for (var i = 0; i < countryRes.length; i++) {
+        setState(() {
+          countryList.add(countryRes[i]['name'].toString());
+          if (_selectedCountryId == countryRes[i]['id']) {
+            _selectedCountryName = countryRes[i]['name'];
+          }
+        });
+      }
+    });
+  }
+
+  void getLevel() async {
+    http.get(
+        Uri.parse(
+            'https://primavisiglobalindo.net/unio/public/api/level_major'),
+        // Send authorization headers to the backend.
+        headers: {
+          // HttpHeaders.authorizationHeader: 'Bearer $token',
+          HttpHeaders.contentTypeHeader: 'aplication/json',
+        }).then((response) {
+      print(response.body);
+
+      levelRes = jsonDecode(response.body)['data'];
+
+      for (var i = 0; i < levelRes.length; i++) {
+        setState(() {
+          levelList.add(levelRes[i]['name'].toString());
+          if (_selectedLevelId == levelRes[i]['id']) {
+            _selectedLevelName = levelRes[i]['name'];
+          }
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -315,6 +399,97 @@ class _AccountWidgetState extends State<AccountWidget> {
                   )
                 : SizedBox(),
           ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.circular(6),
+              boxShadow: [
+                BoxShadow(
+                    color: Theme.of(context).hintColor.withOpacity(0.15),
+                    offset: Offset(0, 3),
+                    blurRadius: 10)
+              ],
+            ),
+            child: (Global.instance.apiToken != null) ? ListView(
+              shrinkWrap: true,
+              primary: false,
+              children: <Widget>[
+                ListTile(
+                  leading: Icon(UiIcons.loupe),
+                  title: Text(
+                    'Search Preference Settings',
+                    style: Theme.of(context).textTheme.body2,
+                  ),
+                ),
+                ListTile(
+                  onTap: () {
+                    // Navigator.of(context).pushNamed('/Languages');
+                  },
+                  dense: true,
+                  leading: Icon(
+                    UiIcons.planet_earth,
+                    size: 22,
+                    color: Theme.of(context).focusColor,
+                  ),
+                  title: Container(
+                    height: 55.0,
+                    child: _dropDown(
+                        hint: 'Country',
+                        selectedItem: _selectedCountryName,
+                        items: countryList,
+                        onChanged: (value) {
+                          setState(() {
+                            if (value != null) {
+                              print("nilai=" + value.toString());
+                              var selected = countryRes.firstWhere(
+                                  (element) => element['name'] == value);
+                              _selectedCountryId = selected['id'];
+                              updateProfile();
+                              _selectedCountryName = value;
+                            } else {
+                              _selectedCountryId = null;
+                              updateProfile();
+                              _selectedCountryName = 'Any Country';
+                            }
+                          });
+                        }),
+                  ),
+                ),
+                ListTile(
+                  onTap: () {
+                    // Navigator.of(context).pushNamed('/Help');
+                  },
+                  dense: true,
+                  leading: Icon(
+                    FontAwesomeIcons.graduationCap,
+                    size: 22,
+                    color: Theme.of(context).focusColor,
+                  ),
+                  title: _dropDown(
+                        hint: 'Level Degree',
+                        selectedItem: _selectedLevelName,
+                        items: levelList,
+                        onChanged: (value) {
+                          setState(() {
+                            if (value != null) {
+                              print("nilai=" + value.toString());
+                              var selected = levelRes.firstWhere(
+                                  (element) => element['name'] == value);
+                              _selectedLevelId = selected['id'];
+                              updateProfile();
+                              _selectedLevelName = value;
+                            } else {
+                              _selectedLevelId = null;
+                              updateProfile();
+                              _selectedLevelName = 'Any Degree';
+                            }
+                          });
+                        }),
+                ),
+              ],
+            ) : SizedBox(),
+          ),
           (Global.instance.apiToken == null)
               ? Container(
                   margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -335,76 +510,6 @@ class _AccountWidgetState extends State<AccountWidget> {
                   ),
                 )
               : SizedBox(),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.circular(6),
-              boxShadow: [
-                BoxShadow(
-                    color: Theme.of(context).hintColor.withOpacity(0.15),
-                    offset: Offset(0, 3),
-                    blurRadius: 10)
-              ],
-            ),
-            // child: ListView(
-            //   shrinkWrap: true,
-            //   primary: false,
-            //   children: <Widget>[
-            //     ListTile(
-            //       leading: Icon(UiIcons.settings_1),
-            //       title: Text(
-            //         'Account Settings',
-            //         style: Theme.of(context).textTheme.body2,
-            //       ),
-            //     ),
-            //     ListTile(
-            //       onTap: () {
-            //         Navigator.of(context).pushNamed('/Languages');
-            //       },
-            //       dense: true,
-            //       title: Row(
-            //         children: <Widget>[
-            //           Icon(
-            //             UiIcons.planet_earth,
-            //             size: 22,
-            //             color: Theme.of(context).focusColor,
-            //           ),
-            //           SizedBox(width: 10),
-            //           Text(
-            //             'Languages',
-            //             style: Theme.of(context).textTheme.body1,
-            //           ),
-            //         ],
-            //       ),
-            //       trailing: Text(
-            //         'English',
-            //         style: TextStyle(color: Theme.of(context).focusColor),
-            //       ),
-            //     ),
-            //     ListTile(
-            //       onTap: () {
-            //         Navigator.of(context).pushNamed('/Help');
-            //       },
-            //       dense: true,
-            //       title: Row(
-            //         children: <Widget>[
-            //           Icon(
-            //             UiIcons.information,
-            //             size: 22,
-            //             color: Theme.of(context).focusColor,
-            //           ),
-            //           SizedBox(width: 10),
-            //           Text(
-            //             'Help & Support',
-            //             style: Theme.of(context).textTheme.body1,
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //   ],
-            // ),
-          ),
         ],
       ),
     );
@@ -440,6 +545,90 @@ class _AccountWidgetState extends State<AccountWidget> {
           ],
         );
       },
+    );
+  }
+
+  Future<void> updateProfile() async {
+    Map<String, String> headers = <String, String>{
+      HttpHeaders.contentTypeHeader: 'application/json'
+    };
+    var url = SERVER_DOMAIN + 'users/' + Global.instance.authId;
+    var token = Global.instance.apiToken;
+    headers.addAll(
+        <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
+    print(url);
+    print(headers);
+
+    final client = new http.Client();
+
+    final response = await client.put(Uri.parse(url),
+        headers: headers,
+        body: jsonEncode({
+          'country_id': _selectedCountryId,
+          'level_id': _selectedLevelId
+        }));
+    print(response.body);
+
+    var msg = jsonDecode(response.body)['message'];
+
+    if (response.statusCode == 200) {
+      Global.instance.authCountryId = _selectedCountryId;
+      Global.instance.authLevelId = _selectedLevelId;
+
+      // print(Global.instance.authCountryId);
+
+      storage.write(key: 'authCountryId', value: _selectedCountryId.toString());
+      storage.write(key: 'authLevelId', value: _selectedLevelId.toString());
+
+      showOkAlertDialog(context: context, title: msg);
+    } else {
+      showOkAlertDialog(context: context, title: 'Update not successful');
+    }
+  }
+
+  Widget _dropDown({items, label, hint, onChanged, selectedItem}) {
+    return DropdownSearch<String>(
+      mode: Mode.BOTTOM_SHEET,
+      showSelectedItem: true,
+      showSearchBox: true,
+      items: items,
+      label: label,
+      hint: hint,
+      onChanged: onChanged,
+      selectedItem: selectedItem,
+      dropdownSearchDecoration: InputDecoration(
+        isDense: true,
+        border: OutlineInputBorder(
+          borderSide: BorderSide.none,
+        ),
+      ),
+
+      // TODOS: FIGURE OUT HOW TO RE BUILD THIS
+      dropdownButtonBuilder: (context) {
+        return Container(
+          child: Icon(Icons.arrow_drop_down,
+              size: 20, color: Theme.of(context).hintColor.withOpacity(0.5)),
+        );
+
+        // return SizedBox();
+      },
+      emptyBuilder: (context, text) {
+        return Container(
+          alignment: Alignment.center,
+          child: Text(
+            'No data found',
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
+        );
+      },
+      searchBoxDecoration: InputDecoration(
+        isDense: true,
+        border: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.blue.shade100,
+          ),
+        ),
+      ),
     );
   }
 }

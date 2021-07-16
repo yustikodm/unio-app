@@ -19,6 +19,8 @@ class User {
   String graduate;
   String identity;
   String religion;
+  int countryId;
+  int levelId;
 
   UserState userState;
 
@@ -39,7 +41,9 @@ class User {
       this.graduate,
       this.identity,
       this.religion,
-      this.userState);
+      this.userState,
+      this.countryId,
+      this.levelId);
 
   User getCurrentUser() {
     // if (Global.instance.apiToken == null) {
@@ -47,19 +51,22 @@ class User {
     //       'img/user2.jpg', '-', '-', '-', '-', '-', '-', UserState.available);
     // } else {
     return User.advanced(
-        Global.instance.authName ?? 'Guest User',
-        Global.instance.authEmail ?? '-',
-        Global.instance.authGender ?? 'Hidden',
-        Global.instance.authBirthDate,
-        Global.instance.authBirthPlace ?? '-',
-        Global.instance.authPicture ?? '-',
-        Global.instance.authAddress ?? '-',
-        Global.instance.authPhone ?? '-',
-        Global.instance.authSchool ?? '-',
-        Global.instance.authGraduate ?? '-',
-        Global.instance.authIdentity ?? '-',
-        Global.instance.authReligion ?? '-',
-        UserState.available);
+      Global.instance.authName ?? 'Guest User',
+      Global.instance.authEmail ?? '-',
+      Global.instance.authGender ?? 'Hidden',
+      Global.instance.authBirthDate,
+      Global.instance.authBirthPlace ?? '-',
+      Global.instance.authPicture ?? '-',
+      Global.instance.authAddress ?? '-',
+      Global.instance.authPhone ?? '-',
+      Global.instance.authSchool ?? '-',
+      Global.instance.authGraduate ?? '-',
+      Global.instance.authIdentity ?? '-',
+      Global.instance.authReligion ?? '-',
+      UserState.available,
+      Global.instance.authCountryId,
+      Global.instance.authLevelId,
+    );
     // }
   }
 
@@ -80,6 +87,10 @@ class User {
     Global.instance.authGraduate = null;
     Global.instance.authIdentity = null;
     Global.instance.authReligion = null;
+    Global.instance.authCountryId = null;
+    Global.instance.authLevelId = null;
+    Global.instance.authCountryId = null;
+    Global.instance.authLevelId = null;
 
     print(storage.readAll());
 
@@ -105,7 +116,7 @@ class User {
     if (url == null) {
       return false;
     }
-    
+
     final uri = Uri.parse(url);
     if (uri.host == 'ui-avatars.com') {
       return false;

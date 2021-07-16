@@ -121,7 +121,8 @@ class SocialMediaWidget extends StatelessWidget {
 
       print(_currentUser);
 
-      _login(context, 'google', _currentUser.id, _currentUser.email, _currentUser.displayName);
+      _login(context, 'google', _currentUser.id, _currentUser.email,
+          _currentUser.displayName);
     } catch (error) {
       print(error);
     }
@@ -184,6 +185,8 @@ class SocialMediaWidget extends StatelessWidget {
         Global.instance.authIdentity =
             data['biodata']['identity_number'].toString();
         Global.instance.authReligion = data['biodata']['religion'];
+        Global.instance.authCountryId = data['biodata']['country_id'];
+        Global.instance.authLevelId = data['biodata']['level_id'];
 
         // add hc to global
         Global.instance.authHc = data['biodata']['hc'];
@@ -207,7 +210,9 @@ class SocialMediaWidget extends StatelessWidget {
             key: 'authIdentity',
             value: data['biodata']['identity_number'].toString() ?? '');
         storage.write(key: 'authReligion', value: data['biodata']['religion']);
-
+        storage.write(
+            key: 'authCountryId', value: data['biodata']['country_id'].toString());
+        storage.write(key: 'authLevelId', value: data['biodata']['level_id'].toString());
         // add hc to storage
         storage.write(key: 'authHc', value: data['biodata']['hc']);
 

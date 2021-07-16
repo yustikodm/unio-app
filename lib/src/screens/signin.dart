@@ -203,6 +203,12 @@ class _SignInWidgetState extends State<SignInWidget> {
                                 Global.instance.authReligion =
                                     data['data']['biodata']['religion'];
 
+                                Global.instance.authCountryId =
+                                    data['data']['biodata']['country_id'];
+
+                                Global.instance.authLevelId =
+                                    data['data']['biodata']['level_id'];
+
                                 // add hc to global
                                 Global.instance.authHc =
                                     data['data']['biodata']['hc'];
@@ -264,6 +270,14 @@ class _SignInWidgetState extends State<SignInWidget> {
                                             ['religion'] ??
                                         '-');
 
+                                storage.write(
+                                    key: 'authCountryId',
+                                    value: data['biodata']['country_id'].toString());
+                                
+                                storage.write(
+                                    key: 'authLevelId',
+                                    value: data['biodata']['level_id'].toString());
+
                                 // add hc to storage
                                 storage.write(
                                     key: 'authHc',
@@ -296,12 +310,12 @@ class _SignInWidgetState extends State<SignInWidget> {
                           shape: StadiumBorder(),
                         ),
                         SizedBox(height: 50),
-                        // Text(
-                        //   'Or using social media',
-                        //   style: Theme.of(context).textTheme.body1,
-                        // ),
+                        Text(
+                          'Or using social media',
+                          style: Theme.of(context).textTheme.body1,
+                        ),
                         SizedBox(height: 20),
-                        // new SocialMediaWidget()
+                        new SocialMediaWidget()
                       ],
                     ),
                   ),

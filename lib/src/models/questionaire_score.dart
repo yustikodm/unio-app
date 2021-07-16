@@ -86,34 +86,52 @@ class QuestionaireScore {
     // ONLY WORKS IF DATA IS SORTED FROM HIGH TO LOW
     // List code = sortedMap.keys.toList();
     List hcTemp = [];
-    List scoreTemp = [];
+    var scoreTemp;
     var hcMap = {};
 
     for (var i = 0; i < 3; i++) {
-      var hc = sortedKeys[i];
-      var score = sortedMap[hc];
-      
-      hcMap[i] = sortedKeys[i];
+      var _v = sortedMap[sortedKeys[i]];
 
-      if (scoreTemp.isEmpty) {
-        hcTemp.add(hc);
-        scoreTemp.add(score);
-        print(i);
-      } else {
-        if (scoreTemp.length < 3) {
-          if (scoreTemp[0] != score) {
-            hcTemp.clear();
-            scoreTemp.clear();
+      if (scoreTemp == null) {
+        scoreTemp = _v;
+      }
 
-            hcTemp.add(hc);
-            scoreTemp.add(score);
-          } else {
-            hcTemp.add(hc);
-            scoreTemp.add(score);
-          }
-        }
+      if (scoreTemp == _v) {
+        hcTemp.add(sortedKeys[i]);
+      }
+
+      if (scoreTemp != _v && hcTemp.length < 2) {
+        hcTemp.clear();
+        hcTemp.add(sortedKeys[i]);
+        scoreTemp = _v;
       }
     }
+
+    // for (var i = 0; i < 3; i++) {
+    //   var hc = sortedKeys[i];
+    //   var score = sortedMap[hc];
+
+    //   hcMap[i] = sortedKeys[i];
+
+    //   if (scoreTemp.isEmpty) {
+    //     hcTemp.add(hc);
+    //     scoreTemp.add(score);
+    //     print(i);
+    //   } else {
+    //     if (scoreTemp.length < 3) {
+    //       if (scoreTemp[0] != score) {
+    //         hcTemp.clear();
+    //         scoreTemp.clear();
+
+    //         hcTemp.add(hc);
+    //         scoreTemp.add(score);
+    //       } else {
+    //         hcTemp.add(hc);
+    //         scoreTemp.add(score);
+    //       }
+    //     }
+    //   }
+    // }
 
     if (hcTemp.length > 1) {
       _score = {

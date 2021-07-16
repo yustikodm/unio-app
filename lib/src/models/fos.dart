@@ -1,5 +1,5 @@
 class Fos {
-  String cip;
+  dynamic cip;
   String name;
   String hc;
   bool isChecked;

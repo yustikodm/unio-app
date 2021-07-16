@@ -54,11 +54,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
   bool shouldPop;
 
   List<Fos> _fosList;
-  final List<String> level = [
-    "Bachelor",
-    "Master",
-    "Doctor",
-  ];
+  List<String> level = [];
 
   // Main Search
   String majorName;
@@ -88,11 +84,18 @@ class _AdviceWidgetState extends State<AdviceWidget> {
 
   var countryRes;
   var stateRes;
+  var levelRes;
 
   String _valCountry;
   String _valCountryId;
 
   String _valState;
+
+  bool levelDefault = false;
+  bool countryDefault = false;
+
+  bool showCountryDefault = false;
+  bool showLevelDefault = false;
 
   @override
   void initState() {
@@ -113,6 +116,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
             page.toString());
         if (hasMore && !loadingData) {
           page += 1;
+
           getData();
         }
       }
@@ -186,6 +190,10 @@ class _AdviceWidgetState extends State<AdviceWidget> {
     states = [];
     stateList = [];
     stateRes = [];
+
+    if (Global.instance.authCountryId != null) {
+      countryId = Global.instance.authCountryId;
+    }
   }
 
   void getData() async {
@@ -195,6 +203,82 @@ class _AdviceWidgetState extends State<AdviceWidget> {
     // var userHc = await Global.instance.authHc;
     var userHc = await storage.read(key: 'authHc');
     var token = await Global.instance.apiToken;
+
+    Map<String, String> headers = <String, String>{
+      HttpHeaders.contentTypeHeader: 'application/json'
+    };
+
+    headers.addAll(
+        <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
+
+    // check level_id in search preference
+    if (levelRes == null) {
+      await getLevel();
+      showLevelDefault = true;
+    }
+
+    // check country_id in search preference
+    if (_initialFosData) {
+      _initialFosData = false;
+
+      try {
+        var _url = SERVER_DOMAIN + 'match-with-me/cip_v2/' + userHc;
+        // var _url = 'http://10.0.2.2:8000/api/' +
+        //     'match-with-me/cip_v2' +
+        //     "/" +
+        //     userHc;
+
+        final _client = new http.Client();
+        final _response = await _client
+            .get(
+          Uri.parse(_url),
+          headers: headers,
+        )
+            .timeout(Duration(seconds: 60), onTimeout: () {
+          throw 'Koneksi terputus. Silahkan coba lagi.';
+        });
+
+        if (_response.statusCode == 200) {
+          List jsonFos =
+              await json.decode(_response.body)['data']['matchedFos'];
+
+          if (jsonFos != null && jsonFos.isNotEmpty) {
+            for (var i = 0; i < jsonFos.length; i++) {
+              print('fos: $i');
+              setState(() {
+                _fosList.add(new Fos(
+                  cip: jsonFos[i]['cip'],
+                  name: jsonFos[i]['name'],
+                  // hc: jsonFos[i]['hc'],
+                ));
+
+                selectedCip[i] = jsonFos[i]['cip'];
+              });
+            }
+
+            // await getBookmarkedMajors();
+            List _cip = [];
+
+            _fosList.forEach((element) {
+              _cip = _cip + element.cip;
+            });
+
+            print(userId);
+            print(_cip);
+
+            await getCountry(_cip);
+          } else {
+            _fosList.clear();
+            selectedCip.clear();
+          }
+        } else {
+          String error = json.decode(_response.body)['error'];
+          throw (error == '') ? 'Gagal memproses data' : error;
+        }
+      } on SocketException {
+        throw 'Tidak ada koneksi internet. Silahkan coba lagi.';
+      }
+    }
 
     String url = SERVER_DOMAIN + subUrl + "/" + userId + "/" + userHc;
     // String url =
@@ -214,23 +298,20 @@ class _AdviceWidgetState extends State<AdviceWidget> {
     // insert cip if not empty
     String selectedCipParams = "";
     if (selectedCip.isNotEmpty) {
+      var _cip = [];
       for (var i = 0; i < selectedCip.length; i++) {
-        if (selectedCip[i] != null)
-          selectedCipParams =
-              selectedCipParams + "&cip[]=" + selectedCip[i].toString();
+        if (selectedCip[i] != null) {
+          _cip = _cip + selectedCip[i];
+        }
+      }
+
+      for (var i = 0; i < _cip.length; i++) {
+        selectedCipParams = selectedCipParams + "&cip[]=" + _cip[i].toString();
       }
       urlArgs = urlArgs + selectedCipParams;
     }
 
     print(urlArgs);
-
-    Map<String, String> headers = <String, String>{
-      HttpHeaders.contentTypeHeader: 'application/json'
-    };
-
-    headers.addAll(
-        <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
-
     print('========= noted: get requestMap ' + "===== url " + url + urlArgs);
 
     try {
@@ -250,33 +331,18 @@ class _AdviceWidgetState extends State<AdviceWidget> {
         print('========= noted: get response body ' + response.body.toString());
         if (response.body.isNotEmpty) {
           // initial matchedFos, initial cip and initial bookmarkedList
-          if (_initialFosData) {
-            _initialFosData = false;
-            List jsonFos =
-                await json.decode(response.body)['data']['matchedFos'];
-            if (jsonFos != null && jsonFos.isNotEmpty) {
-              for (var i = 0; i < jsonFos.length; i++) {
-                print('fos: $i');
-                setState(() {
-                  _fosList.add(new Fos(
-                    cip: jsonFos[i]['cip'],
-                    name: jsonFos[i]['name'],
-                    hc: jsonFos[i]['hc'],
-                  ));
-
-                  selectedCip[i] = jsonFos[i]['cip'];
-                });
-              }
-
-              // await getBookmarkedMajors();
-            } else {
-              _fosList.clear();
-              selectedCip.clear();
-            }
-          }
 
           // parse majors
-          List jsonMajors = await json.decode(response.body)['data']['majors'];
+          var res = await json.decode(response.body);
+
+          List jsonMajors;
+
+          if (res.containsKey('data')) {
+            jsonMajors = res['data']['majors'];
+          } else {
+            jsonMajors = [];
+          }
+
           if (jsonMajors != null && jsonMajors.isNotEmpty) {
             for (var i = 0; i < jsonMajors.length; i++) {
               var id = jsonMajors[i]['major_id'];
@@ -284,8 +350,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
               print('majors: $i id: $id, check: $check');
 
               setState(() {
-                if (
-                    jsonMajors[i]['level'] != null) {
+                if (jsonMajors[i]['level'] != null) {
                   _adviceList.list.add(new Advice(
                     universityLogo: jsonMajors[i]['university_logo'],
                     universityId: jsonMajors[i]['university_id'],
@@ -294,21 +359,10 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                     majorName: jsonMajors[i]['major_name'],
                     level: jsonMajors[i]['level'],
                     fos: jsonMajors[i]['fos'],
-                    isChecked: jsonMajors[i]['is_checked'] == "0" ? false : true,
+                    isChecked:
+                        jsonMajors[i]['is_checked'] == "0" ? false : true,
                   ));
-                } 
-                // else {
-                //   _adviceList.list.add(new Advice(
-                //     universityLogo: jsonMajors[i]['university_logo'],
-                //     universityId: jsonMajors[i]['university_id'],
-                //     universityName: jsonMajors[i]['university_name'],
-                //     majorId: jsonMajors[i]['major_id'],
-                //     majorName: jsonMajors[i]['major_name'],
-                //     level: jsonMajors[i]['level'],
-                //     fos: jsonMajors[i]['fos'],
-                //     isChecked: true,
-                //   ));
-                // }
+                }
               });
             }
           } else {
@@ -411,7 +465,35 @@ class _AdviceWidgetState extends State<AdviceWidget> {
     }
   }
 
-  void getCountry(_cip) async {
+  Future getLevel() async {
+    final response = await http.get(
+        Uri.parse(
+            'https://primavisiglobalindo.net/unio/public/api/level_major'),
+        // Send authorization headers to the backend.
+        headers: {
+          // HttpHeaders.authorizationHeader: 'Bearer $token',
+          HttpHeaders.contentTypeHeader: 'aplication/json',
+        });
+    print(response.body);
+
+    levelRes = jsonDecode(response.body)['data'];
+
+    for (var i = 0; i < levelRes.length; i++) {
+      setState(() {
+        level.add(levelRes[i]['name'].toString());
+      });
+    }
+
+    if (Global.instance.authLevelId != null) {
+      var selected = await levelRes.firstWhere(
+          (element) => element['id'] == Global.instance.authLevelId);
+      levelDegree = selected['name'];
+    }
+
+    print("level=" + levelDegree.toString());
+  }
+
+  Future getCountry(_cip) async {
     var token = await Global.instance.apiToken;
     final response = await http.post(
         Uri.parse(
@@ -439,6 +521,22 @@ class _AdviceWidgetState extends State<AdviceWidget> {
           value: countryRes[i]['country_name'],
         ));
         countryList.add(countryRes[i]['country_name'].toString());
+      });
+    }
+
+    if (Global.instance.authCountryId != null) {
+      var selected = countryRes.firstWhere(
+          (element) => element['country_id'] == Global.instance.authCountryId,
+          orElse: () => null);
+      setState(() {
+        countryId = selected != null ? selected['country_id'] : null;
+        _valCountry = selected != null ? selected['country_name'] : null;
+
+        if (selected != null) {
+          showCountryDefault = true;
+        }
+
+        print(countryId);
       });
     }
   }
@@ -542,6 +640,68 @@ class _AdviceWidgetState extends State<AdviceWidget> {
     }
   }
 
+  Future<void> updateProfile({String field}) async {
+    Map<String, String> headers = <String, String>{
+      HttpHeaders.contentTypeHeader: 'application/json'
+    };
+    var url = SERVER_DOMAIN + 'users/' + Global.instance.authId;
+    var token = Global.instance.apiToken;
+    headers.addAll(
+        <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
+    print(url);
+    print(headers);
+
+    final client = new http.Client();
+
+    if (field == 'country_id') {
+      var _selectedCountryId = countryId;
+      final response = await client.put(Uri.parse(url),
+          headers: headers,
+          body: jsonEncode({'country_id': _selectedCountryId}));
+      print(response.body);
+
+      // var msg = jsonDecode(response.body)['message'];
+
+      if (response.statusCode == 200) {
+        Global.instance.authCountryId = _selectedCountryId;
+
+        // print(Global.instance.authCountryId);
+
+        storage.write(
+            key: 'authCountryId', value: _selectedCountryId.toString());
+
+        showOkAlertDialog(
+            context: context,
+            title: "User's search preference updated succesfuully");
+      } else {
+        showOkAlertDialog(context: context, title: 'Update not successful');
+      }
+    } else if (field == 'level_id') {
+      var selected =
+          levelRes.firstWhere((element) => element['name'] == levelDegree);
+      int _selectedLevelId = selected['id'];
+      final response = await client.put(Uri.parse(url),
+          headers: headers, body: jsonEncode({'level_id': _selectedLevelId}));
+      print(response.body);
+
+      var msg = jsonDecode(response.body)['message'];
+
+      if (response.statusCode == 200) {
+        Global.instance.authLevelId = _selectedLevelId;
+
+        // print(Global.instance.authCountryId);
+
+        storage.write(key: 'authLevelId', value: _selectedLevelId.toString());
+
+        showOkAlertDialog(
+            context: context,
+            title: "User's search preference updated succesfuully");
+      } else {
+        showOkAlertDialog(context: context, title: 'Update not successful');
+      }
+    } else {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -556,8 +716,8 @@ class _AdviceWidgetState extends State<AdviceWidget> {
           body: Stack(children: [
             CustomScrollView(controller: scrollController, slivers: <Widget>[
               SliverAppBar(
-                snap: true,
-                floating: true,
+                // snap: true,
+                // floating: true,
                 automaticallyImplyLeading: false,
                 leading: new IconButton(
                   icon: new Icon(UiIcons.return_icon,
@@ -694,42 +854,42 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                             ),
                           )
                         : SizedBox(),
-                    (_bookmarkExpanded)
-                        ? Container(
-                            child: ListView.separated(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              primary: false,
-                              itemCount: _bookmarkedList.list.length,
-                              separatorBuilder: (context, index) {
-                                return SizedBox(height: 10);
-                              },
-                              itemBuilder: (context, index) {
-                                if (_bookmarkedList.list.isNotEmpty) {
-                                  return AdviceListItemWidget(
-                                    heroTag: 'bookmark_list',
-                                    advice:
-                                        _bookmarkedList.list.elementAt(index),
-                                    onBookmarked: () {
-                                      setState(() {
-                                        Advice bmItem = _bookmarkedList.list
-                                            .elementAt(index);
-                                        bmItem.isChecked = false;
+                    // (_bookmarkExpanded)
+                    //     ? Container(
+                    //         child: ListView.separated(
+                    //           scrollDirection: Axis.vertical,
+                    //           shrinkWrap: true,
+                    //           primary: false,
+                    //           itemCount: _bookmarkedList.list.length,
+                    //           separatorBuilder: (context, index) {
+                    //             return SizedBox(height: 10);
+                    //           },
+                    //           itemBuilder: (context, index) {
+                    //             if (_bookmarkedList.list.isNotEmpty) {
+                    //               return AdviceListItemWidget(
+                    //                 heroTag: 'bookmark_list',
+                    //                 advice:
+                    //                     _bookmarkedList.list.elementAt(index),
+                    //                 onBookmarked: () {
+                    //                   setState(() {
+                    //                     Advice bmItem = _bookmarkedList.list
+                    //                         .elementAt(index);
+                    //                     bmItem.isChecked = false;
 
-                                        // _adviceList.list.add(bmItem);
-                                        removeItemToBookmark(bmItem);
+                    //                     // _adviceList.list.add(bmItem);
+                    //                     removeItemToBookmark(bmItem);
 
-                                        _bookmarkedList.list.removeAt(index);
-                                      });
-                                    },
-                                  );
-                                } else {
-                                  return Text('no bookmarked item');
-                                }
-                              },
-                            ),
-                          )
-                        : SizedBox(),
+                    //                     _bookmarkedList.list.removeAt(index);
+                    //                   });
+                    //                 },
+                    //               );
+                    //             } else {
+                    //               return Text('no bookmarked item');
+                    //             }
+                    //           },
+                    //         ),
+                    //       )
+                    //     : SizedBox(),
                     SizedBox(
                       height: 20,
                     ),
@@ -781,6 +941,11 @@ class _AdviceWidgetState extends State<AdviceWidget> {
 
                                   // _bookmarkedList.list.add(bmItem);
                                   addItemToBookmark(bmItem);
+                                  showOkAlertDialog(
+                                      context: context,
+                                      title: bmItem.isChecked
+                                          ? 'Successfully Bookmarked'
+                                          : 'Successfully Unbookmarked');
 
                                   // _adviceList.list.removeAt(index);
                                 });
@@ -887,30 +1052,61 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                                 _valState = '';
                                 getState(selected['country_id'].toString());
                                 countryId = selected['country_id'];
+
+                                showCountryDefault = true;
                               } else {
                                 countryId = null;
                                 stateId = null;
+
+                                showCountryDefault = false;
                               }
+
+                              countryDefault = false;
                             });
                           }),
-                      CustomDropdownWidget(
-                        context: context,
-                        hint: 'State',
-                        selectedItem: _valState,
-                        items: stateList,
-                        onChanged: (value) {
-                          setState(() {
-                            if (value != null) {
-                              var selected = stateRes.firstWhere(
-                                  (element) => element['name'] == value);
-
-                              stateId = selected['id'];
-                            } else {
-                              stateId = null;
-                            }
-                          });
-                        },
+                      Visibility(
+                        visible: (showCountryDefault) ? true : false,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Make Country as default'),
+                              Checkbox(
+                                  value: countryDefault,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      countryDefault = value;
+                                      if (countryDefault) {
+                                        updateProfile(field: 'country_id');
+                                      }
+                                    });
+                                  })
+                            ],
+                          ),
+                        ),
                       ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      // CustomDropdownWidget(
+                      //   context: context,
+                      //   hint: 'State',
+                      //   selectedItem: _valState,
+                      //   items: stateList,
+                      //   onChanged: (value) {
+                      //     setState(() {
+                      //       if (value != null) {
+                      //         var selected = stateRes.firstWhere(
+                      //             (element) => element['name'] == value);
+
+                      //         stateId = selected['id'];
+                      //       } else {
+                      //         stateId = null;
+                      //       }
+                      //     });
+                      //   },
+                      // ),
                       CustomDropdownWidget(
                         context: context,
                         hint: 'Level',
@@ -919,10 +1115,42 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                         onChanged: (value) {
                           setState(() {
                             levelDegree = value;
+
+                            if (value != null) {
+                              showLevelDefault = true;
+                            } else {
+                              showLevelDefault = false;
+                            }
+
+                            levelDefault = false;
                           });
                         },
                       ),
                     ],
+                  ),
+                  Visibility(
+                    visible: (showLevelDefault) ? true : false,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: 10.0,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Make Level as default'),
+                          Checkbox(
+                              value: levelDefault,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  levelDefault = value;
+                                  if (levelDefault) {
+                                    updateProfile(field: 'level_id');
+                                  }
+                                });
+                              })
+                        ],
+                      ),
+                    ),
                   ),
                   // ),
                   (_fosList.isNotEmpty) ? _checkBoxes() : SizedBox(),
@@ -1147,95 +1375,6 @@ class _AdviceWidgetState extends State<AdviceWidget> {
             ]),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _listTileItem({@required item, @required tag}) {
-    return InkWell(
-      splashColor: Theme.of(context).accentColor,
-      focusColor: Theme.of(context).accentColor,
-      highlightColor: Theme.of(context).primaryColor,
-      onTap: () {
-        print(item.majorId);
-        Navigator.of(context).pushNamed('/Detail',
-            arguments: RouteArgument(param1: item.majorId, param2: 'majors'));
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withOpacity(0.9),
-          boxShadow: [
-            BoxShadow(
-                color: Theme.of(context).focusColor.withOpacity(0.1),
-                blurRadius: 5,
-                offset: Offset(0, 2)),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Hero(
-              tag: tag + item.id,
-              child: Container(
-                height: 60,
-                width: 60,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                  image: DecorationImage(
-                      image: NetworkImage(item.universityLogo),
-                      fit: BoxFit.cover),
-                ),
-              ),
-            ),
-            SizedBox(width: 15),
-            Flexible(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          item.majorName,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          style: Theme.of(context).textTheme.subhead,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            // The title of the utilitie
-                            (item.isChecked)
-                                ? Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                    size: item.universityName == '-' ? 1 : 18,
-                                  )
-                                : SizedBox(),
-                            SizedBox(
-                              width: 4,
-                            ),
-                            Expanded(
-                              child: Text(
-                                item.universityName.toString(),
-                                style: Theme.of(context).textTheme.body1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Text('FOS', style: Theme.of(context).textTheme.body2),
-                ],
-              ),
-            )
-          ],
-        ),
       ),
     );
   }
