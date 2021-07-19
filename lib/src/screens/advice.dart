@@ -92,7 +92,10 @@ class _AdviceWidgetState extends State<AdviceWidget> {
   String _valState;
 
   bool levelDefault = false;
+  String levelDefaultValue = '';
+
   bool countryDefault = false;
+  String countryDefaultValue = '';
 
   bool showCountryDefault = false;
   bool showLevelDefault = false;
@@ -214,7 +217,6 @@ class _AdviceWidgetState extends State<AdviceWidget> {
     // check level_id in search preference
     if (levelRes == null) {
       await getLevel();
-      showLevelDefault = true;
     }
 
     // check country_id in search preference
@@ -488,6 +490,9 @@ class _AdviceWidgetState extends State<AdviceWidget> {
       var selected = await levelRes.firstWhere(
           (element) => element['id'] == Global.instance.authLevelId);
       levelDegree = selected['name'];
+      showLevelDefault = true;
+      levelDefault = true;
+      levelDefaultValue = levelDegree;
     }
 
     print("level=" + levelDegree.toString());
@@ -534,6 +539,8 @@ class _AdviceWidgetState extends State<AdviceWidget> {
 
         if (selected != null) {
           showCountryDefault = true;
+          countryDefault = true;
+          countryDefaultValue = _valCountry;
         }
 
         print(countryId);
@@ -640,7 +647,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
     }
   }
 
-  Future<void> updateProfile({String field}) async {
+  Future<void> updateProfile({String field, bool isEmpty = false}) async {
     Map<String, String> headers = <String, String>{
       HttpHeaders.contentTypeHeader: 'application/json'
     };
@@ -657,18 +664,18 @@ class _AdviceWidgetState extends State<AdviceWidget> {
       var _selectedCountryId = countryId;
       final response = await client.put(Uri.parse(url),
           headers: headers,
-          body: jsonEncode({'country_id': _selectedCountryId}));
+          body: jsonEncode({'country_id': !isEmpty ? _selectedCountryId : null}));
       print(response.body);
 
       // var msg = jsonDecode(response.body)['message'];
 
       if (response.statusCode == 200) {
-        Global.instance.authCountryId = _selectedCountryId;
+        Global.instance.authCountryId = !isEmpty ? _selectedCountryId : null;
 
         // print(Global.instance.authCountryId);
 
         storage.write(
-            key: 'authCountryId', value: _selectedCountryId.toString());
+            key: 'authCountryId', value: !isEmpty ? _selectedCountryId.toString() : null);
 
         showOkAlertDialog(
             context: context,
@@ -681,17 +688,17 @@ class _AdviceWidgetState extends State<AdviceWidget> {
           levelRes.firstWhere((element) => element['name'] == levelDegree);
       int _selectedLevelId = selected['id'];
       final response = await client.put(Uri.parse(url),
-          headers: headers, body: jsonEncode({'level_id': _selectedLevelId}));
+          headers: headers, body: jsonEncode({'level_id': !isEmpty ? _selectedLevelId : null}));
       print(response.body);
 
       var msg = jsonDecode(response.body)['message'];
 
       if (response.statusCode == 200) {
-        Global.instance.authLevelId = _selectedLevelId;
+        Global.instance.authLevelId = !isEmpty ? _selectedLevelId : null;
 
         // print(Global.instance.authCountryId);
 
-        storage.write(key: 'authLevelId', value: _selectedLevelId.toString());
+        storage.write(key: 'authLevelId', value: !isEmpty ? _selectedLevelId.toString() : null);
 
         showOkAlertDialog(
             context: context,
@@ -1061,7 +1068,11 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                                 showCountryDefault = false;
                               }
 
-                              countryDefault = false;
+                              if (countryDefaultValue == value.toString()) {
+                                countryDefault = true;
+                              } else {
+                                countryDefault = false;
+                              }
                             });
                           }),
                       Visibility(
@@ -1078,7 +1089,12 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                                     setState(() {
                                       countryDefault = value;
                                       if (countryDefault) {
+                                        countryDefaultValue = _valCountry;
                                         updateProfile(field: 'country_id');
+                                      } else {
+                                        countryDefaultValue = '';
+                                        updateProfile(
+                                            field: 'country_id', isEmpty: true);
                                       }
                                     });
                                   })
@@ -1122,7 +1138,11 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                               showLevelDefault = false;
                             }
 
-                            levelDefault = false;
+                            if (levelDefaultValue == levelDegree) {
+                              levelDefault = true;
+                            } else {
+                              levelDefault = false;
+                            }
                           });
                         },
                       ),
@@ -1144,7 +1164,12 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                                 setState(() {
                                   levelDefault = value;
                                   if (levelDefault) {
+                                    levelDefaultValue = levelDegree;
                                     updateProfile(field: 'level_id');
+                                  } else {
+                                    levelDefaultValue = '';
+                                    updateProfile(
+                                        field: 'level_id', isEmpty: true);
                                   }
                                 });
                               })

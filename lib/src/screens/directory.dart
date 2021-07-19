@@ -102,7 +102,10 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
   String universityName;
 
   bool levelDefault = false;
+  String levelDefaultValue = '';
+
   bool countryDefault = false;
+  String countryDefaultValue = '';
 
   bool showCountryDefault = false;
   bool showLevelDefault = false;
@@ -169,6 +172,10 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
       var selected = await levelRes.firstWhere(
           (element) => element['id'] == Global.instance.authLevelId);
       levelDegree = selected['name'];
+
+      levelDefault = true;
+      levelDefaultValue = levelDegree;
+      showLevelDefault = true;
     }
 
     print("level=" + levelDegree.toString());
@@ -201,6 +208,11 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
         .firstWhere((element) => element['id'] == int.parse(countryid));
     _valCountry = selected['name'];
     _valCountryId = selected['id'].toString();
+
+    countryDefaultValue = _valCountry;
+    countryDefault = true;
+    showCountryDefault = true;
+
     print(_valCountry);
   }
 
@@ -285,8 +297,6 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
       if (Global.instance.authCountryId != null) {
         widget._countryid = Global.instance.authCountryId.toString();
         setInitialValCountry(widget._countryid);
-
-        showCountryDefault = true;
       }
     }
 
@@ -323,7 +333,6 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
     if (entity == 'majors' && levelRes == null) {
       await getLevel();
-      showLevelDefault = true;
     }
 
     if (widget.panjangarg > 7) {
@@ -576,7 +585,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
       });
   }
 
-  Future<void> updateProfile({String field}) async {
+  Future<void> updateProfile({String field, bool isEmpty = false}) async {
     Map<String, String> headers = <String, String>{
       HttpHeaders.contentTypeHeader: 'application/json'
     };
@@ -593,18 +602,20 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
       var _selectedCountryId = widget._countryid;
       final response = await client.put(Uri.parse(url),
           headers: headers,
-          body: jsonEncode({'country_id': _selectedCountryId}));
+          body:
+              jsonEncode({'country_id': !isEmpty ? _selectedCountryId : null}));
       print(response.body);
 
       // var msg = jsonDecode(response.body)['message'];
 
       if (response.statusCode == 200) {
-        Global.instance.authCountryId = int.parse(_selectedCountryId);
+        Global.instance.authCountryId =
+            !isEmpty ? int.parse(_selectedCountryId) : null;
 
         // print(Global.instance.authCountryId);
 
         storage.write(
-            key: 'authCountryId', value: _selectedCountryId.toString());
+            key: 'authCountryId', value: !isEmpty ? _selectedCountryId : null);
 
         showOkAlertDialog(
             context: context,
@@ -617,17 +628,20 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
           levelRes.firstWhere((element) => element['name'] == levelDegree);
       int _selectedLevelId = selected['id'];
       final response = await client.put(Uri.parse(url),
-          headers: headers, body: jsonEncode({'level_id': _selectedLevelId}));
+          headers: headers,
+          body: jsonEncode({'level_id': !isEmpty ? _selectedLevelId : null}));
       print(response.body);
 
       var msg = jsonDecode(response.body)['message'];
 
       if (response.statusCode == 200) {
-        Global.instance.authLevelId = _selectedLevelId;
+        Global.instance.authLevelId = !isEmpty ? _selectedLevelId : null;
 
         // print(Global.instance.authCountryId);
 
-        storage.write(key: 'authLevelId', value: _selectedLevelId.toString());
+        storage.write(
+            key: 'authLevelId',
+            value: !isEmpty ? _selectedLevelId.toString() : null);
 
         showOkAlertDialog(
             context: context,
@@ -1452,7 +1466,12 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                             } else {
                               showCountryDefault = false;
                             }
-                            countryDefault = false;
+
+                            if (countryDefaultValue == value.toString()) {
+                              countryDefault = true;
+                            } else {
+                              countryDefault = false;
+                            }
                           });
                         },
                         selectedItem: _valCountry,
@@ -1473,8 +1492,14 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                                   onChanged: (bool value) {
                                     setState(() {
                                       countryDefault = value;
+
                                       if (countryDefault) {
+                                        countryDefaultValue = _valCountry;
                                         updateProfile(field: 'country_id');
+                                      } else {
+                                        countryDefaultValue = '';
+                                        updateProfile(
+                                            field: 'country_id', isEmpty: true);
                                       }
                                     });
                                   })
@@ -1520,12 +1545,19 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                                 } else {
                                   showLevelDefault = true;
                                 }
-                                levelDefault = false;
+
+                                if (levelDefaultValue == levelDegree) {
+                                  levelDefault = true;
+                                } else {
+                                  levelDefault = false;
+                                }
                               });
                             },
                           )),
                       Visibility(
-                        visible: (Global.instance.apiToken != null && entity == 'majors' && showLevelDefault)
+                        visible: (Global.instance.apiToken != null &&
+                                entity == 'majors' &&
+                                showLevelDefault)
                             ? true
                             : false,
                         child: Padding(
@@ -1541,8 +1573,14 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                                   onChanged: (bool value) {
                                     setState(() {
                                       levelDefault = value;
+
                                       if (levelDefault) {
+                                        levelDefaultValue = levelDegree;
                                         updateProfile(field: 'level_id');
+                                      } else {
+                                        levelDefaultValue = '';
+                                        updateProfile(
+                                            field: 'level_id', isEmpty: true);
                                       }
                                     });
                                   })
