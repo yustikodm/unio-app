@@ -411,84 +411,86 @@ class _AccountWidgetState extends State<AccountWidget> {
                     blurRadius: 10)
               ],
             ),
-            child: (Global.instance.apiToken != null) ? ListView(
-              shrinkWrap: true,
-              primary: false,
-              children: <Widget>[
-                ListTile(
-                  leading: Icon(UiIcons.loupe),
-                  title: Text(
-                    'Search Preference Settings',
-                    style: Theme.of(context).textTheme.body2,
-                  ),
-                ),
-                ListTile(
-                  onTap: () {
-                    // Navigator.of(context).pushNamed('/Languages');
-                  },
-                  dense: true,
-                  leading: Icon(
-                    UiIcons.planet_earth,
-                    size: 22,
-                    color: Theme.of(context).focusColor,
-                  ),
-                  title: Container(
-                    height: 55.0,
-                    child: _dropDown(
-                        hint: 'Country',
-                        selectedItem: _selectedCountryName,
-                        items: countryList,
-                        onChanged: (value) {
-                          setState(() {
-                            if (value != null) {
-                              print("nilai=" + value.toString());
-                              var selected = countryRes.firstWhere(
-                                  (element) => element['name'] == value);
-                              _selectedCountryId = selected['id'];
-                              updateProfile();
-                              _selectedCountryName = value;
-                            } else {
-                              _selectedCountryId = null;
-                              updateProfile();
-                              _selectedCountryName = 'Any Country';
-                            }
-                          });
-                        }),
-                  ),
-                ),
-                ListTile(
-                  onTap: () {
-                    // Navigator.of(context).pushNamed('/Help');
-                  },
-                  dense: true,
-                  leading: Icon(
-                    FontAwesomeIcons.graduationCap,
-                    size: 22,
-                    color: Theme.of(context).focusColor,
-                  ),
-                  title: _dropDown(
-                        hint: 'Level Degree',
-                        selectedItem: _selectedLevelName,
-                        items: levelList,
-                        onChanged: (value) {
-                          setState(() {
-                            if (value != null) {
-                              print("nilai=" + value.toString());
-                              var selected = levelRes.firstWhere(
-                                  (element) => element['name'] == value);
-                              _selectedLevelId = selected['id'];
-                              updateProfile();
-                              _selectedLevelName = value;
-                            } else {
-                              _selectedLevelId = null;
-                              updateProfile();
-                              _selectedLevelName = 'Any Degree';
-                            }
-                          });
-                        }),
-                ),
-              ],
-            ) : SizedBox(),
+            child: (Global.instance.apiToken != null)
+                ? ListView(
+                    shrinkWrap: true,
+                    primary: false,
+                    children: <Widget>[
+                      ListTile(
+                        leading: Icon(UiIcons.loupe),
+                        title: Text(
+                          'Search Preference Settings',
+                          style: Theme.of(context).textTheme.body2,
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          // Navigator.of(context).pushNamed('/Languages');
+                        },
+                        dense: true,
+                        leading: Icon(
+                          UiIcons.planet_earth,
+                          size: 22,
+                          color: Theme.of(context).focusColor,
+                        ),
+                        title: Container(
+                          height: 55.0,
+                          child: _dropDown(
+                              hint: 'Country',
+                              selectedItem: _selectedCountryName,
+                              items: countryList,
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value != null) {
+                                    print("nilai=" + value.toString());
+                                    var selected = countryRes.firstWhere(
+                                        (element) => element['name'] == value);
+                                    _selectedCountryId = selected['id'];
+                                    updateProfile();
+                                    _selectedCountryName = value;
+                                  } else {
+                                    _selectedCountryId = null;
+                                    updateProfile();
+                                    _selectedCountryName = 'Any Country';
+                                  }
+                                });
+                              }),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          // Navigator.of(context).pushNamed('/Help');
+                        },
+                        dense: true,
+                        leading: Icon(
+                          FontAwesomeIcons.graduationCap,
+                          size: 22,
+                          color: Theme.of(context).focusColor,
+                        ),
+                        title: _dropDown(
+                            hint: 'Level Degree',
+                            selectedItem: _selectedLevelName,
+                            items: levelList,
+                            onChanged: (value) {
+                              setState(() {
+                                if (value != null) {
+                                  print("nilai=" + value.toString());
+                                  var selected = levelRes.firstWhere(
+                                      (element) => element['name'] == value);
+                                  _selectedLevelId = selected['id'];
+                                  updateProfile();
+                                  _selectedLevelName = value;
+                                } else {
+                                  _selectedLevelId = null;
+                                  updateProfile();
+                                  _selectedLevelName = 'Any Degree';
+                                }
+                              });
+                            }),
+                      ),
+                    ],
+                  )
+                : SizedBox(),
           ),
           (Global.instance.apiToken == null)
               ? Container(
@@ -563,10 +565,8 @@ class _AccountWidgetState extends State<AccountWidget> {
 
     final response = await client.put(Uri.parse(url),
         headers: headers,
-        body: jsonEncode({
-          'country_id': _selectedCountryId,
-          'level_id': _selectedLevelId
-        }));
+        body: jsonEncode(
+            {'country_id': _selectedCountryId, 'level_id': _selectedLevelId}));
     print(response.body);
 
     var msg = jsonDecode(response.body)['message'];
@@ -591,6 +591,7 @@ class _AccountWidgetState extends State<AccountWidget> {
       mode: Mode.BOTTOM_SHEET,
       showSelectedItem: true,
       showSearchBox: true,
+      showClearButton: true,
       items: items,
       label: label,
       hint: hint,
@@ -612,6 +613,15 @@ class _AccountWidgetState extends State<AccountWidget> {
 
         // return SizedBox();
       },
+
+      clearButtonBuilder: (context) {
+        return Container(
+          padding: EdgeInsets.only(right: 10.0),
+          child: Icon(UiIcons.trash,
+              size: 20, color: Theme.of(context).hintColor.withOpacity(0.5)),
+        );
+      },
+
       emptyBuilder: (context, text) {
         return Container(
           alignment: Alignment.center,
