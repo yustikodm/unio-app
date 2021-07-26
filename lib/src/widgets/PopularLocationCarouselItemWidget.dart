@@ -81,8 +81,8 @@ class _PopularLocationCarouselItemWidgetState
             Hero(
               tag: widget.heroTag + widget.university.id,
               child: Container(
-                width: 180,
-                height: 185,
+                width: 85,
+                height: 85,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
                   image: DecorationImage(
@@ -97,7 +97,7 @@ class _PopularLocationCarouselItemWidgetState
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: 160),
+              margin: EdgeInsets.only(top: 90),
               width: 140,
               height: 50,
               decoration: BoxDecoration(

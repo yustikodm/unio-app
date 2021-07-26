@@ -175,46 +175,6 @@ class QuestionController extends GetxController
     update();
   }
 
-  // List _oldHc;
-  // List get oldHc => this._oldHc;
-
-  // List _extraHc;
-  // List get extraHc => this._extraHc;
-
-  // void answerExtra(answer) {
-  //   var tempIndex;
-  //   var hc = '';
-
-  //   // var answer = {
-  //   //   1: 'I',
-  //   //   2: 'A',
-  //   // };
-
-  //   for (int i = 0; i < _oldHc.length; i++) {
-  //     if (!_extraHc.contains(_oldHc[i])) {
-  //       print(_oldHc[i]);
-  //       tempIndex = i;
-  //     }
-  //   }
-
-  //   if (tempIndex != null) {
-  //     // ANSWER RETURN 2 HC
-  //     if (tempIndex == 0) hc = hc + _oldHc[tempIndex];
-
-  //     hc = hc + answer[1] + answer[2];
-
-  //     if (tempIndex == 2) hc = hc + _oldHc[tempIndex];
-  //   } else {
-  //     // ANSWER RETURN 3 HC
-  //     hc = answer[1] + answer[2] + answer[3];
-  //   }
-  // }
-
-  // void getExtra() {
-  //   _hasExtra = true;
-  //   update();
-  // }
-
   void adviceStudent(context) async {
     dynamic finalScore = _score.calculateFinalScore();
     String score = finalScore['score'];
@@ -227,12 +187,21 @@ class QuestionController extends GetxController
 
       update();
 
-      Navigator.of(context).pushReplacementNamed('/ExtraQuestion',
-          arguments: new RouteArgument(argumentsList: [
-            finalScore['old_hc'],
-            finalScore['extra_hc'],
-            _extraQuestions,
-          ]));
+      if (finalScore['extra_hc'].length == 2) {
+        Navigator.of(context).pushReplacementNamed('/ExtraQuestionTwo',
+            arguments: new RouteArgument(argumentsList: [
+              finalScore['old_hc'],
+              finalScore['extra_hc'],
+              _extraQuestions,
+            ]));
+      } else {
+        Navigator.of(context).pushReplacementNamed('/ExtraQuestion',
+            arguments: new RouteArgument(argumentsList: [
+              finalScore['old_hc'],
+              finalScore['extra_hc'],
+              _extraQuestions,
+            ]));
+      }
 
       resetScore();
     } else {

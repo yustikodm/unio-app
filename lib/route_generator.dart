@@ -6,6 +6,7 @@ import 'package:Unio/src/screens/directory.dart';
 import 'package:Unio/src/screens/favorites.dart';
 import 'package:Unio/src/screens/on_boarding.dart';
 import 'package:Unio/src/screens/quiz/components/extra_question.dart';
+import 'package:Unio/src/screens/quiz/components/extra_question_two.dart';
 import 'package:Unio/src/screens/quiz/quiz_screen.dart';
 import 'package:flutter/material.dart';
 import 'src/models/route_argument.dart';
@@ -86,6 +87,11 @@ class RouteGenerator {
 
       case '/ExtraQuestion':
         return MaterialPageRoute(builder: (_) => ExtraQuestionScreen(
+          routeArgument: args as RouteArgument,
+        ));
+
+      case '/ExtraQuestionTwo':
+        return MaterialPageRoute(builder: (_) => ExtraQuestionTwoScreen(
           routeArgument: args as RouteArgument,
         ));
 

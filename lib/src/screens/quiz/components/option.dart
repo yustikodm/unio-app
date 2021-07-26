@@ -36,8 +36,6 @@ class Option extends StatelessWidget {
               qnController.isAnswered = true;
               if (type == qnController.score.answers[index]) {
                 return kGreenColor;
-              } else {
-                return kRedColor;
               }
             }
             return kGrayColor;
@@ -52,9 +50,17 @@ class Option extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.only(top: kDefaultPadding),
               padding: EdgeInsets.all(kDefaultPadding),
+              
               decoration: BoxDecoration(
-                border: Border.all(color: getTheRightColor()),
+                color: Theme.of(context).primaryColor,
+                border: Border.all(color: getTheRightColor(), width: 1),
                 borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                      color: getTheRightColor().withOpacity(0.30),
+                      offset: Offset(0, 4),
+                      blurRadius: 15)
+                ],
               ),
               child: Column(
                 children: <Widget>[

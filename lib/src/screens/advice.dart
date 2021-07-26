@@ -170,7 +170,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
     isRightDrawerOpen = false;
 
     page = 1;
-    limit = 10;
+    limit = 15;
 
     hasMore = true;
     loadingData = false;
@@ -216,7 +216,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
 
     // check level_id in search preference
     if (levelRes == null) {
-      await getLevel();
+      getLevel();
     }
 
     // check country_id in search preference
@@ -268,7 +268,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
             print(userId);
             print(_cip);
 
-            await getCountry(_cip);
+            getCountry(_cip);
           } else {
             _fosList.clear();
             selectedCip.clear();
@@ -488,8 +488,9 @@ class _AdviceWidgetState extends State<AdviceWidget> {
 
     if (Global.instance.authLevelId != null) {
       var selected = await levelRes.firstWhere(
-          (element) => element['id'] == Global.instance.authLevelId);
-      levelDegree = selected['name'];
+          (element) => element['id'] == Global.instance.authLevelId,
+          orElse: () => null);
+      levelDegree = selected != null ? selected['name'] : null;
       showLevelDefault = true;
       levelDefault = true;
       levelDefaultValue = levelDegree;
@@ -500,15 +501,15 @@ class _AdviceWidgetState extends State<AdviceWidget> {
 
   Future getCountry(_cip) async {
     var token = await Global.instance.apiToken;
-    final response = await http.post(
-        Uri.parse(
-            'https://primavisiglobalindo.net/unio/public/api/match-with-me/countries'),
-        // Send authorization headers to the backend.
-        headers: {
-          HttpHeaders.authorizationHeader: 'Bearer $token',
-          HttpHeaders.contentTypeHeader: 'aplication/json',
-        },
-        body: jsonEncode({"cip": _cip}));
+    final response =
+        await http.post(Uri.parse(SERVER_DOMAIN + 'match-with-me/countries'),
+            // Send authorization headers to the backend.
+            headers: {
+              HttpHeaders.authorizationHeader: 'Bearer $token',
+              HttpHeaders.contentTypeHeader: 'aplication/json',
+            },
+            body: jsonEncode({"cip": _cip}));
+    print('get ==== ' + SERVER_DOMAIN + 'match-with-ne/countries');
     print(response.body);
     setState(() {
       // _valCountry = null;
@@ -664,7 +665,8 @@ class _AdviceWidgetState extends State<AdviceWidget> {
       var _selectedCountryId = countryId;
       final response = await client.put(Uri.parse(url),
           headers: headers,
-          body: jsonEncode({'country_id': !isEmpty ? _selectedCountryId : null}));
+          body:
+              jsonEncode({'country_id': !isEmpty ? _selectedCountryId : null}));
       print(response.body);
 
       // var msg = jsonDecode(response.body)['message'];
@@ -675,7 +677,8 @@ class _AdviceWidgetState extends State<AdviceWidget> {
         // print(Global.instance.authCountryId);
 
         storage.write(
-            key: 'authCountryId', value: !isEmpty ? _selectedCountryId.toString() : null);
+            key: 'authCountryId',
+            value: !isEmpty ? _selectedCountryId.toString() : null);
 
         showOkAlertDialog(
             context: context,
@@ -688,7 +691,8 @@ class _AdviceWidgetState extends State<AdviceWidget> {
           levelRes.firstWhere((element) => element['name'] == levelDegree);
       int _selectedLevelId = selected['id'];
       final response = await client.put(Uri.parse(url),
-          headers: headers, body: jsonEncode({'level_id': !isEmpty ? _selectedLevelId : null}));
+          headers: headers,
+          body: jsonEncode({'level_id': !isEmpty ? _selectedLevelId : null}));
       print(response.body);
 
       var msg = jsonDecode(response.body)['message'];
@@ -698,7 +702,9 @@ class _AdviceWidgetState extends State<AdviceWidget> {
 
         // print(Global.instance.authCountryId);
 
-        storage.write(key: 'authLevelId', value: !isEmpty ? _selectedLevelId.toString() : null);
+        storage.write(
+            key: 'authLevelId',
+            value: !isEmpty ? _selectedLevelId.toString() : null);
 
         showOkAlertDialog(
             context: context,
@@ -1049,6 +1055,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                           items: countryList,
                           onChanged: (value) {
                             setState(() {
+                              _valCountry = value;
                               if (value != null) {
                                 print("nilai=" + value.toString());
                                 var selected = countryRes.firstWhere(
@@ -1068,7 +1075,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
                                 showCountryDefault = false;
                               }
 
-                              if (countryDefaultValue == value.toString()) {
+                              if (countryDefaultValue == _valCountry) {
                                 countryDefault = true;
                               } else {
                                 countryDefault = false;

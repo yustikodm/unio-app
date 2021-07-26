@@ -272,11 +272,16 @@ class _SignInWidgetState extends State<SignInWidget> {
 
                                 storage.write(
                                     key: 'authCountryId',
-                                    value: data['biodata']['country_id'].toString());
-                                
+                                    value: data['data']['biodata']['country_id'] != null
+                                        ? data['data']['biodata']['country_id']
+                                            .toString()
+                                        : null);
+
                                 storage.write(
                                     key: 'authLevelId',
-                                    value: data['biodata']['level_id'].toString());
+                                    value: data['data']['biodata']['level_id'] != null
+                                        ? data['data']['biodata']['level_id'].toString()
+                                        : null);
 
                                 // add hc to storage
                                 storage.write(

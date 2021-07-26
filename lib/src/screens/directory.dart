@@ -1443,38 +1443,38 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                         items: countryList,
                         label: "Country",
                         hint: "Country",
+                        selectedItem: _valCountry,
                         onChanged: (value) {
                           // print(value);
                           setState(() {
+                            _valCountry = value;
+
                             if (value != null) {
                               print("nilai=" + value.toString());
                               var selected = countryRes.firstWhere(
                                   (element) => element['name'] == value);
                               _valCountryId = selected['id'].toString();
-                              // print(value);
-                              // print(selected['id']);
-
-                              _valState = '';
-
-                              // print(_valState);
-                              // getstate
-                              getstate(selected['id'].toString());
-
                               widget._countryid = selected['id'].toString();
+
+                              // _valState = '';
+
+                              // getstate(selected['id'].toString());
 
                               showCountryDefault = true;
                             } else {
+                              _valCountryId = '';
+                              widget._countryid = '';
+
                               showCountryDefault = false;
                             }
 
-                            if (countryDefaultValue == value.toString()) {
+                            if (countryDefaultValue == _valCountry) {
                               countryDefault = true;
                             } else {
                               countryDefault = false;
                             }
                           });
                         },
-                        selectedItem: _valCountry,
                       ),
                       Visibility(
                         visible: (Global.instance.apiToken != null &&

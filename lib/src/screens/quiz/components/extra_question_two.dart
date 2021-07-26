@@ -3,32 +3,35 @@ import 'dart:io';
 import 'package:Unio/config/ui_icons.dart';
 // import 'package:Unio/src/controllers/question_controller.dart';
 import 'package:Unio/src/models/route_argument.dart';
+import 'package:Unio/src/screens/quiz/components/option.dart';
 import 'package:Unio/src/utilities/global.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:Unio/src/models/category.dart';
+
+import '../../../../constants.dart';
 // import 'package:get/get.dart';
 
-class ExtraQuestionScreen extends StatefulWidget {
+class ExtraQuestionTwoScreen extends StatefulWidget {
   final RouteArgument routeArgument;
   dynamic oldHc;
   dynamic extraHc;
   dynamic extraQuestions;
 
-  ExtraQuestionScreen({Key key, this.routeArgument}) {
+  ExtraQuestionTwoScreen({Key key, this.routeArgument}) {
     oldHc = this.routeArgument.argumentsList[0];
     extraHc = this.routeArgument.argumentsList[1];
     extraQuestions = this.routeArgument.argumentsList[2];
   }
 
   @override
-  _ExtraQuestionScreenState createState() => _ExtraQuestionScreenState();
+  _ExtraQuestionTwoScreenState createState() => _ExtraQuestionTwoScreenState();
 }
 
-class _ExtraQuestionScreenState extends State<ExtraQuestionScreen> {
+class _ExtraQuestionTwoScreenState extends State<ExtraQuestionTwoScreen> {
   dynamic options;
   int order;
-  int isClicked;
+  bool isAnswered;
   dynamic answer;
 
   @override
@@ -36,7 +39,7 @@ class _ExtraQuestionScreenState extends State<ExtraQuestionScreen> {
     // TODO: implement initState
     super.initState();
     order = 1;
-    isClicked = 0;
+    isAnswered = false;
     options = [];
     normalizeData();
     // extraHc = _questionController.extraHc;
@@ -77,23 +80,23 @@ class _ExtraQuestionScreenState extends State<ExtraQuestionScreen> {
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 30),
                     child: Text(
-                      'Please click the picture in order, based on your preference',
+                      'Please choose your preference',
                       style: Theme.of(context).textTheme.display1,
                     )),
                 ..._extras(),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  padding: EdgeInsets.only(top: 20),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      // ElevatedButton(
+                      //     onPressed: () {
+                      //       resetOrder();
+                      //     },
+                      //     child: Text('Reset')),
                       ElevatedButton(
                           onPressed: () {
-                            resetOrder();
-                          },
-                          child: Text('Reset')),
-                      ElevatedButton(
-                          onPressed: () {
-                            if (order > options.length)
+                            if (isAnswered)
                               // print(order);
                               answerExtra();
                           },
@@ -107,79 +110,80 @@ class _ExtraQuestionScreenState extends State<ExtraQuestionScreen> {
     ));
   }
 
+  Color getTheRightColor(option) {
+    if (option['order'] == 1) {
+      return kGreenColor;
+    }
+    return kGrayColor;
+  }
+
+  IconData getTheRightIcon(option) {
+    return getTheRightColor(option) == kRedColor ? Icons.close : Icons.done;
+  }
+
   List<Widget> _extras() {
     List<Widget> _w = [];
 
     for (var i = 0; i < options.length; i++) {
       _w.add(GestureDetector(
           onTap: () {
-            if (options[i]['order'] == 0) {
-              setState(() {
-                if (order <= options.length) {
-                  options[i]['order'] = order;
-                  order = order + 1;
-                }
-              });
-            } else {
-              resetOrder();
-            }
+            setState(() {
+              isAnswered = true;
+              if (options[i]['order'] == 0) {
+                options[i]['order'] = 1;
+                options[(i + 1) % 2]['order'] = 0;
+              }
+            });
           },
-          child: Padding(
-              padding: EdgeInsets.only(top: 20, bottom: 20),
-              child: Container(
-                // width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Theme.of(context).hintColor.withOpacity(0.10),
-                        offset: Offset(0, 4),
-                        blurRadius: 10)
-                  ],
-                ),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: <Widget>[
-                    (options[i]['order'] != 0)
-                        ? Positioned(
-                            top: -30,
-                            right: -30,
-                            child: Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                color: Color(0xFF007BFF),
-                                shape: BoxShape.circle,
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                options[i]['order'].toString(),
-                                style: TextStyle(
-                                    color: Color(0xFFEBE8E7),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                          )
-                        : SizedBox(),
-                    Column(
-                      children: [
-                        Text(options[i]['name']),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Image.network(
-                          options[i]['img'],
-                          height: 100,
-                          width: 200,
-                        ),
-                      ],
+          child: Container(
+            margin: EdgeInsets.only(top: kDefaultPadding),
+            padding: EdgeInsets.all(kDefaultPadding),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              border: Border.all(color: getTheRightColor(options[i]), width: 1),
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: [
+                BoxShadow(
+                    color: getTheRightColor(options[i]).withOpacity(0.30),
+                    offset: Offset(0, 4),
+                    blurRadius: 15)
+              ],
+            ),
+            child: Column(
+              children: <Widget>[
+                Text(options[i]['name']),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Image.network(
+                      options[i]['img'],
+                      height: 100,
+                      width: 200,
+                    ),
+                    //Image.asset("assets/" + text),
+                    /*Text(
+                        "${index + 1}. $text",
+                        style: TextStyle(color: getTheRightColor(), fontSize: 16),
+                      ),*/
+                    Container(
+                      height: 26,
+                      width: 26,
+                      decoration: BoxDecoration(
+                        color: getTheRightColor(options[i]) == kGrayColor
+                            ? Colors.transparent
+                            : getTheRightColor(options[i]),
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(color: getTheRightColor(options[i])),
+                      ),
+                      child: getTheRightColor(options[i]) == kGrayColor
+                          ? null
+                          : Icon(getTheRightIcon(options[i]), size: 16),
                     )
                   ],
                 ),
-              ))));
+              ],
+            ),
+          )));
     }
 
     return _w;
@@ -190,7 +194,7 @@ class _ExtraQuestionScreenState extends State<ExtraQuestionScreen> {
       for (var i = 0; i < options.length; i++) {
         options[i]['order'] = 0;
       }
-      order = 1;
+      isAnswered = false;
     });
   }
 
@@ -217,12 +221,9 @@ class _ExtraQuestionScreenState extends State<ExtraQuestionScreen> {
       // ANSWER RETURN 2 HC
       if (tempIndex == 0) hc = hc + widget.oldHc[tempIndex];
 
-      hc = hc + answer[1] + answer[2];
+      hc = hc + answer[1] + answer[0];
 
       if (tempIndex == 2) hc = hc + widget.oldHc[tempIndex];
-    } else {
-      // ANSWER RETURN 3 HC
-      hc = answer[1] + answer[2] + answer[3];
     }
 
     print(hc);

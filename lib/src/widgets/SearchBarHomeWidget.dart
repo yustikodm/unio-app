@@ -3,12 +3,8 @@ import 'package:Unio/src/utilities/global.dart';
 import '../../config/ui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:Unio/main.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 import '../models/category.dart';
-import '../models/utilities.dart';
 import '../models/route_argument.dart';
 import 'package:Unio/src/screens/quiz/quiz_screen.dart';
 import 'package:get/get.dart';
@@ -105,17 +101,6 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
                   ),
                   controller: myController,
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.only(right:30.0),
-                //   child: IconButton(
-                //     onPressed: () {
-                //       // Scaffold.of(context).openEndDrawer();
-                //     },
-                //     icon: Icon(UiIcons.checked,
-                //         size: 20,
-                //         color: Theme.of(context).hintColor.withOpacity(0.5)),
-                //   ),
-                // ),
                 Padding(
                   padding: const EdgeInsets.only(right: 40),
                   child: IconButton(
@@ -146,7 +131,7 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
           ),
           SizedBox(height: 6),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               FlatButton(
                 onPressed: () async {
@@ -179,7 +164,7 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
                       print("advices");
                       Navigator.of(context).pushNamed('/Advice',
                           arguments: new RouteArgument(argumentsList: [
-                            Category('Advice', UiIcons.compass, true,
+                            Category('Match With Me', UiIcons.compass, true,
                                 Colors.redAccent, []),
                             ''
                           ]));
@@ -213,7 +198,7 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
                   }
                 },
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                color: Theme.of(context).backgroundColor,
+                color: Color(0xFF007BFF),
                 shape: StadiumBorder(),
                 child: Text(
                   'Match with me',
