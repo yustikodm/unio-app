@@ -8,6 +8,7 @@ import 'package:Unio/src/screens/on_boarding.dart';
 import 'package:Unio/src/screens/quiz/components/extra_question.dart';
 import 'package:Unio/src/screens/quiz/components/extra_question_two.dart';
 import 'package:Unio/src/screens/quiz/quiz_screen.dart';
+import 'package:Unio/src/screens/register_wa.dart';
 import 'package:flutter/material.dart';
 import 'src/models/route_argument.dart';
 import 'src/screens/Categorie.dart';
@@ -23,6 +24,8 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // Getting arguments passed in while calling Navigator.pushNamed
     final args = settings.arguments;
+    // print(settings.name);
+    // print('asdfasdfasdfa');
 
     switch (settings.name) {
       case '/':
@@ -86,14 +89,25 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => CompareScreen());
 
       case '/ExtraQuestion':
-        return MaterialPageRoute(builder: (_) => ExtraQuestionScreen(
-          routeArgument: args as RouteArgument,
-        ));
+        return MaterialPageRoute(
+            builder: (_) => ExtraQuestionScreen(
+                  routeArgument: args as RouteArgument,
+                ));
 
       case '/ExtraQuestionTwo':
-        return MaterialPageRoute(builder: (_) => ExtraQuestionTwoScreen(
-          routeArgument: args as RouteArgument,
-        ));
+        return MaterialPageRoute(
+            builder: (_) => ExtraQuestionTwoScreen(
+                  routeArgument: args as RouteArgument,
+                ));
+
+      case '/RegisterWA':
+        return MaterialPageRoute(
+            builder: (_) => RegisterWAScreen(
+                  routeArgument: args as RouteArgument,
+                ));
+
+      case '/frontend/auth/login':
+        return MaterialPageRoute(builder: (_) => SignInWidget());
 
       default:
         // If there is no such named route in the switch statement, e.g. /third

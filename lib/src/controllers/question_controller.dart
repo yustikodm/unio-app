@@ -144,8 +144,9 @@ class QuestionController extends GetxController
       }
     } else {
       // updateTheQnNum(0);
-
-      adviceStudent(context);
+      if (_isAnswered) {
+        adviceStudent(context);
+      }
 
       // Get package provide us simple way to naviigate another page
       // Get.to(() => AdviceWidget());
@@ -230,7 +231,7 @@ class QuestionController extends GetxController
 
         Navigator.of(context).pushReplacementNamed('/Advice',
             arguments: new RouteArgument(argumentsList: [
-              Category('Advice', UiIcons.compass, true, Colors.redAccent, []),
+              Category('Match With Me', UiIcons.compass, true, Colors.redAccent, []),
               ''
             ]));
       } on SocketException {

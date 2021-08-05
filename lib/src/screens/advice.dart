@@ -1374,7 +1374,7 @@ class _AdviceWidgetState extends State<AdviceWidget> {
           Row(
             children: [
               Expanded(
-                child: Text('Categories'),
+                child: Text('Field of Study Classification'),
               ),
               Checkbox(
                 value: _fosListSelectAll,

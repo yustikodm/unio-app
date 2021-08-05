@@ -102,12 +102,12 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
                   controller: myController,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 40),
+                  padding: const EdgeInsets.only(right: 0),
                   child: IconButton(
                     onPressed: () async {
                       Navigator.of(context).pushNamed('/Directory',
                           arguments: new RouteArgument(argumentsList: [
-                            Category('University', UiIcons.laptop, false,
+                            Category('Field of study', UiIcons.laptop, false,
                                 Colors.orange, []),
                             myController.text
                           ]));
@@ -117,15 +117,15 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
                         color: Theme.of(context).hintColor.withOpacity(0.5)),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    cari_keyword = myController.text;
-                    Scaffold.of(context).openEndDrawer();
-                  },
-                  icon: Icon(UiIcons.settings_2,
-                      size: 20,
-                      color: Theme.of(context).hintColor.withOpacity(0.5)),
-                ),
+                // IconButton(
+                //   onPressed: () {
+                //     cari_keyword = myController.text;
+                //     Scaffold.of(context).openEndDrawer();
+                //   },
+                //   icon: Icon(UiIcons.settings_2,
+                //       size: 20,
+                //       color: Theme.of(context).hintColor.withOpacity(0.5)),
+                // ),
               ],
             ),
           ),
@@ -156,7 +156,7 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
                     // print(response.body);
                     // var hasil = jsonDecode(response.body);
 
-                    if (Global.instance.authHc == '') {
+                    if (Global.instance.authHc == '-' || Global.instance.authHc == '') {
                       print(Global.instance.authHc);
                       print("questionary");
                       Get.to(() => QuizScreen());

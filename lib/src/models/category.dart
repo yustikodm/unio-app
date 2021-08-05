@@ -35,7 +35,7 @@ class CategoriesList {
 
   CategoriesList() {
     this._list = [
-      new Category('University', FontAwesomeIcons.university, true, Colors.cyan, []),
+      // new Category('University', FontAwesomeIcons.university, true, Colors.cyan, []),
       new Category('Field of study', FontAwesomeIcons.puzzlePiece, false, Colors.orange, []),
       new Category(
           'Vendor', FontAwesomeIcons.store, false, Colors.greenAccent, []),

@@ -1,3 +1,6 @@
+import 'package:Unio/src/models/route_argument.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../config/ui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,10 +40,16 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text('OK'),
-              onPressed: () {
+              child: route == 'register'
+                  ? Text('Register Whatsapp Number')
+                  : Text('OK'),
+              onPressed: () async {
                 if (route == 'signIn') {
-                  Navigator.of(context).pushNamed('/SignIn');
+                  Navigator.of(context).popAndPushNamed('/SignIn');
+                } else if (route == 'register') {
+                  Navigator.of(context).popAndPushNamed('/RegisterWA',
+                      arguments:
+                          new RouteArgument(param1: myPhoneController.text));
                 } else {
                   Navigator.of(context).pop();
                 }
@@ -194,52 +203,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             ),
                           ),
                         ),
-                        /*new TextFormField(
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please input password confirmation';
-                            }
-                            return null;
-                          },
-                          controller: myPasswordConfirmationController,
-                          style: TextStyle(color: Theme.of(context).focusColor),
-                          keyboardType: TextInputType.text,
-                          obscureText: !_showPassword,
-                          decoration: new InputDecoration(
-                            hintText: 'Confirm Password',
-                            hintStyle: Theme.of(context).textTheme.body1.merge(
-                                  TextStyle(
-                                      color: Theme.of(context)
-                                          .focusColor
-                                          .withOpacity(0.4)),
-                                ),
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context)
-                                        .focusColor
-                                        .withOpacity(0.2))),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).focusColor)),
-                            prefixIcon: Icon(
-                              UiIcons.padlock_1,
-                              color:
-                                  Theme.of(context).focusColor.withOpacity(0.4),
-                            ),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _showPassword = !_showPassword;
-                                });
-                              },
-                              color:
-                                  Theme.of(context).focusColor.withOpacity(0.4),
-                              icon: Icon(_showPassword
-                                  ? Icons.visibility_off
-                                  : Icons.visibility),
-                            ),
-                          ),
-                        ),*/
                         new TextFormField(
                           validator: (value) {
                             if (value.isEmpty) {
@@ -295,9 +258,11 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
                             if (res.statusCode == 200) {
                               EasyLoading.dismiss();
-                              _showMyDialog(
-                                  'Register successful!, Please check your email.',
-                                  'signIn');
+
+                              Navigator.of(context).popAndPushNamed(
+                                  '/RegisterWA',
+                                  arguments: new RouteArgument(
+                                      param1: myPhoneController.text));
                             } else {
                               EasyLoading.dismiss();
                               _showMyDialog(

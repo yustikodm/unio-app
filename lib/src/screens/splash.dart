@@ -1,3 +1,4 @@
+import 'package:Unio/src/models/uri_to_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -31,12 +32,14 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   gotoHomePage() {
     if (widget.navigateAfterSeconds is String) {
       Navigator.of(context).pushReplacementNamed(widget.navigateAfterSeconds);
+    } else if (widget.navigateAfterSeconds is Uri) {
+      UriToApp.navigate(widget.navigateAfterSeconds, context);
     } else if (widget.navigateAfterSeconds is Widget) {
       Navigator.of(context).pushReplacement(new MaterialPageRoute(
           builder: (BuildContext context) => widget.navigateAfterSeconds));
     } else {
       throw new ArgumentError(
-          'widget.navigateAfterSeconds must either be a String or Widget');
+          'widget.navigateAfterSeconds must either be a String, Widget, or URI');
     }
   }
 

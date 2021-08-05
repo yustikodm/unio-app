@@ -1,3 +1,4 @@
+import 'package:Unio/src/service/navigation_service.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'UNIO',
       initialRoute: '/',
+      navigatorKey: NavigationService.instance.navigationKey,
       onGenerateRoute: RouteGenerator.generateRoute,
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData(

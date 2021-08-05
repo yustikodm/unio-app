@@ -31,7 +31,7 @@ class QuestionCard extends StatelessWidget {
         shrinkWrap: true,
         children: [
           Text(
-            'Which activities do you prefer?',
+            'Choose one that suits you best.',
             style: Theme.of(context)
                 .textTheme
                 .headline6
