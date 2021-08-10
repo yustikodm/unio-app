@@ -80,7 +80,7 @@ class _ExtraQuestionTwoScreenState extends State<ExtraQuestionTwoScreen> {
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 30),
                     child: Text(
-                      'Please choose your preference',
+                      'Choose one that suits you best',
                       style: Theme.of(context).textTheme.display1,
                     )),
                 ..._extras(),

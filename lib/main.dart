@@ -1,12 +1,22 @@
+import 'package:Unio/src/providers/authentication.dart';
 import 'package:Unio/src/service/navigation_service.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 import 'config/app_config.dart' as config;
 import 'package:flutter/material.dart';
 import 'route_generator.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(
+  MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
+    ],
+    child: MyApp())
+);
+
+
 String cari_keyword = "";
 String cari_query = "";
 

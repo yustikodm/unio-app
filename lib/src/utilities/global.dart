@@ -1,7 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 const SERVER_DOMAIN = "https://primavisiglobalindo.net/unio/public/api/";
-// const SERVER_DOMAIN = "http://10.0.2.2:8000/api/";
+const SERVER_LOCAL_DOMAIN = "http://10.0.2.2:8000/api/";
 const ML_DOMAIN = "http://3.137.120.216:6565/api/";
 const WA_NUMBER = "6281260000980";
 

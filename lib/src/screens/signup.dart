@@ -1,14 +1,18 @@
-import 'package:Unio/src/models/route_argument.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
+import 'package:Unio/src/providers/authentication.dart';
+import 'package:Unio/src/service/http_service.dart';
+import 'package:Unio/src/utilities/regex.dart';
+import 'package:country_pickers/country.dart';
+import 'package:country_pickers/country_pickers.dart';
+
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../config/ui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import '../widgets/SocialMediaWidget.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:Unio/main.dart';
-import 'package:http/http.dart' as http;
 import 'package:Unio/src/utilities/global.dart';
+import 'package:provider/provider.dart';
 
 class SignUpWidget extends StatefulWidget {
   @override
@@ -19,49 +23,85 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   bool _showPassword = false;
   final myEmailController = TextEditingController();
   final myPasswordController = TextEditingController();
-  //final myPasswordConfirmationController = TextEditingController();
+  // final myPasswordConfirmationController = TextEditingController();
   final myNameController = TextEditingController();
   final myPhoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> _showMyDialog(String message, String route) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Info'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(message),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: route == 'register'
-                  ? Text('Register Whatsapp Number')
-                  : Text('OK'),
-              onPressed: () async {
-                if (route == 'signIn') {
-                  Navigator.of(context).popAndPushNamed('/SignIn');
-                } else if (route == 'register') {
-                  Navigator.of(context).popAndPushNamed('/RegisterWA',
-                      arguments:
-                          new RouteArgument(param1: myPhoneController.text));
-                } else {
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
+  List<String> _countries = [];
+  Country _selectedCountry;
+
+  int _ratio;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectedCountry = CountryPickerUtils.getCountryByIsoCode('ID');
+    _ratio = _selectedCountry.phoneCode.length;
+
+    _getCountryCode();
   }
 
+  Future<void> _getCountryCode() async {
+    return getService(SERVER_DOMAIN + 'countries', onSuccess: (response) {
+      List countries = json.decode(response.body)['data'];
+      if (countries.isNotEmpty && countries != null) {
+        for (int i = 0; i < countries.length; i++) {
+          String c = countries[i]['code_3166'];
+          _countries.add(c);
+        }
+      }
+    });
+  }
+
+  Widget _countryPicker(Country country) => Row(
+        children: <Widget>[
+          // CountryPickerUtils.getDefaultFlagImage(country),
+          Icon(
+            FontAwesomeIcons.chevronDown,
+            size: 12,
+            color: Theme.of(context).focusColor.withOpacity(0.4),
+          ),
+          SizedBox(width: 8.0),
+          Text("+${country.phoneCode}"),
+          // SizedBox(width: 8.0),
+          // Flexible(child: Text(country.name))
+        ],
+      );
+
+  Widget _buildDialogItem(Country country) => Row(
+        children: <Widget>[
+          CountryPickerUtils.getDefaultFlagImage(country),
+          SizedBox(width: 8.0),
+          Text("+${country.phoneCode}"),
+          SizedBox(width: 8.0),
+          Flexible(child: Text(country.name))
+        ],
+      );
+
+  void _openCountryPickerDialog() => showDialog(
+        context: context,
+        builder: (context) => Theme(
+          data: Theme.of(context).copyWith(primaryColor: Colors.pink),
+          child: CountryPickerDialog(
+            titlePadding: EdgeInsets.all(8.0),
+            searchCursorColor: Colors.pinkAccent,
+            searchInputDecoration: InputDecoration(hintText: 'Search...'),
+            isSearchable: true,
+            title: Text('Select your phone code'),
+            onValuePicked: (Country country) => setState(() {
+              _selectedCountry = country;
+              _ratio = country.phoneCode.length;
+            }),
+            itemFilter: (c) => _countries.contains(c.isoCode),
+            itemBuilder: _buildDialogItem,
+          ),
+        ),
+      );
+
   Widget build(BuildContext context) {
+    final _authProvider = context.read<AuthenticationProvider>();
     return Scaffold(
       backgroundColor: Theme.of(context).accentColor,
       body: SingleChildScrollView(
@@ -91,12 +131,17 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                         Text('Sign Up',
                             style: Theme.of(context).textTheme.display2),
                         SizedBox(height: 20),
-                        new TextFormField(
+                        TextFormField(
                           validator: (value) {
+                            String pattern = FULLNAME_REGEX;
+                            RegExp regExp = new RegExp(pattern);
                             if (value.isEmpty) {
-                              return 'Please Input Name';
+                              return 'Name is required';
+                            } else if (!regExp.hasMatch(value)) {
+                              return 'Invalid Name';
+                            } else {
+                              return null;
                             }
-                            return null;
                           },
                           controller: myNameController,
                           style: TextStyle(color: Theme.of(context).focusColor),
@@ -124,12 +169,17 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             ),
                           ),
                         ),
-                        new TextFormField(
+                        TextFormField(
                           validator: (value) {
+                            String pattern = EMAIL_REGEX;
+                            RegExp regExp = new RegExp(pattern);
                             if (value.isEmpty) {
-                              return 'Please Input Email';
+                              return 'Email is required';
+                            } else if (!regExp.hasMatch(value)) {
+                              return 'Invalid Email';
+                            } else {
+                              return null;
                             }
-                            return null;
                           },
                           controller: myEmailController,
                           style: TextStyle(color: Theme.of(context).focusColor),
@@ -157,12 +207,13 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             ),
                           ),
                         ),
-                        new TextFormField(
+                        TextFormField(
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'Please input password';
+                              return 'Password is required';
+                            } else {
+                              return null;
                             }
-                            return null;
                           },
                           controller: myPasswordController,
                           style: TextStyle(color: Theme.of(context).focusColor),
@@ -203,70 +254,85 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             ),
                           ),
                         ),
-                        new TextFormField(
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please Input Phone';
-                            }
-                            return null;
-                          },
-                          controller: myPhoneController,
-                          style: TextStyle(color: Theme.of(context).focusColor),
-                          keyboardType: TextInputType.number,
-                          decoration: new InputDecoration(
-                            hintText: 'Phone Number',
-                            hintStyle: Theme.of(context).textTheme.body1.merge(
-                                  TextStyle(
-                                      color: Theme.of(context)
-                                          .focusColor
-                                          .withOpacity(0.4)),
+                        Row(
+                          children: [
+                            Expanded(
+                                flex: 4 + _ratio - 2,
+                                child: Container(
+                                  // width: 80,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      ListTile(
+                                        onTap: _openCountryPickerDialog,
+                                        title: _countryPicker(_selectedCountry),
+                                      ),
+                                    ],
+                                  ),
+                                )),
+                            Expanded(
+                              flex: 9,
+                              child: TextFormField(
+                                validator: (value) {
+                                  String pattern = PHONE_NUMBER_REGEX;
+                                  RegExp regExp = new RegExp(pattern);
+
+                                  if (value.trim().isEmpty) {
+                                    return 'Phone is required';
+                                  } else if (!regExp.hasMatch(value)) {
+                                    return "Invalid Phone";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                controller: myPhoneController,
+                                style: TextStyle(
+                                    color: Theme.of(context).focusColor),
+                                keyboardType: TextInputType.number,
+                                decoration: new InputDecoration(
+                                  hintText: 'Phone Number',
+                                  hintStyle:
+                                      Theme.of(context).textTheme.body1.merge(
+                                            TextStyle(
+                                                color: Theme.of(context)
+                                                    .focusColor
+                                                    .withOpacity(0.4)),
+                                          ),
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context)
+                                              .focusColor
+                                              .withOpacity(0.2))),
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).focusColor)),
+                                  // prefixIcon: Icon(
+                                  //   UiIcons.phone_call,
+                                  //   color: Theme.of(context)
+                                  //       .focusColor
+                                  //       .withOpacity(0.4),
+                                  // ),
                                 ),
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context)
-                                        .focusColor
-                                        .withOpacity(0.2))),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).focusColor)),
-                            prefixIcon: Icon(
-                              UiIcons.phone_call,
-                              color:
-                                  Theme.of(context).focusColor.withOpacity(0.4),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                         SizedBox(height: 40),
                         FlatButton(
                           padding: EdgeInsets.symmetric(
                               vertical: 12, horizontal: 70),
                           onPressed: () async {
-                            EasyLoading.show(status: 'Loading...');
-                            var email = myEmailController.text;
-                            var password = myPasswordController.text;
-                            var name = myNameController.text;
-                            var phone = myPhoneController.text;
-
-                            var res = await http.post(
-                                Uri.parse(SERVER_DOMAIN + 'register'),
-                                body: {
-                                  'email': email,
-                                  'password': password,
-                                  'name': name,
-                                  'phone': phone
-                                });
-
-                            if (res.statusCode == 200) {
-                              EasyLoading.dismiss();
-
-                              Navigator.of(context).popAndPushNamed(
-                                  '/RegisterWA',
-                                  arguments: new RouteArgument(
-                                      param1: myPhoneController.text));
-                            } else {
-                              EasyLoading.dismiss();
-                              _showMyDialog(
-                                  'Please check your data again!', 'pop');
+                            if (_formKey.currentState.validate()) {
+                              _authProvider.register(
+                                email: myEmailController.text,
+                                password: myPasswordController.text,
+                                name: myNameController.text,
+                                phone: _selectedCountry.phoneCode
+                                        .replaceAll('-', '') +
+                                    myPhoneController.text,
+                                context: context,
+                              );
                             }
                           },
                           child: Text(

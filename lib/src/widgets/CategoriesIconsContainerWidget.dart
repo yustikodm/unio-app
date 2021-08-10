@@ -22,6 +22,7 @@ class _CategoriesIconsContainertState
   Widget build(BuildContext context) {
     return Container(
       child: Wrap(
+        spacing: 4,
           children: _buildSuggestions(categoriesList.list, context)),
     );
   }

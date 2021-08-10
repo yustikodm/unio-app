@@ -1,14 +1,9 @@
-import 'package:Unio/src/utilities/global.dart';
-import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'dart:convert' as convert;
+import 'package:Unio/src/providers/authentication.dart';
 import '../../config/ui_icons.dart';
 import '../widgets/SocialMediaWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:Unio/main.dart';
-import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class SignInWidget extends StatefulWidget {
   @override
@@ -21,14 +16,9 @@ class _SignInWidgetState extends State<SignInWidget> {
   final myPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  Future<String> attemptLogin(String email, String password) async {
-    var res = await http.post(Uri.parse(SERVER_DOMAIN + 'login'),
-        body: {'email': email, 'password': password});
-    if (res.statusCode == 200) return res.body;
-    return null;
-  }
-
   Widget build(BuildContext context) {
+    final _authProvider = context.read<AuthenticationProvider>();
+
     return Scaffold(
       backgroundColor: Theme.of(context).accentColor,
       body: SingleChildScrollView(
@@ -143,166 +133,10 @@ class _SignInWidgetState extends State<SignInWidget> {
                           padding: EdgeInsets.symmetric(
                               vertical: 12, horizontal: 70),
                           onPressed: () async {
-                            EasyLoading.show(status: 'loading...');
-                            storage.deleteAll();
-                            var email = myEmailController.text;
-                            var password = myPasswordController.text;
-                            var jwt = await attemptLogin(email, password);
-                            var data = convert.jsonDecode(jwt);
-
-                            if (jwt != null) {
-                              if (data['success'] == false) {
-                                EasyLoading.dismiss();
-                                showOkAlertDialog(
-                                  context: context,
-                                  title: 'Invalid username or password!',
-                                );
-                              } else {
-                                dynamic date =
-                                    data['data']['biodata']['birth_date'];
-
-                                DateTime formattedDate;
-
-                                if (date != null) {
-                                  DateTime date2 = DateTime.parse(date);
-                                  formattedDate = DateTime.parse(
-                                      DateFormat('yyyy-MM-dd').format(date2));
-                                } else {
-                                  formattedDate = DateTime(2000, 01, 01);
-                                }
-
-                                var authId = data['data']['id'].toString();
-
-                                Global.instance.authId = authId;
-                                Global.instance.apiToken =
-                                    data['data']['token']['api_token'];
-                                Global.instance.authName =
-                                    data['data']['biodata']['fullname'];
-                                Global.instance.authEmail =
-                                    data['data']['email'];
-                                Global.instance.authPhone =
-                                    data['data']['phone'];
-                                Global.instance.authGender =
-                                    data['data']['biodata']['gender'];
-                                Global.instance.authPicture =
-                                    data['data']['image_path'];
-                                Global.instance.authAddress =
-                                    data['data']['biodata']['address'];
-                                Global.instance.authSchool =
-                                    data['data']['biodata']['school_origin'];
-                                Global.instance.authGraduate =
-                                    data['data']['biodata']['graduation_year'];
-                                Global.instance.authAddress =
-                                    data['data']['biodata']['address'];
-                                Global.instance.authBirthDate = formattedDate;
-                                Global.instance.authBirthPlace =
-                                    data['data']['biodata']['birth_place'];
-                                Global.instance.authIdentity = data['data']
-                                        ['biodata']['identity_number']
-                                    .toString();
-                                Global.instance.authReligion =
-                                    data['data']['biodata']['religion'];
-
-                                Global.instance.authCountryId =
-                                    data['data']['biodata']['country_id'];
-
-                                Global.instance.authLevelId =
-                                    data['data']['biodata']['level_id'];
-
-                                // add hc to global
-                                Global.instance.authHc =
-                                    data['data']['biodata']['hc'];
-
-                                storage.write(
-                                    key: 'authId', value: authId ?? '1');
-                                storage.write(
-                                    key: 'apiToken',
-                                    value: data['data']['token']['api_token']);
-                                storage.write(
-                                    key: 'authEmail',
-                                    value: data['data']['email'] ?? '-');
-                                storage.write(
-                                    key: 'authName',
-                                    value: data['data']['biodata']
-                                            ['fullname'] ??
-                                        '-');
-                                storage.write(
-                                    key: 'authPicture',
-                                    value: data['data']['image_path'] ?? '-');
-                                storage.write(
-                                    key: 'authPhone',
-                                    value: data['data']['phone'] ?? '-');
-                                storage.write(
-                                    key: 'authGender',
-                                    value: data['data']['biodata']['gender'] ??
-                                        '-');
-                                storage.write(
-                                    key: 'authAddress',
-                                    value: data['data']['biodata']['address'] ??
-                                        '-');
-                                storage.write(
-                                    key: 'authGraduate',
-                                    value: data['data']['biodata']
-                                            ['graduation_year'] ??
-                                        '-');
-                                storage.write(
-                                    key: 'authSchool',
-                                    value: data['data']['biodata']
-                                            ['school_origin'] ??
-                                        '-');
-                                storage.write(
-                                    key: 'authBirthDate',
-                                    value: formattedDate.toString());
-                                storage.write(
-                                    key: 'authBirthPlace',
-                                    value: data['data']['biodata']
-                                            ['birth_place'] ??
-                                        '-');
-                                storage.write(
-                                    key: 'authIdentity',
-                                    value: data['data']['biodata']
-                                                ['identity_number']
-                                            .toString() ??
-                                        '-');
-                                storage.write(
-                                    key: 'authReligion',
-                                    value: data['data']['biodata']
-                                            ['religion'] ??
-                                        '-');
-
-                                storage.write(
-                                    key: 'authCountryId',
-                                    value: data['data']['biodata']['country_id'] != null
-                                        ? data['data']['biodata']['country_id']
-                                            .toString()
-                                        : null);
-
-                                storage.write(
-                                    key: 'authLevelId',
-                                    value: data['data']['biodata']['level_id'] != null
-                                        ? data['data']['biodata']['level_id'].toString()
-                                        : null);
-
-                                // add hc to storage
-                                storage.write(
-                                    key: 'authHc',
-                                    value:
-                                        data['data']['biodata']['hc'] ?? '-');
-
-                                EasyLoading.dismiss();
-
-                                Navigator.of(context).popUntil(
-                                    (route) => !route.navigator.canPop());
-                                Navigator.of(context)
-                                    .pushReplacementNamed('/Tabs');
-                              }
-                            } else {
-                              EasyLoading.dismiss();
-                              showOkAlertDialog(
-                                context: context,
-                                title: 'Invalid username or password!',
-                              );
-                            }
+                            _authProvider.login(
+                                email: myEmailController.text,
+                                password: myPasswordController.text,
+                                context: context);
                           },
                           child: Text(
                             'Login',

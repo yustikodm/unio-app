@@ -79,7 +79,7 @@ class _CategoryIconWidgetState extends State<CategoryIconWidget>
               );
               break;
 
-            case 'Advice':
+            case 'Match With Me':
               if (Global.instance.apiToken == null) {
                 _showNeedLoginAlert();
               } else {
@@ -87,10 +87,10 @@ class _CategoryIconWidgetState extends State<CategoryIconWidget>
                   print("quetionary");
                   Get.to(() => QuizScreen());
                 } else {
-                  print("advices");
+                  print("Match With Me");
                   Navigator.of(context).pushNamed('/Advice',
                       arguments: new RouteArgument(argumentsList: [
-                        Category('Advice', UiIcons.compass, true,
+                        Category('Match With Me', UiIcons.compass, true,
                             Colors.redAccent, []),
                         ''
                       ]));

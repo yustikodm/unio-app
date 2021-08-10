@@ -62,7 +62,7 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(5.0),
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(10),
@@ -77,9 +77,9 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-                border: Border.all(
-                    color: Theme.of(context).hintColor.withOpacity(0.4),
-                    width: 1),
+                // border: Border.all(
+                //     color: Theme.of(context).hintColor.withOpacity(0.4),
+                //     width: 1),
                 borderRadius: BorderRadius.circular(10.0)),
             child: Stack(
               alignment: Alignment.centerRight,
@@ -129,86 +129,43 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
               ],
             ),
           ),
-          SizedBox(height: 6),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FlatButton(
-                onPressed: () async {
-                  if (Global.instance.apiToken == null) {
-                    _showNeedLoginAlert(context);
-                  } else {
+          // SizedBox(height: 6),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     FlatButton(
+          //       onPressed: () async {
+          //         if (Global.instance.apiToken == null) {
+          //           _showNeedLoginAlert(context);
+          //         } else {
 
-                    // Map<String, String> headers = <String, String>{
-                    //   HttpHeaders.contentTypeHeader: 'application/json'
-                    // };
-                    // var url = SERVER_DOMAIN + 'users/' + Global.instance.authId;
-                    // var token = Global.instance.apiToken;
-                    // headers.addAll(
-                    //     <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
-                    // print(url);
-                    // print(headers);
-
-                    // final client = new http.Client();
-                    // final response = await client.get(Uri.parse(url),
-                    //     headers: headers,
-                    // );
-                    // print(response.body);
-                    // var hasil = jsonDecode(response.body);
-
-                    if (Global.instance.authHc == '-' || Global.instance.authHc == '') {
-                      print(Global.instance.authHc);
-                      print("questionary");
-                      Get.to(() => QuizScreen());
-                    } else {
-                      print("advices");
-                      Navigator.of(context).pushNamed('/Advice',
-                          arguments: new RouteArgument(argumentsList: [
-                            Category('Match With Me', UiIcons.compass, true,
-                                Colors.redAccent, []),
-                            ''
-                          ]));
-                    }
-
-                    // Map<String, String> headers = <String, String>{
-                    //   HttpHeaders.contentTypeHeader: 'application/json'
-                    // };
-
-                    // url = SERVER_DOMAIN + 'match-with-me/' + Global.instance.authId;
-                    // token = Global.instance.apiToken;
-                    // headers.addAll(
-                    //     <String, String>{HttpHeaders.authorizationHeader: 'Bearer $token'});
-                    // print(url);
-                    // print(headers);
-                    //
-                    // // client = new http.Client();
-                    // final response2 = await client.get(Uri.parse(url),
-                    //   headers: headers,
-                    // );
-                    // print(response2.body);
-
-                    // if (response.statusCode == 200) return response.body;
-
-                    // Navigator.of(context).pushNamed('/Advice',
-                    //     arguments: new RouteArgument(argumentsList: [
-                    //       Category('Advice', UiIcons.compass, true,
-                    //           Colors.redAccent, []),
-                    //       ''
-                    //     ]));
-                  }
-                },
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                color: Color(0xFF007BFF),
-                shape: StadiumBorder(),
-                child: Text(
-                  'Match with me',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(color: Theme.of(context).primaryColor),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 6),
+          //           if (Global.instance.authHc == '-' || Global.instance.authHc == '') {
+          //             print(Global.instance.authHc);
+          //             print("questionary");
+          //             Get.to(() => QuizScreen());
+          //           } else {
+          //             print("advices");
+          //             Navigator.of(context).pushNamed('/Advice',
+          //                 arguments: new RouteArgument(argumentsList: [
+          //                   Category('Match With Me', UiIcons.compass, true,
+          //                       Colors.redAccent, []),
+          //                   ''
+          //                 ]));
+          //           }
+          //         }
+          //       },
+          //       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          //       color: Color(0xFF007BFF),
+          //       shape: StadiumBorder(),
+          //       child: Text(
+          //         'Match with me',
+          //         textAlign: TextAlign.start,
+          //         style: TextStyle(color: Theme.of(context).primaryColor),
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          // SizedBox(height: 6),
           Wrap(
             alignment: WrapAlignment.spaceBetween,
             children: _buildSuggestions(suggestions, context),
