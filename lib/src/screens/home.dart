@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:Unio/src/models/university.dart';
+import 'package:Unio/src/service/http_service.dart';
 import 'package:Unio/src/utilities/global.dart';
 
 import '../../config/ui_icons.dart';
@@ -52,9 +53,7 @@ class _HomeWidgetState extends State<HomeWidget>
 
     print('========= noted: query all item ' + url);
 
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
+    getService(url, onSuccess: (response) async {
       print('========= noted: get response body ' + response.body.toString());
       if (response.body.isNotEmpty) {
         List universities =
@@ -76,7 +75,7 @@ class _HomeWidgetState extends State<HomeWidget>
           }
         }
       }
-    }
+    });
   }
 
   @override
@@ -97,8 +96,8 @@ class _HomeWidgetState extends State<HomeWidget>
         Container(
             padding: const EdgeInsets.only(right: 2, left: 2),
             child: CategoriesIconsContainerWidget(
-              // categoriesList: _categoriesList,
-            )),
+                // categoriesList: _categoriesList,
+                )),
         Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Column(

@@ -248,7 +248,7 @@ class _ExtraQuestionTwoScreenState extends State<ExtraQuestionTwoScreen> {
 
       Navigator.of(context).pushReplacementNamed('/Advice',
           arguments: new RouteArgument(argumentsList: [
-            Category('Advice', UiIcons.compass, true, Colors.redAccent, []),
+            Category('Match With Me', UiIcons.compass, true, Colors.redAccent, []),
             ''
           ]));
     } on SocketException {

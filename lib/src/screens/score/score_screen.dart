@@ -46,13 +46,13 @@ class ScoreScreen extends StatelessWidget {
                   // _qnController.adviceStudent();
                   Navigator.of(context).pushNamed('/Advice',
                       arguments: new RouteArgument(argumentsList: [
-                        Category('Advice', UiIcons.compass, true,
+                        Category('Match With Me', UiIcons.compass, true,
                             Colors.redAccent, []),
                         ''
                       ]));
                 },
                 child: Text(
-                  'Advice',
+                  'Match With Me',
                   style: Theme.of(context).textTheme.title.merge(
                         TextStyle(color: Theme.of(context).primaryColor),
                       ),

@@ -1,13 +1,13 @@
-import 'package:Unio/src/utilities/global.dart';
+import 'dart:convert';
+
+import 'package:Unio/src/models/trie.dart';
+import 'package:flutter/services.dart';
 
 import '../../config/ui_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:Unio/main.dart';
 import 'dart:async';
 import '../models/category.dart';
 import '../models/route_argument.dart';
-import 'package:Unio/src/screens/quiz/quiz_screen.dart';
-import 'package:get/get.dart';
 
 class SearchBarHomeWidget extends StatefulWidget {
   // final TextEditingController _controller = TextEditingController();
@@ -20,11 +20,53 @@ class SearchBarHomeWidget extends StatefulWidget {
 }
 
 class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
-  List<String> suggestions = [];
-
   final myController = TextEditingController();
 
+  List<String> suggestions;
+  Trie suggestionTrie = new Trie();
+
   CategoriesList _categoriesList = new CategoriesList();
+
+  @override
+  void initState() {
+    suggestions = [];
+    getSuggestions();
+
+    super.initState();
+
+    myController.addListener(() {
+      showSuggestions();
+      // print(suggestions);
+    });
+  }
+
+  Future getJson(String name) {
+    return rootBundle.loadString(name);
+  }
+
+  void getSuggestions() async {
+    var data = json.decode(await getJson('trie.json'))['name'];
+    for (int i = 0; i < data.length; i++) {
+      String name = data[i];
+      suggestionTrie.insert(name.trim().toLowerCase(), name);
+    }
+  }
+
+  void showSuggestions() {
+    List<String> _w = [];
+    if (myController.text.isNotEmpty) {
+      _w.addAll(
+          suggestionTrie.startsWith(myController.text.toLowerCase().trim()));
+
+      setState(() {
+        suggestions = _w == null ? [] : _w;
+      });
+    } else {
+      setState(() {
+        suggestions = [];
+      });
+    }
+  }
 
   Future<void> _showNeedLoginAlert(BuildContext context) async {
     return showDialog<void>(
@@ -88,7 +130,7 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
                   // controller:_controller,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(12),
-                    hintText: 'Search',
+                    hintText: 'Find Field of Study',
                     hintStyle: TextStyle(
                         color: Theme.of(context).focusColor.withOpacity(0.8)),
                     // prefixIcon: Icon(UiIcons.loupe,
@@ -105,12 +147,14 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
                   padding: const EdgeInsets.only(right: 0),
                   child: IconButton(
                     onPressed: () async {
-                      Navigator.of(context).pushNamed('/Directory',
-                          arguments: new RouteArgument(argumentsList: [
-                            Category('Field of study', UiIcons.laptop, false,
-                                Colors.orange, []),
-                            myController.text
-                          ]));
+                      if (myController.text.isNotEmpty) {
+                        Navigator.of(context).pushNamed('/Directory',
+                            arguments: new RouteArgument(argumentsList: [
+                              Category('Field of study', UiIcons.laptop, false,
+                                  Colors.orange, []),
+                              myController.text
+                            ]));
+                      }
                     },
                     icon: Icon(UiIcons.loupe,
                         size: 20,
@@ -179,9 +223,17 @@ class _SearchBarHomeWidgetState extends State<SearchBarHomeWidget> {
 _buildSuggestions(List<String> list, BuildContext context) {
   List<Widget> choices = List();
   list.forEach((item) {
-    choices.add(
-      Container(
-        margin: const EdgeInsets.all(2.0),
+    choices.add(Container(
+      margin: const EdgeInsets.all(2.0),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).pushNamed('/Directory',
+              arguments: new RouteArgument(argumentsList: [
+                Category(
+                    'Field of study', UiIcons.laptop, false, Colors.orange, []),
+                item
+              ]));
+        },
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(6),
@@ -197,7 +249,7 @@ _buildSuggestions(List<String> list, BuildContext context) {
           ),
         ),
       ),
-    );
+    ));
   });
   return choices;
 }
