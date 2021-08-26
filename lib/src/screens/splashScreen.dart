@@ -1,5 +1,7 @@
 import 'package:Unio/main.dart';
 import 'package:Unio/src/models/uri_to_app.dart';
+import 'package:Unio/src/providers/countries.dart';
+import 'package:Unio/src/providers/level.dart';
 import 'package:Unio/src/screens/signin.dart';
 import 'dart:async';
 import 'dart:io';
@@ -10,6 +12,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uni_links/uni_links.dart';
 import '../screens/on_boarding.dart';
 import 'package:Unio/src/utilities/global.dart';
+import 'package:provider/provider.dart';
 
 class Splash extends StatefulWidget {
   @override
@@ -34,6 +37,9 @@ class _SplashState extends State<Splash> {
     getAuthData();
     // TODO: implement initState
     super.initState();
+
+    context.read<LevelProvider>().initLevel();
+    context.read<CountryProvider>().initCountries();
   }
 
   getAuthData() async {
