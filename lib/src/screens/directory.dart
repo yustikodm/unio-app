@@ -92,9 +92,6 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
   var countryRes = List();
   var stateRes = List();
 
-  String _valCountry;
-  String _valCountryId;
-
   String _valState;
 
   String levelDegree;
@@ -1147,7 +1144,6 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
                               _countryProvider.showCheckBox = true;
                             } else {
-                              _valCountryId = '';
                               widget._countryid = '';
 
                               _countryProvider.showCheckBox = false;
