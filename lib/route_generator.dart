@@ -9,6 +9,7 @@ import 'package:Unio/src/screens/quiz/components/extra_question.dart';
 import 'package:Unio/src/screens/quiz/components/extra_question_two.dart';
 import 'package:Unio/src/screens/quiz/quiz_screen.dart';
 import 'package:Unio/src/screens/register_wa.dart';
+import 'package:Unio/src/screens/web_view.dart';
 import 'package:flutter/material.dart';
 import 'src/models/route_argument.dart';
 import 'src/screens/Categorie.dart';
@@ -108,6 +109,11 @@ class RouteGenerator {
 
       case '/frontend/auth/login':
         return MaterialPageRoute(builder: (_) => SignInWidget());
+
+      case '/WebView':
+        return MaterialPageRoute(builder: (_) => WebViewScreen(
+          routeArgument: args as RouteArgument,
+        ));
 
       default:
         // If there is no such named route in the switch statement, e.g. /third

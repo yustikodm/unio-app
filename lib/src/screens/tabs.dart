@@ -7,6 +7,7 @@ import 'package:Unio/src/widgets/NewFilterWidget.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../config/ui_icons.dart';
 import '../screens/account.dart';
@@ -172,6 +173,22 @@ class _TabsWidgetState extends State<TabsWidget> {
           style: Theme.of(context).textTheme.display1,
         ),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              FontAwesomeIcons.fileAlt,
+              color: Theme.of(context).hintColor,
+              size: 18,
+            ),
+            tooltip: 'Feedback Form',
+            onPressed: () {
+              (Global.instance.apiToken != null)
+                  ? Navigator.of(context).pushNamed('/WebView',
+                      arguments: new RouteArgument(argumentsList: [
+                        'https://forms.gle/vd15DFBGPDKvRCyP7'
+                      ]))
+                  : _showNeedLoginAlert(context);
+            },
+          ),
           IconButton(
             icon: Icon(
               FontAwesomeIcons.solidHeart,

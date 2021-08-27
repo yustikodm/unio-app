@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class QuestionaireScore {
   Map _hollandCode;
   dynamic _score;
@@ -86,64 +88,70 @@ class QuestionaireScore {
     // ONLY WORKS IF DATA IS SORTED FROM HIGH TO LOW
     // List code = sortedMap.keys.toList();
     List hcTemp = [];
-    var scoreTemp;
-    var hcMap = {};
+    String scoreTemp = "";
+    // var hcMap = {};
 
-    for (var i = 0; i < 3; i++) {
-      var _v = sortedMap[sortedKeys[i]];
+    int pointer = 0;
+    // int len = 0;
 
-      if (scoreTemp == null) {
-        scoreTemp = _v;
+    while (pointer < 3) {
+      var val = sortedMap[sortedKeys[pointer]];
+      var n1 = sortedMap[sortedKeys[pointer + 1]];
+      var n2 = sortedMap[sortedKeys[pointer + 2]];
+
+      if (val == n1 && val == n2) {
+        hcTemp.add(sortedKeys[pointer]);
+        hcTemp.add(sortedKeys[pointer + 1]);
+        hcTemp.add(sortedKeys[pointer + 2]);
+        scoreTemp = scoreTemp + '_';
+        pointer = pointer + 3;
+        continue;
       }
 
-      if (scoreTemp == _v) {
-        hcTemp.add(sortedKeys[i]);
+      if (val == n1) {
+        hcTemp.add(sortedKeys[pointer]);
+        hcTemp.add(sortedKeys[pointer + 1]);
+        scoreTemp = scoreTemp + '_';
+        pointer = pointer + 2;
+        continue;
       }
 
-      if (scoreTemp != _v && hcTemp.length < 2) {
-        hcTemp.clear();
-        hcTemp.add(sortedKeys[i]);
-        scoreTemp = _v;
-      }
+      scoreTemp = scoreTemp + sortedKeys[pointer];
+      pointer = pointer + 1;
     }
 
+    print(hcTemp);
+    print(scoreTemp);
+
     // for (var i = 0; i < 3; i++) {
-    //   var hc = sortedKeys[i];
-    //   var score = sortedMap[hc];
+    //   var _v = sortedMap[sortedKeys[i]];
 
-    //   hcMap[i] = sortedKeys[i];
+    //   if (scoreTemp == null) {
+    //     scoreTemp = _v;
+    //   }
 
-    //   if (scoreTemp.isEmpty) {
-    //     hcTemp.add(hc);
-    //     scoreTemp.add(score);
-    //     print(i);
-    //   } else {
-    //     if (scoreTemp.length < 3) {
-    //       if (scoreTemp[0] != score) {
-    //         hcTemp.clear();
-    //         scoreTemp.clear();
+    //   if (scoreTemp == _v) {
+    //     hcTemp.add(sortedKeys[i]);
+    //   }
 
-    //         hcTemp.add(hc);
-    //         scoreTemp.add(score);
-    //       } else {
-    //         hcTemp.add(hc);
-    //         scoreTemp.add(score);
-    //       }
-    //     }
+    //   if (scoreTemp != _v && hcTemp.length < 2) {
+    //     hcTemp.clear();
+    //     hcTemp.add(sortedKeys[i]);
+    //     scoreTemp = _v;
     //   }
     // }
 
     if (hcTemp.length > 1) {
       _score = {
         'has_extra': true,
-        'score': sortedKeys[0] + sortedKeys[1] + sortedKeys[2],
-        'old_hc': [sortedKeys[0], sortedKeys[1], sortedKeys[2]],
+        'score': scoreTemp,
+        // 'old_hc': [sortedKeys[0], sortedKeys[1], sortedKeys[2]],
         'extra_hc': hcTemp,
       };
     } else {
       _score = {
         'has_extra': false,
-        'score': sortedKeys[0] + sortedKeys[1] + sortedKeys[2],
+        'score': scoreTemp,
       };
     }
 

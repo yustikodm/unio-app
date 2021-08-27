@@ -186,19 +186,21 @@ class QuestionController extends GetxController
       // _oldHc = finalScore['old_hc'];
       // _extraHc = finalScore['extra_hc'];
 
+      print(finalScore['score']);
+
       update();
 
       if (finalScore['extra_hc'].length == 2) {
         Navigator.of(context).pushReplacementNamed('/ExtraQuestionTwo',
             arguments: new RouteArgument(argumentsList: [
-              finalScore['old_hc'],
+              finalScore['score'],
               finalScore['extra_hc'],
               _extraQuestions,
             ]));
       } else {
         Navigator.of(context).pushReplacementNamed('/ExtraQuestion',
             arguments: new RouteArgument(argumentsList: [
-              finalScore['old_hc'],
+              finalScore['score'],
               finalScore['extra_hc'],
               _extraQuestions,
             ]));
@@ -231,7 +233,8 @@ class QuestionController extends GetxController
 
         Navigator.of(context).pushReplacementNamed('/Advice',
             arguments: new RouteArgument(argumentsList: [
-              Category('Match With Me', UiIcons.compass, true, Colors.redAccent, []),
+              Category(
+                  'Match With Me', UiIcons.compass, true, Colors.redAccent, []),
               ''
             ]));
       } on SocketException {

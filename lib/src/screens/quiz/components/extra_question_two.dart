@@ -67,7 +67,23 @@ class _ExtraQuestionTwoScreenState extends State<ExtraQuestionTwoScreen> {
             leading: IconButton(
               icon: new Icon(UiIcons.return_icon,
                   color: Theme.of(context).hintColor.withOpacity(0.5)),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Stop Questionaire?'),
+                  content: Text(
+                      'You will have to restart all the questions. Are you sure?'),
+                  actions: [
+                    TextButton(
+                        child: Text('Quit'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        }),
+                  ],
+                );
+              }),
             ),
           ),
           body: SingleChildScrollView(
@@ -200,31 +216,18 @@ class _ExtraQuestionTwoScreenState extends State<ExtraQuestionTwoScreen> {
 
   void answerExtra() async {
     var tempIndex;
-    var hc = '';
+    String hc = '';
 
-    var answer = {};
+    String answer = "";
 
-    for (int i = 0; i < options.length; i++) {
-      answer[options[i]['order']] = options[i]['type'];
+    String _hcCase = widget.oldHc.replaceAll('_', "");
+    int _length = 3 - _hcCase.length;
+
+    for (int i = 0; i < _length; i++) {
+      answer = answer + options[i]['type'];
     }
 
-    print(answer);
-
-    for (int i = 0; i < widget.oldHc.length; i++) {
-      if (!widget.extraHc.contains(widget.oldHc[i])) {
-        print(widget.oldHc[i]);
-        tempIndex = i;
-      }
-    }
-
-    if (tempIndex != null) {
-      // ANSWER RETURN 2 HC
-      if (tempIndex == 0) hc = hc + widget.oldHc[tempIndex];
-
-      hc = hc + answer[1] + answer[0];
-
-      if (tempIndex == 2) hc = hc + widget.oldHc[tempIndex];
-    }
+    hc = widget.oldHc.replaceAll('_', answer);
 
     print(hc);
 
@@ -248,7 +251,8 @@ class _ExtraQuestionTwoScreenState extends State<ExtraQuestionTwoScreen> {
 
       Navigator.of(context).pushReplacementNamed('/Advice',
           arguments: new RouteArgument(argumentsList: [
-            Category('Match With Me', UiIcons.compass, true, Colors.redAccent, []),
+            Category(
+                'Match With Me', UiIcons.compass, true, Colors.redAccent, []),
             ''
           ]));
     } on SocketException {
