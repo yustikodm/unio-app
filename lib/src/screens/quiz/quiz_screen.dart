@@ -24,11 +24,16 @@ class QuizScreen extends StatelessWidget {
                       'You will have to restart all the questions. Are you sure?'),
                   actions: [
                     TextButton(
-                        child: Text('Quit'),
+                        child: Text('Yes'),
                         onPressed: () {
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
                         }),
+                    TextButton(
+                        child: Text('No'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        })
                   ],
                 );
               }),

@@ -68,22 +68,27 @@ class _ExtraQuestionTwoScreenState extends State<ExtraQuestionTwoScreen> {
               icon: new Icon(UiIcons.return_icon,
                   color: Theme.of(context).hintColor.withOpacity(0.5)),
               onPressed: () => showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text('Stop Questionaire?'),
-                  content: Text(
-                      'You will have to restart all the questions. Are you sure?'),
-                  actions: [
-                    TextButton(
-                        child: Text('Quit'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                        }),
-                  ],
-                );
-              }),
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('Stop Questionaire?'),
+                      content: Text(
+                          'You will have to restart all the questions. Are you sure?'),
+                      actions: [
+                        TextButton(
+                            child: Text('Yes'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            }),
+                        TextButton(
+                            child: Text('No'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            }),
+                      ],
+                    );
+                  }),
             ),
           ),
           body: SingleChildScrollView(
