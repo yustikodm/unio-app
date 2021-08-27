@@ -1,10 +1,12 @@
 import 'package:Unio/src/providers/countries.dart';
 import 'package:Unio/src/providers/level.dart';
 import 'package:Unio/src/screens/compare/compare.dart';
+import 'package:Unio/src/service/api_service.dart';
 import 'package:Unio/src/service/http_service.dart';
 import 'package:Unio/src/utilities/global.dart';
 import 'package:Unio/src/widgets/CustomDropdownSearchWidget.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -264,13 +266,15 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
 
     loadingData = true;
 
-    getService(url, onSuccess: (response) {
+    Response response = await apiClient().get(url);
+
+    if (response.statusCode == 200) {
       loadingData = false;
-      print('========= noted: get response body ' + response.body.toString());
-      if (response.body.isNotEmpty) {
+      print('========= noted: get response body ' + response.data.toString());
+      if (response.data.isNotEmpty) {
         dynamic jsonMap;
 
-        jsonMap = json.decode(response.body)['data'];
+        jsonMap = response.data['data'];
 
         if (jsonMap != null) {
           // print(jsonMap[0]['is_checked']);
@@ -296,8 +300,8 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
         int currentPage;
         int lastPage;
 
-        currentPage = json.decode(response.body)['meta']['current_page'];
-        lastPage = json.decode(response.body)['meta']['last_page'];
+        currentPage = response.data['meta']['current_page'];
+        lastPage = response.data['meta']['last_page'];
 
         if (currentPage < lastPage) {
           page++;
@@ -307,7 +311,7 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
         }
         setState(() {});
       }
-    });
+    }
   }
 
   void getstate(String countryid) async {

@@ -1,7 +1,9 @@
+import 'package:Unio/src/service/api_service.dart';
 import 'package:Unio/src/service/http_service.dart';
 import 'package:Unio/src/utilities/global.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:convert';
+import 'package:dio/dio.dart';
 
 class LevelProvider with ChangeNotifier {
   String _defaultLevel;
@@ -52,30 +54,27 @@ class LevelProvider with ChangeNotifier {
   }
 
   Future<dynamic> initLevel() async {
-    String url = SERVER_DOMAIN + "level_major";
+    Response response = await apiClient().get("level_major");
 
-    getService(url,
-        onSuccess: (response) {
-          print(response.body);
-          _levelResult = json.decode(response.body)['data'];
-          _levels.clear();
-          for (var i = 0; i < _levelResult.length; i++) {
-            _levels.add(_levelResult[i]['name'].toString());
-          }
+    if (response.statusCode == 200) {
+      _levelResult = response.data['data'];
+      _levels.clear();
+      for (var i = 0; i < _levelResult.length; i++) {
+        _levels.add(_levelResult[i]['name'].toString());
+      }
 
-          if (Global.instance.authLevelId != null) {
-            var selected = _levelResult.firstWhere(
-                (element) => element['id'] == Global.instance.authLevelId);
-            _selectedLevel = selected['name'];
-            _defaultLevel = selected['name'];
-            _checkBoxValue = true;
-            _showCheckBox = true;
-          }
+      if (Global.instance.authLevelId != null) {
+        var selected = _levelResult.firstWhere(
+            (element) => element['id'] == Global.instance.authLevelId);
+        _selectedLevel = selected['name'];
+        _defaultLevel = selected['name'];
+        _checkBoxValue = true;
+        _showCheckBox = true;
+      }
 
-          print("level=" + _selectedLevel.toString());
-          notifyListeners();
-        },
-        onError: (err) => throw (err));
+      print("level=" + _selectedLevel.toString());
+      notifyListeners();
+    }
   }
 
   Future<dynamic> addDefault() async {
@@ -84,16 +83,14 @@ class LevelProvider with ChangeNotifier {
     int _selectedLevelId = selected['id'];
 
     String userId = Global.instance.authId.toString();
-    String token = Global.instance.apiToken.toString();
-    String url = SERVER_DOMAIN + 'users/' + userId;
 
-    putService(url, token: token, body: {
+    Response response = await apiClient().put('users/$userId', data: {
       'level_id': _selectedLevelId.toString(),
-    }, onSuccess: (response) {
-      print(response.body);
-      dynamic result = json.decode(response.body);
+    });
+
+    if (response.statusCode == 200) {
+      dynamic result = response.data;
       if (result["success"]) {
-        _defaultLevel = _selectedLevel;
         Global.instance.authLevelId = result["data"]["biodata"]["level_id"];
         storage.write(key: 'authLevelId', value: _selectedLevelId.toString());
       } else {
@@ -103,21 +100,20 @@ class LevelProvider with ChangeNotifier {
       }
 
       notifyListeners();
-    });
+    }
   }
 
   Future<dynamic> removeDefault() async {
     _defaultLevel = null;
 
     String userId = Global.instance.authId.toString();
-    String token = Global.instance.apiToken.toString();
-    String url = SERVER_DOMAIN + 'users/' + userId;
 
-    putService(url, token: token, body: {
+    Response response = await apiClient().put('users/$userId', data: {
       'level_id': null,
-    }, onSuccess: (response) {
-      print(response.body);
-      dynamic result = json.decode(response.body);
+    });
+
+    if (response.statusCode == 200) {
+      dynamic result = response.data;
       if (result["success"]) {
         Global.instance.authLevelId = null;
         storage.write(key: 'authLevelId', value: null);
@@ -128,6 +124,6 @@ class LevelProvider with ChangeNotifier {
       }
 
       notifyListeners();
-    });
+    }
   }
 }
