@@ -252,7 +252,11 @@ class _FavoritesWidgetState extends State<FavoritesWidget> {
                   return FavoriteListItemWidget(
                     heroTag: 'favorites_list',
                     favorite: _favoriteList.favoritesList.elementAt(index),
+                    onBookmarked: () {
+                      // this will be called in '/Detail'
+                    },
                     onDismissed: () {
+                      // this will be called in FavoriteListItemWidget.dart
                       Favorite item =
                           _favoriteList.favoritesList.elementAt(index);
                       setState(() {
