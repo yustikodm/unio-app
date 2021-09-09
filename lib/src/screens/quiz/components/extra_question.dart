@@ -80,7 +80,7 @@ class _ExtraQuestionScreenState extends State<ExtraQuestionScreen> {
                       'Please click the picture in order, based on your preference',
                       style: Theme.of(context).textTheme.display1,
                     )),
-                ..._extras(),
+                ..._extrasThree(),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30),
                   child: Row(
@@ -107,7 +107,7 @@ class _ExtraQuestionScreenState extends State<ExtraQuestionScreen> {
     ));
   }
 
-  List<Widget> _extras() {
+  List<Widget> _extrasThree() {
     List<Widget> _w = [];
 
     for (var i = 0; i < options.length; i++) {

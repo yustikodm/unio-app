@@ -1,6 +1,7 @@
 import 'package:Unio/src/service/api_service.dart';
 import 'package:Unio/src/service/http_service.dart';
 import 'package:Unio/src/utilities/global.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
@@ -70,6 +71,11 @@ class LevelProvider with ChangeNotifier {
         _defaultLevel = selected['name'];
         _checkBoxValue = true;
         _showCheckBox = true;
+      } else {
+        _selectedLevel = null;
+        _defaultLevel = null;
+        _checkBoxValue = false;
+        _showCheckBox = false;
       }
 
       print("level=" + _selectedLevel.toString());
@@ -77,7 +83,7 @@ class LevelProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> addDefault() async {
+  Future<dynamic> addDefault(context) async {
     var selected =
         _levelResult.firstWhere((element) => element['name'] == _selectedLevel);
     int _selectedLevelId = selected['id'];
@@ -93,17 +99,19 @@ class LevelProvider with ChangeNotifier {
       if (result["success"]) {
         Global.instance.authLevelId = result["data"]["biodata"]["level_id"];
         storage.write(key: 'authLevelId', value: _selectedLevelId.toString());
+        showOkAlertDialog(context: context, title: result['message']);
       } else {
         Global.instance.authLevelId = null;
         storage.write(key: 'authLevelId', value: null);
         print("UPDATE NOT SUCCESSFUL");
+        showOkAlertDialog(context: context, title: "UPDATE NOT SUCCESSFUL");
       }
 
       notifyListeners();
     }
   }
 
-  Future<dynamic> removeDefault() async {
+  Future<dynamic> removeDefault(context) async {
     _defaultLevel = null;
 
     String userId = Global.instance.authId.toString();
@@ -117,10 +125,12 @@ class LevelProvider with ChangeNotifier {
       if (result["success"]) {
         Global.instance.authLevelId = null;
         storage.write(key: 'authLevelId', value: null);
+        showOkAlertDialog(context: context, title: result['message']);
       } else {
         Global.instance.authLevelId = null;
         storage.write(key: 'authLevelId', value: null);
         print("UPDATE NOT SUCCESSFUL");
+        showOkAlertDialog(context: context, title: "UPDATE NOT SUCCESSFUL");
       }
 
       notifyListeners();

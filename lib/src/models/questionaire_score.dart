@@ -1,3 +1,6 @@
+import 'package:Unio/src/service/api_service.dart';
+import 'package:dio/dio.dart';
+
 class QuestionaireScore {
   Map _hollandCode;
   dynamic _score;
@@ -72,7 +75,7 @@ class QuestionaireScore {
     });
   }
 
-  dynamic calculateFinalScore() {
+  dynamic calculateFinalScore() async {
     countScore();
 
     var sortedKeys = _hollandCode.keys.toList(growable: false)
@@ -83,29 +86,41 @@ class QuestionaireScore {
         key: (k) => k, value: (k) => _hollandCode[k]);
     print(sortedMap);
 
+    Response response = await apiClient()
+        .post('calculate-score-quest', data: {'score': sortedMap});
+
+    if (response.statusCode == 200) {
+      return response.data['data'];
+    } else {
+      return {
+        'has_extra': false,
+        'score': sortedKeys[0] + sortedKeys[1] + sortedKeys[2],
+      };
+    }
+
     // ONLY WORKS IF DATA IS SORTED FROM HIGH TO LOW
     // List code = sortedMap.keys.toList();
-    List hcTemp = [];
-    var scoreTemp;
-    var hcMap = {};
+    // List hcTemp = [];
+    // var scoreTemp;
+    // var hcMap = {};
 
-    for (var i = 0; i < 3; i++) {
-      var _v = sortedMap[sortedKeys[i]];
+    // for (var i = 0; i < 3; i++) {
+    //   var _v = sortedMap[sortedKeys[i]];
 
-      if (scoreTemp == null) {
-        scoreTemp = _v;
-      }
+    //   if (scoreTemp == null) {
+    //     scoreTemp = _v;
+    //   }
 
-      if (scoreTemp == _v) {
-        hcTemp.add(sortedKeys[i]);
-      }
+    //   if (scoreTemp == _v) {
+    //     hcTemp.add(sortedKeys[i]);
+    //   }
 
-      if (scoreTemp != _v && hcTemp.length < 2) {
-        hcTemp.clear();
-        hcTemp.add(sortedKeys[i]);
-        scoreTemp = _v;
-      }
-    }
+    //   if (scoreTemp != _v && hcTemp.length < 2) {
+    //     hcTemp.clear();
+    //     hcTemp.add(sortedKeys[i]);
+    //     scoreTemp = _v;
+    //   }
+    // }
 
     // for (var i = 0; i < 3; i++) {
     //   var hc = sortedKeys[i];
@@ -133,20 +148,20 @@ class QuestionaireScore {
     //   }
     // }
 
-    if (hcTemp.length > 1) {
-      _score = {
-        'has_extra': true,
-        'score': sortedKeys[0] + sortedKeys[1] + sortedKeys[2],
-        'old_hc': [sortedKeys[0], sortedKeys[1], sortedKeys[2]],
-        'extra_hc': hcTemp,
-      };
-    } else {
-      _score = {
-        'has_extra': false,
-        'score': sortedKeys[0] + sortedKeys[1] + sortedKeys[2],
-      };
-    }
+    // if (hcTemp.length > 1) {
+    //   _score = {
+    //     'has_extra': true,
+    //     'score': sortedKeys[0] + sortedKeys[1] + sortedKeys[2],
+    //     'old_hc': [sortedKeys[0], sortedKeys[1], sortedKeys[2]],
+    //     'extra_hc': hcTemp,
+    //   };
+    // } else {
+    //   _score = {
+    //     'has_extra': false,
+    //     'score': sortedKeys[0] + sortedKeys[1] + sortedKeys[2],
+    //   };
+    // }
 
-    return _score;
+    
   }
 }

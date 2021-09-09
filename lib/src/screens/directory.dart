@@ -2,7 +2,6 @@ import 'package:Unio/src/providers/countries.dart';
 import 'package:Unio/src/providers/level.dart';
 import 'package:Unio/src/screens/compare/compare.dart';
 import 'package:Unio/src/service/api_service.dart';
-import 'package:Unio/src/service/http_service.dart';
 import 'package:Unio/src/utilities/global.dart';
 import 'package:Unio/src/widgets/CustomDropdownSearchWidget.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
@@ -1179,9 +1178,9 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                                       _countryProvider.checkBoxValue = value;
 
                                       if (value) {
-                                        _countryProvider.addDefault();
+                                        _countryProvider.addDefault(context);
                                       } else {
-                                        _countryProvider.removeDefault();
+                                        _countryProvider.removeDefault(context);
                                       }
                                     });
                                   })
@@ -1236,9 +1235,9 @@ class _DirectoryWidgetState extends State<DirectoryWidget> {
                                     _levelProvider.checkBoxValue = value;
 
                                     if (value) {
-                                      _levelProvider.addDefault();
+                                      _levelProvider.addDefault(context);
                                     } else {
-                                      _levelProvider.removeDefault();
+                                      _levelProvider.removeDefault(context);
                                     }
                                   })
                             ],

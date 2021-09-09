@@ -1,5 +1,6 @@
 import 'package:Unio/src/service/http_service.dart';
 import 'package:Unio/src/utilities/global.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:convert';
 
@@ -72,6 +73,11 @@ class CountryProvider with ChangeNotifier {
         _defaultCountry = selected['name'];
         _checkBoxValue = true;
         _showCheckBox = true;
+      } else {
+        _selectedCountry = null;
+        _defaultCountry = null;
+        _checkBoxValue = false;
+        _showCheckBox = false;
       }
 
       notifyListeners();
@@ -96,7 +102,7 @@ class CountryProvider with ChangeNotifier {
     });
   }
 
-  Future<dynamic> addDefault() async {
+  Future<dynamic> addDefault(context) async {
     var selected = _countryResult
         .firstWhere((element) => element['name'] == _selectedCountry);
     int _selectedCountryId = selected['id'];
@@ -114,19 +120,21 @@ class CountryProvider with ChangeNotifier {
         Global.instance.authCountryId = result["data"]["biodata"]["country_id"];
         storage.write(
             key: 'authCountryId', value: _selectedCountryId.toString());
+        showOkAlertDialog(context: context, title: result['message']);
       } else {
         Global.instance.authCountryId = null;
         storage.write(key: 'authCountryId', value: null);
         print("UPDATE NOT SUCCESSFUL");
+        showOkAlertDialog(context: context, title: "UPDATE NOT SUCCESSFUL");
       }
 
       notifyListeners();
     });
   }
 
-  Future<dynamic> removeDefault() async {
+  Future<dynamic> removeDefault(context) async {
     _defaultCountry = null;
-    
+
     String userId = Global.instance.authId.toString();
     String token = Global.instance.apiToken.toString();
     String url = SERVER_DOMAIN + 'users/' + userId;
@@ -139,10 +147,12 @@ class CountryProvider with ChangeNotifier {
       if (result["success"]) {
         Global.instance.authCountryId = null;
         storage.write(key: 'authCountryId', value: null);
+        showOkAlertDialog(context: context, title: result['message']);
       } else {
         Global.instance.authCountryId = null;
         storage.write(key: 'authCountryId', value: null);
         print("UPDATE NOT SUCCESSFUL");
+        showOkAlertDialog(context: context, title: "UPDATE NOT SUCCESSFUL");
       }
 
       notifyListeners();

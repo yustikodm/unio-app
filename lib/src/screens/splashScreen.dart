@@ -61,10 +61,13 @@ class _SplashState extends State<Splash> {
         date != 'null' ? DateTime.parse(date) : null;
     Global.instance.authIdentity = await storage.read(key: 'authIdentity');
     Global.instance.authHc = await storage.read(key: 'authHc');
+
+    var countryId = await storage.read(key: 'authCountryId');
     Global.instance.authCountryId =
-        int.parse(await storage.read(key: 'authCountryId'));
-    Global.instance.authLevelId =
-        int.parse(await storage.read(key: 'authLevelId'));
+        countryId != null ? int.parse(countryId) : null;
+
+    var authLevelId = await storage.read(key: 'authLevelId');
+    Global.instance.authLevelId = authLevelId != null ? int.parse(authLevelId) : null;
   }
 
   // get initialUri
