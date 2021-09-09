@@ -1,21 +1,20 @@
 import 'package:Unio/src/models/favorites.dart';
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../config/ui_icons.dart';
 import '../models/favorites.dart';
 import '../models/route_argument.dart';
 import 'package:flutter/material.dart';
-import 'package:Unio/src/utilities/global.dart';
 
 // ignore: must_be_immutable
 class FavoriteListItemWidget extends StatefulWidget {
   String heroTag;
   Favorite favorite;
   VoidCallback onDismissed;
+  VoidCallback onBookmarked;
 
   FavoriteListItemWidget(
-      {Key key, this.heroTag, this.favorite, this.onDismissed})
+      {Key key, this.heroTag, this.favorite, this.onDismissed, this.onBookmarked})
       : super(key: key);
 
   @override
@@ -58,8 +57,15 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
         onTap: () {
           Navigator.of(context).pushNamed('/Detail',
               arguments: RouteArgument(
-                  param1: widget.favorite.entityId,
-                  param2: widget.favorite.entityType));
+                  param1: [
+                    widget.favorite.entityId,
+                    widget.favorite.entityType
+                  ],
+                  param2: () {
+                    setState(() {
+                      widget.onBookmarked();
+                    });
+                  }));
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -150,27 +156,31 @@ class _FavoriteListItemWidgetState extends State<FavoriteListItemWidget> {
     switch (entity) {
       case 'universities':
         return IconButton(
-          onPressed: (){},
-          icon: Icon(FontAwesomeIcons.university), 
-          tooltip: 'University',);
+          onPressed: () {},
+          icon: Icon(FontAwesomeIcons.university),
+          tooltip: 'University',
+        );
         break;
       case 'majors':
         return IconButton(
-          onPressed: (){},
-          icon: Icon(FontAwesomeIcons.puzzlePiece), 
-          tooltip: 'Field of Study',);
+          onPressed: () {},
+          icon: Icon(FontAwesomeIcons.puzzlePiece),
+          tooltip: 'Field of Study',
+        );
         break;
       case 'vendors':
         return IconButton(
-          onPressed: (){},
-          icon: Icon(FontAwesomeIcons.store), 
-          tooltip: 'Vendor',);
+          onPressed: () {},
+          icon: Icon(FontAwesomeIcons.store),
+          tooltip: 'Vendor',
+        );
         break;
       case 'place_lives':
         return IconButton(
-          onPressed: (){},
-          icon: Icon(FontAwesomeIcons.building), 
-          tooltip: 'Places to Live',);
+          onPressed: () {},
+          icon: Icon(FontAwesomeIcons.building),
+          tooltip: 'Places to Live',
+        );
         break;
       default:
         return Icon(Icons.info);

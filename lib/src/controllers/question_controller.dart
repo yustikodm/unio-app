@@ -231,6 +231,8 @@ class QuestionController extends GetxController
       // _oldHc = finalScore['old_hc'];
       // _extraHc = finalScore['extra_hc'];
 
+      print(finalScore['score']);
+
       update();
 
       // if (finalScore['extras'].length == 1) {

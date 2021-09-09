@@ -37,12 +37,12 @@ class CategoriesList {
     this._list = [
       // new Category('University', FontAwesomeIcons.university, true, Colors.cyan, []),
       new Category('Field of study', FontAwesomeIcons.puzzlePiece, false, Colors.orange, []),
-      new Category(
-          'Vendor', FontAwesomeIcons.store, false, Colors.greenAccent, []),
+      // new Category(
+      //     'Vendor', FontAwesomeIcons.store, false, Colors.greenAccent, []),
       new Category(
           'Places to Live', FontAwesomeIcons.building, false, Colors.blueAccent, []),
-      new Category(
-          'Scholarship', FontAwesomeIcons.graduationCap, false, Colors.pinkAccent, []),
+      // new Category(
+      //     'Scholarship', FontAwesomeIcons.graduationCap, false, Colors.pinkAccent, []),
       new Category(
           'Article', FontAwesomeIcons.newspaper, false, Colors.deepPurpleAccent, []),
       // new Category('Ranking', FontAwesomeIcons.trophy, false, Colors.brown, []),

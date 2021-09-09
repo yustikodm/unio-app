@@ -1,5 +1,6 @@
 import 'package:Unio/src/service/api_service.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 
 class QuestionaireScore {
   Map _hollandCode;
@@ -97,71 +98,6 @@ class QuestionaireScore {
         'score': sortedKeys[0] + sortedKeys[1] + sortedKeys[2],
       };
     }
-
-    // ONLY WORKS IF DATA IS SORTED FROM HIGH TO LOW
-    // List code = sortedMap.keys.toList();
-    // List hcTemp = [];
-    // var scoreTemp;
-    // var hcMap = {};
-
-    // for (var i = 0; i < 3; i++) {
-    //   var _v = sortedMap[sortedKeys[i]];
-
-    //   if (scoreTemp == null) {
-    //     scoreTemp = _v;
-    //   }
-
-    //   if (scoreTemp == _v) {
-    //     hcTemp.add(sortedKeys[i]);
-    //   }
-
-    //   if (scoreTemp != _v && hcTemp.length < 2) {
-    //     hcTemp.clear();
-    //     hcTemp.add(sortedKeys[i]);
-    //     scoreTemp = _v;
-    //   }
-    // }
-
-    // for (var i = 0; i < 3; i++) {
-    //   var hc = sortedKeys[i];
-    //   var score = sortedMap[hc];
-
-    //   hcMap[i] = sortedKeys[i];
-
-    //   if (scoreTemp.isEmpty) {
-    //     hcTemp.add(hc);
-    //     scoreTemp.add(score);
-    //     print(i);
-    //   } else {
-    //     if (scoreTemp.length < 3) {
-    //       if (scoreTemp[0] != score) {
-    //         hcTemp.clear();
-    //         scoreTemp.clear();
-
-    //         hcTemp.add(hc);
-    //         scoreTemp.add(score);
-    //       } else {
-    //         hcTemp.add(hc);
-    //         scoreTemp.add(score);
-    //       }
-    //     }
-    //   }
-    // }
-
-    // if (hcTemp.length > 1) {
-    //   _score = {
-    //     'has_extra': true,
-    //     'score': sortedKeys[0] + sortedKeys[1] + sortedKeys[2],
-    //     'old_hc': [sortedKeys[0], sortedKeys[1], sortedKeys[2]],
-    //     'extra_hc': hcTemp,
-    //   };
-    // } else {
-    //   _score = {
-    //     'has_extra': false,
-    //     'score': sortedKeys[0] + sortedKeys[1] + sortedKeys[2],
-    //   };
-    // }
-
     
   }
 }
